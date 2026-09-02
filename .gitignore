@@ -1,0 +1,44 @@
+.wordpress-playground/
+.local-server.log
+.local-server-error.log
+backups/
+tools/
+docs/
+README.md
+start-local.ps1
+wp-config.php
+.env
+.env.*
+*.sql
+*.sqlite
+*.wpress
+*.log
+.DS_Store
+Thumbs.db
+
+# Design/source exports that are not loaded by the theme.
+assets/images/services/technology/generative/modules-source/
+assets/images/services/technology/generative/zip-review/
+
+# Unused duplicate of can_you_color_similar_to_F_.mp4.
+assets/video/success-story.mp4
+
+# Service modules are delivered through separate feature branches.
+archive-service.php
+page-services.php
+single-service.php
+taxonomy-service_category.php
+inc/service-category-page-fields.php
+inc/service-page-fields.php
+template-parts/service/
+template-parts/header/services-mega.php
+template-parts/sections/services-stack.php
+assets/css/admin-service-page.css
+assets/js/admin-service-icon.js
+assets/js/admin-service-page.js
+assets/js/service-detail.js
+assets/js/services-stack.js
+assets/images/service-categories/
+assets/images/services/
+assets/images/service-cta-arrow.png
+assets/images/service-icon-default.png
