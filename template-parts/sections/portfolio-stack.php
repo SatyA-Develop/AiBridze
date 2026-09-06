@@ -7,7 +7,7 @@
 $projects = get_posts( array( 'post_type' => 'portfolio', 'posts_per_page' => 6, 'post_status' => 'publish', 'orderby' => array( 'menu_order' => 'ASC', 'date' => 'DESC' ) ) );
 ?>
 <?php if ( $projects ) : ?>
-<section class="portfolio-stack" data-portfolio-stack aria-labelledby="portfolio-stack-title">
+<section class="portfolio-stack" id="home-portfolio" data-portfolio-stack aria-labelledby="portfolio-stack-title">
 	<div class="portfolio-stack__heading">
 		<h2 id="portfolio-stack-title">See Our Work In Action</h2>
 	</div>

@@ -11,10 +11,8 @@
     const cards = gsap.utils.toArray(viewport.querySelectorAll('.industry-showcase-card'));
     if (!ring || !scene || !dragger || !linksLayer || cards.length < 2) return;
 
-    if (window.matchMedia('(max-width: 900px)').matches) {
-      viewport.classList.add('is-simple-slider');
-      return;
-    }
+    const responsive = gsap.matchMedia();
+    responsive.add('(min-width: 901px)', () => {
 
     const links = cards.map((card) => {
       const link = document.createElement('a');
@@ -39,6 +37,8 @@
     let xPos = 0;
     let cardWidth = 0;
     let angleStep = 0;
+    let built = false;
+    let disposed = false;
 
     const getBackgroundPosition = (index) => {
       const rotation = Number(gsap.getProperty(ring, 'rotationY')) || 0;
@@ -81,7 +81,9 @@
     };
 
     const buildRing = () => {
-      cardWidth = cards[0].getBoundingClientRect().width;
+      // Measure layout width, never the projected width of a rotated card.
+      cardWidth = cards[0].offsetWidth;
+      if (!cardWidth || !viewport.clientWidth) return;
       angleStep = 360 / cards.length;
       const isCompact = viewport.clientWidth < 901;
       const radius = isCompact
@@ -90,7 +92,8 @@
 
       // The reference uses 180deg for five front-facing cards. A half-step
       // offset exposes six cards while retaining the same circular geometry.
-      gsap.set(ring, { rotationY: isCompact ? 180 : 180 + angleStep / 2 });
+      if (!built) gsap.set(ring, { rotationY: isCompact ? 180 : 180 + angleStep / 2 });
+      built = true;
       gsap.set(cards, {
         rotationY: (index) => index * -angleStep,
         transformOrigin: `50% 50% ${radius}px`,
@@ -106,14 +109,13 @@
     gsap.from(cards, {
       duration: 1.5,
       y: 200,
-      opacity: 0,
       stagger: 0.1,
       ease: 'expo.out',
       onUpdate: () => updateLinks(Number(gsap.getProperty(ring, 'rotationY')) || 0),
       onComplete: updateCards
     });
 
-    Draggable.create(dragger, {
+    const [drag] = Draggable.create(dragger, {
       type: 'x,y',
       trigger: scene,
       dragClickables: false,
@@ -151,7 +153,7 @@
       }
     });
 
-    viewport.addEventListener('keydown', (event) => {
+    const onKeyDown = (event) => {
       if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
       event.preventDefault();
       gsap.to(ring, {
@@ -160,8 +162,19 @@
         ease: 'power2.out',
         onUpdate: updateCards
       });
-    });
+    };
+    viewport.addEventListener('keydown', onKeyDown);
 
-    new ResizeObserver(buildRing).observe(viewport);
+    const observer = new ResizeObserver(buildRing);
+    observer.observe(viewport);
+    document.fonts?.ready.then(() => { if (!disposed) buildRing(); });
+    return () => {
+      disposed = true;
+      observer.disconnect();
+      drag.kill();
+      viewport.removeEventListener('keydown', onKeyDown);
+      links.forEach((link) => link.remove());
+    };
+    });
   });
 })();
