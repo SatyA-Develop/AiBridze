@@ -53,12 +53,12 @@
     if (hero && heroStage) {
       const headerHeight = header?.offsetHeight || 0;
       const mobile = window.innerWidth <= 640;
-      const stickyTop = !mobile ? headerHeight
-        : Math.min(headerHeight, window.innerHeight - hero.offsetHeight);
+      const stickyTop = !mobile ? 0
+        : Math.min(0, window.innerHeight - hero.offsetHeight);
       hero.style.setProperty('--hero-sticky-top', `${stickyTop}px`);
       // Mobile copy sits closer to the header: end the blur before its first
       // line while still softening the retreating image's upper corners.
-      edgeBlur.style.top = `${Math.max(0, headerHeight - (mobile ? 24 : 0))}px`;
+      edgeBlur.style.top = '0px';
       edgeBlur.hidden = reducedMotion.matches || rect.top <= headerHeight;
       // The next section supplies the bottom wipe. Only retreat the hero's
       // top and sides; never animate its height or collapse its contents.
@@ -67,11 +67,13 @@
       // Reach 80% scale after 60vh, then hold while the next section covers it.
       const shrink = Math.min(0.2, heroProgress / 3);
       heroStage.style.setProperty('--hero-scroll-scale', String(1 - shrink));
-      // The reference starts at viewport top; our hero starts below the header.
-      // Remove that initial offset progressively so both stop at the same inset.
+      // Retreat from the viewport top, underneath the transparent navigation.
       const stoppedInset = window.innerHeight * 0.1 + 100;
       const retreat = (stoppedInset - stickyTop) * (shrink / 0.2);
       heroStage.style.setProperty('--hero-scroll-y', `${retreat}px`);
+      const pastHero = rect.top <= headerHeight;
+      header?.classList.toggle('is-past-hero', pastHero);
+      header?.classList.toggle('is-over-hero-gap', !pastHero && retreat + stickyTop > headerHeight * 0.55);
       heroStage.dataset.scrollProgress = heroProgress.toFixed(3);
     }
     ticking = false;
