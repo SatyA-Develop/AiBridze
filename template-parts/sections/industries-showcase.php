@@ -21,11 +21,6 @@ $fallback_images = array(
 	'/assets/images/hero-logistics-port.webp',
 );
 $ring_industries = $industries;
-if ( ! empty( $industries ) ) {
-	for ( $index = count( $ring_industries ); $index < 18; $index++ ) {
-		$ring_industries[] = $industries[ $index % count( $industries ) ];
-	}
-}
 ?>
 <section class="industries-showcase" aria-labelledby="industries-showcase-title">
 	<header class="industries-showcase__header">

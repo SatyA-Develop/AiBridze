@@ -43,8 +43,8 @@ if ( ! $video_urls ) $video_urls = array( $fallback_videos[0], $fallback_videos[
 		</div>
 
 		<div class="story-quotes" data-story-quotes>
-			<div class="story-quotes__steps" aria-hidden="true">
-				<?php foreach ( $testimonials as $index => $testimonial ) : ?><span class="<?php echo 0 === $index ? 'is-active' : ''; ?>" data-story-step></span><?php endforeach; ?>
+			<div class="story-quotes__steps" role="group" aria-label="<?php esc_attr_e( 'Testimonial navigation', 'aibridze' ); ?>">
+				<?php foreach ( $testimonials as $index => $testimonial ) : ?><button type="button" class="<?php echo 0 === $index ? 'is-active' : ''; ?>" data-story-step aria-label="<?php echo esc_attr( sprintf( __( 'Show testimonial %d', 'aibridze' ), $index + 1 ) ); ?>" aria-pressed="<?php echo 0 === $index ? 'true' : 'false'; ?>"></button><?php endforeach; ?>
 			</div>
 			<?php foreach ( $testimonials as $index => $testimonial ) :
 				$role = (string) get_post_meta( $testimonial->ID, '_aibridze_testimonial_role', true );

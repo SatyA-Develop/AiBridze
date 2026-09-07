@@ -8,11 +8,24 @@
     const scene = viewport.querySelector('.industries-showcase__scene');
     const dragger = viewport.querySelector('.industries-showcase__dragger');
     const linksLayer = viewport.querySelector('.industries-showcase__links');
-    const cards = gsap.utils.toArray(viewport.querySelectorAll('.industry-showcase-card'));
-    if (!ring || !scene || !dragger || !linksLayer || cards.length < 2) return;
+    const sourceCards = gsap.utils.toArray(viewport.querySelectorAll('.industry-showcase-card'));
+    if (!ring || !scene || !dragger || !linksLayer || sourceCards.length < 2) return;
 
     const responsive = gsap.matchMedia();
-    responsive.add('(min-width: 901px)', () => {
+    responsive.add({ desktop: '(min-width: 1367px)', tablet: '(min-width: 701px) and (max-width: 1366px)' }, (context) => {
+    if (!context.conditions.desktop && !context.conditions.tablet) return;
+    const desktop = context.conditions.desktop;
+    const clones = [];
+    const cards = [...sourceCards];
+    // Fill the wider desktop arc without duplicating the mobile content.
+    if (desktop) {
+      while (cards.length < 18) {
+        const clone = sourceCards[cards.length % sourceCards.length].cloneNode(true);
+        ring.appendChild(clone);
+        clones.push(clone);
+        cards.push(clone);
+      }
+    }
 
     const links = cards.map((card) => {
       const link = document.createElement('a');
@@ -20,35 +33,34 @@
       link.href = card.dataset.href;
       link.textContent = card.querySelector('.industry-showcase-card__link').textContent.trim();
       link.setAttribute('aria-label', card.dataset.label || link.textContent);
-      link.addEventListener('pointerup', (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        window.location.assign(link.href);
-      });
-      link.addEventListener('click', (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        window.location.assign(link.href);
-      });
       linksLayer.appendChild(link);
       return link;
     });
 
     let xPos = 0;
+    let didDrag = false;
     let cardWidth = 0;
     let angleStep = 0;
     let built = false;
     let disposed = false;
 
+    const getVisibleArc = () => desktop ? angleStep * 3 : angleStep * 1.5;
+    const getCardOpacity = (angle) => {
+      const arc = getVisibleArc();
+      return !desktop
+        ? gsap.utils.clamp(0, 1, (arc - Math.abs(angle)) / 10)
+        : (Math.abs(angle) < arc ? 1 : 0);
+    };
+
     const getBackgroundPosition = (index) => {
       const rotation = Number(gsap.getProperty(ring, 'rotationY')) || 0;
       const wrapped = gsap.utils.wrap(0, 360, rotation - 180 - index * angleStep);
-      return `${100 - (wrapped / 360) * 100}% center`;
+      return `${(wrapped / 360) * 100}% center`;
     };
 
     const updateLinks = (rotation) => {
       const isCompact = viewport.clientWidth < 901;
-      const visibleArc = angleStep * (isCompact ? 1.51 : 3);
+      const visibleArc = getVisibleArc();
       const viewportRect = viewport.getBoundingClientRect();
       cards.forEach((card, index) => {
         const cardRect = card.getBoundingClientRect();
@@ -56,7 +68,7 @@
         links[index].style.left = `${cardRect.left - viewportRect.left + cardRect.width / 2}px`;
         links[index].style.top = `${cardRect.bottom - viewportRect.top - (isCompact ? 28 : 43)}px`;
         gsap.set(links[index], {
-          autoAlpha: isVisible ? 1 : 0,
+          autoAlpha: getCardOpacity(gsap.utils.wrap(-180, 180, rotation - index * angleStep)),
           pointerEvents: isVisible ? 'auto' : 'none'
         });
       });
@@ -64,12 +76,12 @@
 
     const updateCards = () => {
       const rotation = Number(gsap.getProperty(ring, 'rotationY')) || 0;
-      const visibleArc = angleStep * (viewport.clientWidth < 901 ? 1.51 : 3);
+      const visibleArc = getVisibleArc();
       gsap.set(cards, {
         backgroundPosition: (index) => getBackgroundPosition(index),
         autoAlpha: (index) => {
           const angle = gsap.utils.wrap(-180, 180, rotation - index * angleStep);
-          return Math.abs(angle) < visibleArc ? 1 : 0;
+          return getCardOpacity(angle);
         },
         pointerEvents: (index) => {
           const angle = gsap.utils.wrap(-180, 180, rotation - index * angleStep);
@@ -85,14 +97,11 @@
       cardWidth = cards[0].offsetWidth;
       if (!cardWidth || !viewport.clientWidth) return;
       angleStep = 360 / cards.length;
-      const isCompact = viewport.clientWidth < 901;
-      const radius = isCompact
-        ? cardWidth * 3.15
-        : viewport.clientWidth * 0.6;
+      const radius = desktop ? viewport.clientWidth * 0.66 : cardWidth * (500 / 300);
+      scene.style.perspective = desktop ? '3200px' : `${cardWidth * (2000 / 300)}px`;
 
-      // The reference uses 180deg for five front-facing cards. A half-step
-      // offset exposes six cards while retaining the same circular geometry.
-      if (!built) gsap.set(ring, { rotationY: isCompact ? 180 : 180 + angleStep / 2 });
+      // Six cards across desktop; a centered card and two neighbours on iPad.
+      if (!built) gsap.set(ring, { rotationY: desktop ? 180 + angleStep / 2 : 180 });
       built = true;
       gsap.set(cards, {
         rotationY: (index) => index * -angleStep,
@@ -116,12 +125,17 @@
     });
 
     const [drag] = Draggable.create(dragger, {
-      type: 'x,y',
-      trigger: scene,
-      dragClickables: false,
+      type: 'x',
+      allowNativeTouchScrolling: true,
+      trigger: viewport,
+      dragClickables: true,
+      onPress() {
+        didDrag = false;
+      },
       onDragStart(event) {
         const point = event.touches ? event.touches[0] : event;
         xPos = Math.round(point.clientX);
+        didDrag = true;
         viewport.classList.add('is-dragging');
       },
       onDrag(event) {
@@ -129,7 +143,7 @@
         const nextX = Math.round(point.clientX);
         gsap.to(ring, {
           rotationY: `-=${(nextX - xPos) % 360}`,
-          duration: 0.18,
+          duration: 0.5,
           overwrite: true,
           ease: 'power1.out',
           onUpdate: updateCards
@@ -139,19 +153,17 @@
       onDragEnd() {
         viewport.classList.remove('is-dragging');
         gsap.set(dragger, { x: 0, y: 0 });
-        const halfStep = angleStep / 2;
-        const rotation = Number(gsap.getProperty(ring, 'rotationY')) || 0;
-        const snappedRotation = Math.round((rotation - halfStep) / angleStep) * angleStep + halfStep;
-
-        gsap.to(ring, {
-          rotationY: snappedRotation,
-          duration: 0.35,
-          ease: 'power2.out',
-          overwrite: true,
-          onUpdate: updateCards
-        });
       }
     });
+
+    // A swipe may finish over a link. Only genuine clicks should navigate.
+    const onClick = (event) => {
+      if (didDrag && event.detail !== 0) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    };
+    viewport.addEventListener('click', onClick, true);
 
     const onKeyDown = (event) => {
       if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
@@ -172,8 +184,12 @@
       disposed = true;
       observer.disconnect();
       drag.kill();
+      gsap.killTweensOf(ring);
+      scene.style.removeProperty('perspective');
       viewport.removeEventListener('keydown', onKeyDown);
+      viewport.removeEventListener('click', onClick, true);
       links.forEach((link) => link.remove());
+      clones.forEach((clone) => clone.remove());
     };
     });
   });

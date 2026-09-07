@@ -9,7 +9,7 @@
 
   const render = () => {
     cards.forEach((card, index) => {
-      const distance = (index - activeIndex + cards.length) % cards.length;
+      const distance = (index - activeIndex % cards.length + cards.length) % cards.length;
       card.classList.toggle('is-active', distance === 0);
       card.style.zIndex = String(cards.length - distance);
       if (distance > 0) {
@@ -32,8 +32,17 @@
       quote.classList.toggle('is-active', active);
       quote.setAttribute('aria-hidden', String(!active));
     });
-    steps.forEach((step, index) => step.classList.toggle('is-active', index === activeIndex % steps.length));
+    steps.forEach((step, index) => {
+      const active = index === activeIndex % steps.length;
+      step.classList.toggle('is-active', active);
+      step.setAttribute('aria-pressed', String(active));
+    });
   };
+
+  steps.forEach((step, index) => step.addEventListener('click', () => {
+    activeIndex = index;
+    render();
+  }));
 
   const change = (direction) => {
     activeIndex = (activeIndex + direction + cards.length) % cards.length;

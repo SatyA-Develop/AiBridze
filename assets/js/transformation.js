@@ -63,10 +63,15 @@
       // The next section supplies the bottom wipe. Only retreat the hero's
       // top and sides; never animate its height or collapse its contents.
       const heroProgress = reducedMotion.matches ? 0 : Math.max(0, Math.min(1,
-        (hero.offsetHeight + stickyTop - rect.top) / Math.max(window.innerHeight, 1)));
-      const shrink = heroProgress * (mobile ? 0.285 : 0.38);
+        window.scrollY / Math.max(window.innerHeight, 1)));
+      // Reach 80% scale after 60vh, then hold while the next section covers it.
+      const shrink = Math.min(0.2, heroProgress / 3);
       heroStage.style.setProperty('--hero-scroll-scale', String(1 - shrink));
-      heroStage.style.setProperty('--hero-scroll-y', `${shrink * (hero.offsetHeight / 2 + 500)}px`);
+      // The reference starts at viewport top; our hero starts below the header.
+      // Remove that initial offset progressively so both stop at the same inset.
+      const stoppedInset = window.innerHeight * 0.1 + 100;
+      const retreat = (stoppedInset - stickyTop) * (shrink / 0.2);
+      heroStage.style.setProperty('--hero-scroll-y', `${retreat}px`);
       heroStage.dataset.scrollProgress = heroProgress.toFixed(3);
     }
     ticking = false;
