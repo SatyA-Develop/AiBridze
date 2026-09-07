@@ -53,27 +53,24 @@
     if (hero && heroStage) {
       const headerHeight = header?.offsetHeight || 0;
       const mobile = window.innerWidth <= 640;
-      const stickyTop = !mobile ? 0
-        : Math.min(0, window.innerHeight - hero.offsetHeight);
+      const stickyTop = !mobile ? headerHeight
+        : Math.min(headerHeight, window.innerHeight - hero.offsetHeight);
       hero.style.setProperty('--hero-sticky-top', `${stickyTop}px`);
       // Mobile copy sits closer to the header: end the blur before its first
       // line while still softening the retreating image's upper corners.
-      edgeBlur.style.top = '0px';
+      edgeBlur.style.top = `${Math.max(0, headerHeight - (mobile ? 24 : 0))}px`;
       edgeBlur.hidden = reducedMotion.matches || rect.top <= headerHeight;
       // The next section supplies the bottom wipe. Only retreat the hero's
       // top and sides; never animate its height or collapse its contents.
       const heroProgress = reducedMotion.matches ? 0 : Math.max(0, Math.min(1,
-        window.scrollY / Math.max(window.innerHeight, 1)));
+        window.scrollY / Math.max(window.innerHeight - headerHeight, 1)));
       // Reach 80% scale after 60vh, then hold while the next section covers it.
       const shrink = Math.min(0.2, heroProgress / 3);
       heroStage.style.setProperty('--hero-scroll-scale', String(1 - shrink));
-      // Retreat from the viewport top, underneath the transparent navigation.
-      const stoppedInset = window.innerHeight * 0.1 + 100;
-      const retreat = (stoppedInset - stickyTop) * (shrink / 0.2);
+      // Treat the header bottom as the top of the hero viewport.
+      const stoppedInset = (window.innerHeight - headerHeight) * 0.1 + 100;
+      const retreat = stoppedInset * (shrink / 0.2);
       heroStage.style.setProperty('--hero-scroll-y', `${retreat}px`);
-      const pastHero = rect.top <= headerHeight;
-      header?.classList.toggle('is-past-hero', pastHero);
-      header?.classList.toggle('is-over-hero-gap', !pastHero && retreat + stickyTop > headerHeight * 0.55);
       heroStage.dataset.scrollProgress = heroProgress.toFixed(3);
     }
     ticking = false;
