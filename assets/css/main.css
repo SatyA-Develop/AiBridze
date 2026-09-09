@@ -14349,10 +14349,10 @@ body :is(.section-callout, [class*="__eyebrow"], .category-kicker, .service-kick
 }
 
 /* Larger Clutch review badge in the About Us impact card. */
-.blog-archive-hero__inner { align-items: flex-start; }
-.blog-archive-hero h1, .blog-archive-hero p { justify-content: flex-start; text-align: left; }
 .blog-archive-hero__phrase { white-space: nowrap; }
 @media (max-width: 700px) {
+  .blog-archive-hero__inner { align-items: flex-start; }
+  .blog-archive-hero h1, .blog-archive-hero p { justify-content: flex-start; text-align: left; }
   .blog-archive-hero h1 { min-height: 0; font-size: clamp(20px, 8.9cqw, 36px); line-height: 1.28; }
   .blog-archive-hero__inner { container-type: inline-size; }
   .blog-archive-hero__title-mobile { width: 100%; transform: none; }
