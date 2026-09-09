@@ -11,6 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once get_theme_file_path( '/inc/service-page-fields.php' );
 require_once get_theme_file_path( '/inc/service-category-page-fields.php' );
+require_once get_theme_file_path( '/inc/content-authors.php' );
+require_once get_theme_file_path( '/inc/vector-icons.php' );
+require_once get_theme_file_path( '/inc/navigation-state.php' );
+require_once get_theme_file_path( '/inc/svg-uploads.php' );
 
 function aibridze_setup(): void {
 	add_theme_support( 'title-tag' );
@@ -137,9 +141,9 @@ function aibridze_assets(): void {
 	$blog_archive_script_path = get_theme_file_path( '/assets/js/blog-archive.js' );
 	$careers_script_path = get_theme_file_path( '/assets/js/careers.js' );
 	$contact_videos_script_path = get_theme_file_path( '/assets/js/contact-video-testimonials.js' );
-	$email_clear_script_path = get_theme_file_path( '/assets/js/email-clear.js' );
 	$service_detail_script_path = get_theme_file_path( '/assets/js/service-detail.js' );
 	wp_enqueue_style( 'aibridze-main', get_theme_file_uri( '/assets/css/main.css' ), array(), (string) filemtime( $style_path ) );
+	wp_enqueue_script( 'aibridze-carousel-autoplay', get_theme_file_uri( '/assets/js/carousel-autoplay.js' ), array(), (string) filemtime( get_theme_file_path( '/assets/js/carousel-autoplay.js' ) ), true );
 	wp_enqueue_script( 'aibridze-header', get_theme_file_uri( '/assets/js/header.js' ), array(), (string) filemtime( $script_path ), true );
 	wp_enqueue_script( 'aibridze-footer', get_theme_file_uri( '/assets/js/footer.js' ), array(), (string) filemtime( $footer_script_path ), true );
 	wp_enqueue_script( 'aibridze-consultation-modal', get_theme_file_uri( '/assets/js/consultation-modal.js' ), array(), (string) filemtime( $modal_script_path ), true );
@@ -157,9 +161,13 @@ function aibridze_assets(): void {
 	wp_enqueue_script( 'aibridze-industries-ring', get_theme_file_uri( '/assets/js/industries-ring.js' ), array( 'aibridze-gsap-draggable' ), (string) filemtime( $industries_ring_script_path ), true );
 	wp_enqueue_script( 'aibridze-about-why', get_theme_file_uri( '/assets/js/about-why.js' ), array(), (string) filemtime( $about_why_script_path ), true );
 	wp_enqueue_script( 'aibridze-blog-archive', get_theme_file_uri( '/assets/js/blog-archive.js' ), array(), (string) filemtime( $blog_archive_script_path ), true );
+	if ( is_singular( 'post' ) ) {
+		wp_enqueue_script( 'aibridze-blog-quote', get_theme_file_uri( '/assets/js/blog-quote.js' ), array(), (string) filemtime( get_theme_file_path( '/assets/js/blog-quote.js' ) ), true );
+	}
 	wp_enqueue_script( 'aibridze-careers', get_theme_file_uri( '/assets/js/careers.js' ), array(), (string) filemtime( $careers_script_path ), true );
-	wp_enqueue_script( 'aibridze-contact-videos', get_theme_file_uri( '/assets/js/contact-video-testimonials.js' ), array( 'aibridze-lazy-media' ), (string) filemtime( $contact_videos_script_path ), true );
-	wp_enqueue_script( 'aibridze-email-clear', get_theme_file_uri( '/assets/js/email-clear.js' ), array(), (string) filemtime( $email_clear_script_path ), true );
+	wp_enqueue_style( 'aibridze-plyr', get_theme_file_uri( '/assets/vendor/plyr/plyr.css' ), array(), '3.7.8' );
+	wp_enqueue_script( 'aibridze-plyr', get_theme_file_uri( '/assets/vendor/plyr/plyr.js' ), array(), '3.7.8', true );
+	wp_enqueue_script( 'aibridze-contact-videos', get_theme_file_uri( '/assets/js/contact-video-testimonials.js' ), array( 'aibridze-plyr' ), (string) filemtime( $contact_videos_script_path ), true );
 	if ( is_singular( 'service' ) ) {
 		wp_enqueue_script( 'aibridze-service-detail', get_theme_file_uri( '/assets/js/service-detail.js' ), array(), (string) filemtime( $service_detail_script_path ), true );
 	}
@@ -186,18 +194,23 @@ function aibridze_ajax_filter_blogs(): void {
 	$query     = new WP_Query( $args );
 	$fallbacks = array( 'about/why-purpose.png', 'service-categories/technology-consulting.png', 'about/why-scale.png', 'service-categories/web-app-development.png', 'about/why-transparent.png', 'service-categories/mobile-app-development.png', 'process/step-2.jpg', 'about/why-listen.png', 'about/why-partners.png' );
 	$items     = array();
+	// JSON text must contain characters, not HTML entities: the client escapes
+	// these values when rendering cards. WordPress title filters encode dashes.
+	$plain_text = static function ( string $value ): string {
+		return html_entity_decode( $value, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+	};
 	foreach ( $query->posts as $index => $post_item ) {
 		$terms   = get_the_category( $post_item->ID );
 		$image   = has_post_thumbnail( $post_item ) ? get_the_post_thumbnail_url( $post_item, 'large' ) : get_theme_file_uri( '/assets/images/' . $fallbacks[ $index % count( $fallbacks ) ] );
 		$items[] = array(
-			'title'    => get_the_title( $post_item ),
+			'title'    => $plain_text( get_the_title( $post_item ) ),
 			'url'      => get_permalink( $post_item ),
 			'image'    => $image,
-			'author'   => sprintf( __( 'By %s', 'aibridze' ), get_the_author_meta( 'display_name', $post_item->post_author ) ?: __( 'AIBridze Team', 'aibridze' ) ),
-			'date'     => get_the_date( 'l, j M Y', $post_item ),
+			'author'   => $plain_text( sprintf( __( 'By %s', 'aibridze' ), get_the_author_meta( 'display_name', $post_item->post_author ) ?: __( 'AIBridze Team', 'aibridze' ) ) ),
+			'date'     => $plain_text( get_the_date( 'l, j M Y', $post_item ) ),
 			'datetime' => get_the_date( DATE_W3C, $post_item ),
-			'excerpt'  => wp_trim_words( get_the_excerpt( $post_item ), 20, '…' ),
-			'category' => $terms ? $terms[0]->name : __( 'Technology', 'aibridze' ),
+			'excerpt'  => $plain_text( wp_trim_words( get_the_excerpt( $post_item ), 20, '…' ) ),
+			'category' => $plain_text( $terms ? $terms[0]->name : __( 'Technology', 'aibridze' ) ),
 		);
 	}
 	$term = $category ? get_term_by( 'slug', $category, 'category' ) : null;
@@ -206,7 +219,7 @@ function aibridze_ajax_filter_blogs(): void {
 			'items'       => $items,
 			'currentPage' => min( $paged, max( 1, (int) $query->max_num_pages ) ),
 			'totalPages'  => (int) $query->max_num_pages,
-			'heading'     => $term ? $term->name : __( 'All Blog Posts', 'aibridze' ),
+			'heading'     => $plain_text( $term ? $term->name : __( 'All Blog Posts', 'aibridze' ) ),
 		)
 	);
 }
@@ -457,7 +470,7 @@ function aibridze_register_content_types(): void {
 			'show_ui'      => true,
 			'show_in_rest' => true,
 			'menu_icon'    => 'dashicons-video-alt3',
-			'supports'     => array( 'page-attributes' ),
+			'supports'     => array( 'title', 'thumbnail', 'custom-fields', 'page-attributes' ),
 		)
 	);
 
@@ -473,7 +486,7 @@ function aibridze_register_content_types(): void {
 			'show_ui'      => true,
 			'show_in_rest' => true,
 			'menu_icon'    => 'dashicons-format-image',
-			'supports'     => array( 'thumbnail', 'page-attributes' ),
+			'supports'     => array( 'title', 'thumbnail', 'page-attributes' ),
 		)
 	);
 
@@ -1021,6 +1034,8 @@ add_action( 'save_post_testimonial', 'aibridze_save_testimonial' );
 /**
  * Store the single video selected for a Video Testimonial entry.
  */
+require_once get_theme_file_path( '/inc/testimonial-video-source.php' );
+
 function aibridze_register_video_testimonial_meta(): void {
 	register_post_meta( 'video_testimonial', '_aibridze_video_url', array( 'type' => 'string', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => 'esc_url_raw', 'auth_callback' => static fn(): bool => current_user_can( 'edit_posts' ) ) );
 }
@@ -1036,10 +1051,12 @@ function aibridze_render_video_testimonial_meta_box( WP_Post $post ): void {
 	wp_nonce_field( 'aibridze_save_video_testimonial', 'aibridze_video_testimonial_nonce' );
 	?>
 	<div data-video-testimonial-field>
-		<video src="<?php echo esc_url( $video_url ); ?>" controls width="360" style="display:<?php echo $video_url ? 'block' : 'none'; ?>;max-width:100%;margin-bottom:12px" data-video-testimonial-preview></video>
-		<input type="url" class="widefat" name="aibridze_video_testimonial_url" value="<?php echo esc_attr( $video_url ); ?>" placeholder="https://" data-video-testimonial-input>
+		<video controls width="360" style="display:none;max-width:100%;margin-bottom:12px" data-video-testimonial-preview></video>
+		<p data-video-testimonial-external hidden>YouTube video selected. It will open in the website’s external video player.</p>
+		<label for="testimonial-video-url">YouTube URL or uploaded video URL</label>
+		<input type="url" id="testimonial-video-url" class="widefat" name="aibridze_video_testimonial_url" value="<?php echo esc_attr( $video_url ); ?>" placeholder="https://" data-video-testimonial-input>
 		<p><button class="button button-primary" type="button" data-video-testimonial-select><?php esc_html_e( 'Choose video', 'aibridze' ); ?></button> <button class="button-link-delete" type="button" data-video-testimonial-remove<?php echo $video_url ? '' : ' hidden'; ?>><?php esc_html_e( 'Remove video', 'aibridze' ); ?></button></p>
-		<p class="description"><?php esc_html_e( 'This post type only requires a single video.', 'aibridze' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Paste a YouTube watch, share, Shorts, or embed URL. Set a title and optional Featured Image; otherwise YouTube supplies the thumbnail. Publish to display on Contact Us. Use Order to arrange the cards.', 'aibridze' ); ?></p>
 	</div>
 	<?php
 }
@@ -1137,8 +1154,13 @@ function aibridze_service_icon_url( WP_Post $service ): string {
 		}
 	}
 
-	$icon_path = '/assets/images/services/' . $service->post_name . '.png';
-	return file_exists( get_theme_file_path( $icon_path ) ) ? get_theme_file_uri( $icon_path ) : get_theme_file_uri( '/assets/images/service-icon-default.png' );
+	foreach ( array( 'svg', 'png' ) as $extension ) {
+		$icon_path = '/assets/images/services/' . $service->post_name . '.' . $extension;
+		if ( file_exists( get_theme_file_path( $icon_path ) ) ) {
+			return get_theme_file_uri( $icon_path );
+		}
+	}
+	return get_theme_file_uri( '/assets/images/service-icon-default.png' );
 }
 
 /**
@@ -1153,8 +1175,13 @@ function aibridze_industry_icon_url( WP_Post $industry ): string {
 		}
 	}
 
-	$icon_path = '/assets/images/industries/' . $industry->post_name . '.png';
-	return file_exists( get_theme_file_path( $icon_path ) ) ? get_theme_file_uri( $icon_path ) : get_theme_file_uri( '/assets/images/service-icon-default.png' );
+	foreach ( array( 'svg', 'png' ) as $extension ) {
+		$icon_path = '/assets/images/industries/' . $industry->post_name . '.' . $extension;
+		if ( file_exists( get_theme_file_path( $icon_path ) ) ) {
+			return get_theme_file_uri( $icon_path );
+		}
+	}
+	return get_theme_file_uri( '/assets/images/service-icon-default.png' );
 }
 
 /**

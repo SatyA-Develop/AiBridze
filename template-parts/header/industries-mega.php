@@ -20,7 +20,7 @@ $industries = get_posts(
 				<?php
 				$icon_url = aibridze_industry_icon_url( $industry );
 				?>
-				<a class="mega-card" href="<?php echo esc_url( get_permalink( $industry ) ); ?>"><img class="mega-card__icon" src="<?php echo esc_url( $icon_url ); ?>" width="24" height="24" alt=""><?php echo esc_html( get_the_title( $industry ) ); ?></a>
+				<a class="mega-card" href="<?php echo esc_url( get_permalink( $industry ) ); ?>"<?php echo aibridze_navigation_attributes( get_permalink( $industry ) ); ?>><img class="mega-card__icon" src="<?php echo esc_url( $icon_url ); ?>" width="24" height="24" alt=""><?php echo esc_html( get_the_title( $industry ) ); ?></a>
 			<?php endforeach; ?>
 		</div>
 		<div class="mega-menu__industries-visual">

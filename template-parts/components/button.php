@@ -12,7 +12,7 @@ $variant    = sanitize_html_class( $args['variant'] ?? 'primary' );
 $classes    = array( 'button', 'button--' . $variant );
 $extra      = preg_split( '/\s+/', trim( (string) ( $args['class'] ?? '' ) ) );
 $aria_label = trim( (string) ( $args['aria_label'] ?? '' ) );
-$icon       = trim( (string) ( $args['icon'] ?? get_theme_file_uri( '/assets/images/button-arrow.png' ) ) );
+$icon       = trim( (string) ( $args['icon'] ?? get_theme_file_uri( '/assets/images/button-arrow.svg' ) ) );
 foreach ( $extra as $class_name ) {
 	if ( $class_name ) $classes[] = sanitize_html_class( $class_name );
 }

@@ -35,7 +35,7 @@ $process_steps = apply_filters(
 	<div class="process-section__sticky">
 		<div class="process-section__layout">
 			<header class="process-section__heading">
-				<p>Our Process</p>
+				<p class="section-callout">Our Process</p>
 				<h2 id="process-title">How We Bring Ideas to Life</h2>
 			</header>
 

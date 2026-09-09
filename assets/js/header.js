@@ -43,6 +43,9 @@
 
     button.addEventListener('focus', activatePanel);
     button.addEventListener('click', activatePanel);
+    button.addEventListener('mouseenter', () => {
+      if (!mobileQuery.matches) activatePanel();
+    });
   });
 
   megaLinks.forEach((link) => {

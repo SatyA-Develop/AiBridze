@@ -24,7 +24,7 @@ $ring_industries = $industries;
 ?>
 <section class="industries-showcase" aria-labelledby="industries-showcase-title">
 	<header class="industries-showcase__header">
-		<p><?php esc_html_e( 'Built for Every Industry', 'aibridze' ); ?></p>
+		<p class="section-callout"><?php esc_html_e( 'Built for Every Industry', 'aibridze' ); ?></p>
 		<h2 id="industries-showcase-title"><?php esc_html_e( 'Technology That Fits Every Industry', 'aibridze' ); ?></h2>
 	</header>
 
@@ -35,7 +35,8 @@ $ring_industries = $industries;
 					$image = has_post_thumbnail( $industry ) ? get_the_post_thumbnail_url( $industry, 'large' ) : get_theme_file_uri( $fallback_images[ $index % count( $fallback_images ) ] );
 					?>
 					<div class="industry-showcase-card" data-href="<?php echo esc_url( get_permalink( $industry ) ); ?>" data-label="<?php echo esc_attr( sprintf( __( 'View %s industry', 'aibridze' ), get_the_title( $industry ) ) ); ?>" style="--industry-image: url('<?php echo esc_url( $image ); ?>');">
-						<a class="industry-showcase-card__link" href="<?php echo esc_url( get_permalink( $industry ) ); ?>"><?php echo esc_html( get_the_title( $industry ) ); ?></a>
+						<button class="industry-showcase-card__toggle" type="button" aria-expanded="false"><span class="industry-showcase-card__link"><?php echo esc_html( get_the_title( $industry ) ); ?></span></button>
+						<a class="industry-showcase-card__cta" href="<?php echo esc_url( get_permalink( $industry ) ); ?>" aria-label="<?php echo esc_attr( 'Know more about ' . get_the_title( $industry ) ); ?>">Know More <span aria-hidden="true">→</span></a>
 					</div>
 				<?php endforeach; ?>
 			</div>

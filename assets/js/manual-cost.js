@@ -3,7 +3,6 @@
   if (!scene) return;
 
   const sticky = scene.querySelector('.manual-cost__sticky');
-  const title = scene.querySelector('.manual-cost__title');
   const challenges = [...scene.querySelectorAll('[data-manual-challenge]')];
   let ticking = false;
 
@@ -27,9 +26,6 @@
       challenge.style.setProperty('--challenge-lift', `${(1 - reveal) * 22}px`);
     });
 
-    const titleFade = 1 - smooth((progress - 0.72) / 0.16);
-    title.style.opacity = titleFade.toFixed(3);
-    title.style.transform = `scale(${0.96 + (titleFade * 0.04)})`;
     sticky.dataset.progress = progress.toFixed(3);
     ticking = false;
   };

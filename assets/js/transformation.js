@@ -33,14 +33,8 @@
 
   const updateTestimonialHeight = () => {
     if (!testimonialContainer) return;
-    if (window.innerWidth > 700) {
-      testimonialContainer.style.removeProperty('min-height');
-      return;
-    }
-
-    const slideTop = 49;
-    const tallestSlide = slides.reduce((height, slide) => Math.max(height, slide.scrollHeight), 0);
-    testimonialContainer.style.minHeight = `${Math.max(300, slideTop + tallestSlide)}px`;
+    // Overlapping grid cells reserve space for the tallest quote at every width.
+    testimonialContainer.style.removeProperty('min-height');
   };
 
   const updateWords = () => {
@@ -52,17 +46,17 @@
 
     if (hero && heroStage) {
       const headerHeight = header?.offsetHeight || 0;
-      const mobile = window.innerWidth <= 640;
+      const mobile = window.innerWidth <= 700;
       const stickyTop = !mobile ? headerHeight
         : Math.min(headerHeight, window.innerHeight - hero.offsetHeight);
       hero.style.setProperty('--hero-sticky-top', `${stickyTop}px`);
       // Mobile copy sits closer to the header: end the blur before its first
       // line while still softening the retreating image's upper corners.
       edgeBlur.style.top = `${Math.max(0, headerHeight - (mobile ? 24 : 0))}px`;
-      edgeBlur.hidden = reducedMotion.matches || rect.top <= headerHeight;
+      edgeBlur.hidden = mobile || reducedMotion.matches || rect.top <= headerHeight;
       // The next section supplies the bottom wipe. Only retreat the hero's
       // top and sides; never animate its height or collapse its contents.
-      const heroProgress = reducedMotion.matches ? 0 : Math.max(0, Math.min(1,
+      const heroProgress = mobile || reducedMotion.matches ? 0 : Math.max(0, Math.min(1,
         window.scrollY / Math.max(window.innerHeight - headerHeight, 1)));
       // Reach 80% scale after 60vh, then hold while the next section covers it.
       const shrink = Math.min(0.2, heroProgress / 3);
@@ -105,7 +99,25 @@
     requestUpdate();
   });
 
-  if (slides.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    window.setInterval(() => showSlide(activeSlide + 1), 5200);
-  }
+  if (slides.length > 1) window.aibridzeAutoplay(testimonialContainer, () => showSlide(activeSlide + 1));
+})();
+
+(() => {
+  const video = document.querySelector('.hero__video[data-desktop-src]');
+  if (!video) return;
+  const mobile = matchMedia('(max-width: 700px)');
+  const updateMedia = () => {
+    if (mobile.matches) {
+      video.pause();
+      if (video.hasAttribute('src')) {
+        video.removeAttribute('src');
+        video.load();
+      }
+    } else {
+      if (!video.hasAttribute('src')) video.src = video.dataset.desktopSrc;
+      video.play().catch(() => {});
+    }
+  };
+  mobile.addEventListener('change', updateMedia);
+  updateMedia();
 })();

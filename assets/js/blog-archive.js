@@ -23,8 +23,8 @@ document.querySelectorAll('[data-blog-categories]').forEach((section) => {
     if (total < 2) { pagination.innerHTML = ''; return; }
     const desktopNumbers = pageSequence(current, total).map((page) => page === '…' ? '<span class="page-numbers dots">…</span>' : page === current ? `<span class="page-numbers current">${page}</span>` : `<button class="page-numbers" type="button" data-blog-page="${page}">${page}</button>`).join('');
     const mobileNumbers = `<span class="page-numbers current">${current}</span>${current < total ? `<button class="page-numbers" type="button" data-blog-page="${current + 1}">${current + 1}</button>` : ''}${current + 1 < total ? '<span class="page-numbers dots">…</span>' : ''}`;
-    const prev = pageControl('← Previous', current - 1, 'prev', current === 1);
-    const nextControl = pageControl('Next →', current + 1, 'next', current === total);
+    const prev = pageControl('Previous', current - 1, 'prev', current === 1);
+    const nextControl = pageControl('Next', current + 1, 'next', current === total);
     pagination.innerHTML = `<nav class="blog-pagination blog-pagination--desktop" aria-label="Blog pagination">${prev}<div class="blog-pagination__numbers">${desktopNumbers}</div>${nextControl}</nav><nav class="blog-pagination blog-pagination--mobile" aria-label="Mobile blog pagination">${prev}<div class="blog-pagination__numbers">${mobileNumbers}</div>${nextControl}</nav>`;
   };
   const renderCards = (items) => {

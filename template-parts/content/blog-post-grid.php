@@ -20,12 +20,12 @@ $selected_term = $category ? get_term_by( 'slug', $category, 'category' ) : null
 <section class="blog-categories" aria-labelledby="blog-categories-title" data-blog-categories>
 	<h2 id="blog-categories-title"><?php esc_html_e( 'Explore by Categories', 'aibridze' ); ?></h2>
 	<div class="blog-categories__navigation">
-		<button type="button" data-category-previous aria-label="<?php esc_attr_e( 'Previous categories', 'aibridze' ); ?>">‹</button>
+		<button type="button" data-category-previous aria-label="<?php esc_attr_e( 'Previous categories', 'aibridze' ); ?>"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m10 3-5 5 5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
 		<div class="blog-categories__scroller" data-category-scroller>
 			<a class="<?php echo $category ? '' : 'is-active'; ?>" data-blog-category="" href="<?php echo esc_url( $archive_url ); ?>"><?php esc_html_e( 'All Blogs', 'aibridze' ); ?></a>
 			<?php foreach ( $categories as $term ) : ?><a class="<?php echo $category === $term->slug ? 'is-active' : ''; ?>" data-blog-category="<?php echo esc_attr( $term->slug ); ?>" href="<?php echo esc_url( add_query_arg( 'blog_category', $term->slug, $archive_url ) ); ?>"><?php echo esc_html( $term->name ); ?></a><?php endforeach; ?>
 		</div>
-		<button type="button" data-category-next aria-label="<?php esc_attr_e( 'Next categories', 'aibridze' ); ?>">›</button>
+		<button type="button" data-category-next aria-label="<?php esc_attr_e( 'Next categories', 'aibridze' ); ?>"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
 	</div>
 </section>
 
@@ -68,14 +68,14 @@ $selected_term = $category ? get_term_by( 'slug', $category, 'category' ) : null
 			}
 			?>
 			<nav class="blog-pagination blog-pagination--desktop" aria-label="<?php esc_attr_e( 'Blog pagination', 'aibridze' ); ?>">
-				<?php if ( $previous_url ) : ?><a class="page-numbers prev" href="<?php echo esc_url( $previous_url ); ?>">← <?php esc_html_e( 'Previous', 'aibridze' ); ?></a><?php else : ?><span class="page-numbers prev is-disabled">← <?php esc_html_e( 'Previous', 'aibridze' ); ?></span><?php endif; ?>
+				<?php if ( $previous_url ) : ?><a class="page-numbers prev" href="<?php echo esc_url( $previous_url ); ?>"><?php esc_html_e( 'Previous', 'aibridze' ); ?></a><?php else : ?><span class="page-numbers prev is-disabled"><?php esc_html_e( 'Previous', 'aibridze' ); ?></span><?php endif; ?>
 				<div class="blog-pagination__numbers"><?php foreach ( $pagination as $page_link ) : echo wp_kses_post( $page_link ); endforeach; ?></div>
-				<?php if ( $next_url ) : ?><a class="page-numbers next" href="<?php echo esc_url( $next_url ); ?>"><?php esc_html_e( 'Next', 'aibridze' ); ?> →</a><?php else : ?><span class="page-numbers next is-disabled"><?php esc_html_e( 'Next', 'aibridze' ); ?> →</span><?php endif; ?>
+				<?php if ( $next_url ) : ?><a class="page-numbers next" href="<?php echo esc_url( $next_url ); ?>"><?php esc_html_e( 'Next', 'aibridze' ); ?></a><?php else : ?><span class="page-numbers next is-disabled"><?php esc_html_e( 'Next', 'aibridze' ); ?></span><?php endif; ?>
 			</nav>
 			<nav class="blog-pagination blog-pagination--mobile" aria-label="<?php esc_attr_e( 'Mobile blog pagination', 'aibridze' ); ?>">
-				<?php if ( $previous_url ) : ?><a class="page-numbers prev" href="<?php echo esc_url( $previous_url ); ?>">← <?php esc_html_e( 'Previous', 'aibridze' ); ?></a><?php else : ?><span class="page-numbers prev is-disabled">← <?php esc_html_e( 'Previous', 'aibridze' ); ?></span><?php endif; ?>
+				<?php if ( $previous_url ) : ?><a class="page-numbers prev" href="<?php echo esc_url( $previous_url ); ?>"><?php esc_html_e( 'Previous', 'aibridze' ); ?></a><?php else : ?><span class="page-numbers prev is-disabled"><?php esc_html_e( 'Previous', 'aibridze' ); ?></span><?php endif; ?>
 				<div class="blog-pagination__numbers"><span class="page-numbers current"><?php echo esc_html( $paged ); ?></span><?php if ( $paged < $archive_query->max_num_pages ) : ?><a class="page-numbers" href="<?php echo esc_url( $next_url ); ?>"><?php echo esc_html( $paged + 1 ); ?></a><?php endif; ?><?php if ( $paged + 1 < $archive_query->max_num_pages ) : ?><span class="page-numbers dots">…</span><?php endif; ?></div>
-				<?php if ( $next_url ) : ?><a class="page-numbers next" href="<?php echo esc_url( $next_url ); ?>"><?php esc_html_e( 'Next', 'aibridze' ); ?> →</a><?php else : ?><span class="page-numbers next is-disabled"><?php esc_html_e( 'Next', 'aibridze' ); ?> →</span><?php endif; ?>
+				<?php if ( $next_url ) : ?><a class="page-numbers next" href="<?php echo esc_url( $next_url ); ?>"><?php esc_html_e( 'Next', 'aibridze' ); ?></a><?php else : ?><span class="page-numbers next is-disabled"><?php esc_html_e( 'Next', 'aibridze' ); ?></span><?php endif; ?>
 			</nav>
 		<?php endif; ?></div>
 	</div>

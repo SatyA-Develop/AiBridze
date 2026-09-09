@@ -12,7 +12,7 @@
     cards.forEach((card) => {
       // Translation is horizontal, so this vertical measurement stays stable.
       const top = card.getBoundingClientRect().top;
-      const progress = reducedMotion.matches ? 1 : Math.max(0, Math.min(1,
+      const progress = innerWidth <= 700 || reducedMotion.matches ? 1 : Math.max(0, Math.min(1,
         (innerHeight * 0.85 - top) / (innerHeight * 0.6)));
       const eased = progress * progress * (3 - 2 * progress);
       card.style.setProperty('--card-x', `${(1 - eased) * (mobile ? 60 : 150)}px`);

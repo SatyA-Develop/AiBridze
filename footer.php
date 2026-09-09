@@ -18,7 +18,7 @@ foreach ( $footer_service_slugs as $service_slug ) {
 $footer_industries = get_posts(
 	array(
 		'post_type'      => 'industry',
-		'posts_per_page' => 5,
+		'posts_per_page' => 6,
 		'orderby'        => array( 'menu_order' => 'ASC', 'title' => 'ASC' ),
 	)
 );
@@ -33,7 +33,7 @@ $social_links = aibridze_social_links();
 					<img class="site-footer__logo" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/footer-logo.png' ) ); ?>" width="200" height="41" alt="AIBridze">
 				</a>
 				<address class="site-footer__address">
-					<span><?php esc_html_e( 'Add: KR Signature Tower, PLOT, Street Number 3, Sector 135, Noida, Uttar Pradesh 201304', 'aibridze' ); ?></span>
+					<span><strong class="site-footer__address-label"><?php esc_html_e( 'Add:', 'aibridze' ); ?></strong> <?php esc_html_e( 'KR Signature Tower, PLOT, Street Number 3, Sector 135, Noida, Uttar Pradesh 201304', 'aibridze' ); ?></span>
 					<a href="tel:+917065169433"><svg class="site-footer__contact-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.69 2.8a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.33 1.84.56 2.8.69A2 2 0 0 1 22 16.92Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>+91 - 70651 69433</span></a>
 					<a href="mailto:info@aibridze.com"><svg class="site-footer__contact-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>info@aibridze.com</span></a>
 				</address>
@@ -77,14 +77,15 @@ $social_links = aibridze_social_links();
 
 			<div class="site-footer__bottom">
 				<div class="site-footer__legal">
-					<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/dmca.png' ) ); ?>" width="100" height="32" alt="DMCA protected">
+					<a href="https://www.dmca.com/Protection/Status.aspx?ID=b2ba9278-15da-4a7b-adb0-5e86b820dbe9" title="DMCA.com Protection Status" class="dmca-badge"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/dmca-custom.png' ) ); ?>" width="300" height="95" alt="DMCA.com Protection Status"></a>
+					<script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js" defer></script>
 					<span>© <?php echo esc_html( wp_date( 'Y' ) ); ?> AIBridze | <a href="<?php echo esc_url( aibridze_page_url( 'terms-conditions', '/terms-conditions/' ) ); ?>"><?php esc_html_e( 'Terms & Conditions', 'aibridze' ); ?></a> | <?php esc_html_e( 'All Rights Reserved', 'aibridze' ); ?></span>
 				</div>
 				<div class="site-footer__recognition" role="img" aria-label="Mobile App Daily, Clutch, Trustpilot and GoodFirms">
-					<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/mobile-app-daily.png' ) ); ?>" width="153" height="28" alt="Mobile App Daily">
-					<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/clutch.png' ) ); ?>" width="96" height="28" alt="Clutch">
-					<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/trustpilot.png' ) ); ?>" width="127" height="28" alt="Trustpilot">
-					<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/goodfirms.png' ) ); ?>" width="148" height="28" alt="GoodFirms">
+					<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/mobile-app-daily-hires.png' ) ); ?>" width="153" height="28" alt="Mobile App Daily">
+					<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/clutch-hires.png' ) ); ?>" width="96" height="28" alt="Clutch">
+					<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/trustpilot-hires.png' ) ); ?>" width="127" height="28" alt="Trustpilot">
+					<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/goodfirms-hires.png' ) ); ?>" width="148" height="28" alt="GoodFirms">
 				</div>
 			</div>
 		</div>

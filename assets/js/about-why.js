@@ -9,7 +9,7 @@
     let index = 0;
 
     const render = () => {
-      const visibleCards = window.innerWidth <= 700 ? 1 : 3;
+      const visibleCards = window.innerWidth <= 700 ? 1 : window.innerWidth <= 1100 ? 2 : 3;
       const maximumIndex = Math.max(0, cards.length - visibleCards);
       index = Math.min(index, maximumIndex);
 
@@ -17,8 +17,15 @@
       const distance = cards[0].getBoundingClientRect().width + gap;
       track.style.transform = `translate3d(${-index * distance}px, 0, 0)`;
 
-      previousButtons.forEach((button) => { button.disabled = index === 0; });
-      nextButtons.forEach((button) => { button.disabled = index === maximumIndex; });
+      const atEnd = index === maximumIndex;
+      previousButtons.forEach((button) => {
+        button.disabled = index === 0;
+        button.classList.toggle('is-highlighted', atEnd && !button.disabled);
+      });
+      nextButtons.forEach((button) => {
+        button.disabled = atEnd;
+        button.classList.toggle('is-highlighted', !button.disabled);
+      });
       cards.forEach((card, cardIndex) => {
         const visible = cardIndex >= index && cardIndex < index + visibleCards;
         card.setAttribute('aria-hidden', String(!visible));
@@ -30,12 +37,17 @@
       render();
     }));
     nextButtons.forEach((button) => button.addEventListener('click', () => {
-      const visibleCards = window.innerWidth <= 700 ? 1 : 3;
+      const visibleCards = window.innerWidth <= 700 ? 1 : window.innerWidth <= 1100 ? 2 : 3;
       index = Math.min(cards.length - visibleCards, index + 1);
       render();
     }));
 
     window.addEventListener('resize', render, { passive: true });
     render();
+    window.aibridzeAutoplay(section, () => {
+      const visibleCards = window.innerWidth <= 700 ? 1 : window.innerWidth <= 1100 ? 2 : 3;
+      index = index >= Math.max(0, cards.length - visibleCards) ? 0 : index + 1;
+      render();
+    });
   });
 })();

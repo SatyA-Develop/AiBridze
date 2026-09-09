@@ -69,7 +69,7 @@ $partner_fallbacks = array( '/assets/images/consultation/company-logo.png', '/as
 				?>
 				<article class="service-stack-card" data-service-stack-card style="--card-index: <?php echo esc_attr( $index ); ?>">
 					<div class="service-stack-card__content">
-						<span class="service-stack-card__eyebrow">We Offer</span>
+						<span class="service-stack-card__eyebrow section-callout">We Offer</span>
 						<h3><?php echo esc_html( $category->name ); ?></h3>
 						<p><?php echo esc_html( $description ); ?></p>
 						<a href="<?php echo esc_url( get_term_link( $category ) ); ?>">View Services <img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/service-categories/button-arrow.png' ) ); ?>" width="12" height="12" alt=""></a>

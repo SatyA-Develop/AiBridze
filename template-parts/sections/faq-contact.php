@@ -26,7 +26,7 @@ $faqs = is_array( $args['faqs'] ) && $args['faqs'] ? $args['faqs'] : $default_fa
 <section class="faq-contact"<?php echo $args['section_id'] ? ' id="' . esc_attr( $args['section_id'] ) . '"' : ''; ?> aria-labelledby="faq-contact-title">
 	<div class="faq-contact__inner">
 		<div class="faq-contact__faqs">
-			<p class="faq-contact__eyebrow"><?php echo esc_html( $args['eyebrow'] ); ?></p>
+			<p class="faq-contact__eyebrow section-callout"><?php echo esc_html( $args['eyebrow'] ); ?></p>
 			<h2 id="faq-contact-title"><?php echo esc_html( $args['title'] ); ?></h2>
 			<div class="faq-accordion" data-faq-accordion>
 				<?php foreach ( $faqs as $index => $faq ) : ?>
@@ -54,7 +54,7 @@ $faqs = is_array( $args['faqs'] ) && $args['faqs'] ? $args['faqs'] : $default_fa
 					<button type="submit"><span><?php echo esc_html( $args['submit_label'] ); ?></span><span class="faq-contact__submit-arrow" aria-hidden="true"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/faq/submit-arrow.png' ) ); ?>" width="14" height="14" alt=""></span></button>
 				</div>
 			</form>
-			<div class="faq-contact__security">🛡️ <span><?php echo esc_html( $args['security_text'] ); ?></span></div>
+			<div class="faq-contact__security"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/faq/security-shield.svg' ) ); ?>" width="22" height="22" alt="" aria-hidden="true"> <span><?php echo esc_html( $args['security_text'] ); ?></span></div>
 		</div>
 	</div>
 </section>

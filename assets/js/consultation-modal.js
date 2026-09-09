@@ -23,10 +23,11 @@
   };
 
   const startTestimonials = () => {
-    window.clearInterval(testimonialTimer);
-    if (testimonialSlides.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      testimonialTimer = window.setInterval(() => showTestimonial(testimonialIndex + 1), 5000);
-    }
+    if (testimonialTimer || testimonialSlides.length < 2) return;
+    testimonialTimer = true;
+    window.aibridzeAutoplay(modal.querySelector('[data-testimonial-slider]'), () => {
+      if (modal.classList.contains('is-open')) showTestimonial(testimonialIndex + 1);
+    });
   };
 
   const focusable = () => [...dialog.querySelectorAll('button, input, select, textarea, a[href], [tabindex]:not([tabindex="-1"])')]
@@ -49,7 +50,6 @@
 
   const close = () => {
     modal.classList.remove('is-open');
-    window.clearInterval(testimonialTimer);
     document.body.classList.remove('has-consultation-modal');
     closeTimer = window.setTimeout(() => {
       modal.setAttribute('aria-hidden', 'true');

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generator: visioncortex VTracer 0.6.12 -->
+<svg viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" width="50" height="50">
+<path d="M0 0 C16.5 0 33 0 50 0 C50 16.5 50 33 50 50 C33.5 50 17 50 0 50 C0 33.5 0 17 0 0 Z " fill="#3379F4" transform="translate(0,0)"/>
+<path d="M0 0 C2.31 0 4.62 0 7 0 C6.608 0.402 6.608 0.402 4.625 2.438 C4.382 2.689 4.139 2.941 3.889 3.201 C3.691 3.401 3.493 3.602 3.289 3.809 C3.19 3.911 3.19 3.911 2.686 4.427 C2 5 2 5 0 6 C0 4.02 0 2.04 0 0 Z " fill="#337BF4" transform="translate(0,0)"/>
+<path d="M0 0 C1.32 1.32 2.64 2.64 4 4 C2.68 4 1.36 4 0 4 C0 2.68 0 1.36 0 0 Z " fill="#000000" transform="translate(0,46)"/>
+<path d="M0 0 C0.33 1.32 0.66 2.64 1 4 C-0.32 3.67 -1.64 3.34 -3 3 C-2.01 2.01 -1.02 1.02 0 0 Z " fill="#000000" transform="translate(49,46)"/>
+<path d="M0 0 C1.32 0 2.64 0 4 0 C3.67 1.32 3.34 2.64 3 4 C2.01 2.68 1.02 1.36 0 0 Z " fill="#000000" transform="translate(46,0)"/>
+<path d="M0 0 C1.32 0.33 2.64 0.66 4 1 C2.68 1.99 1.36 2.98 0 4 C0 2.68 0 1.36 0 0 Z " fill="#000000" transform="translate(0,0)"/>
+<path d="M0 0 C0.66 0.66 1.32 1.32 2 2 C1.34 2 0.68 2 0 2 C0 1.34 0 0.68 0 0 Z " fill="#3380F2" transform="translate(47,1)"/>
+<path d="" fill="#307FFF" transform="translate(0,0)"/>
+<path d="" fill="#3B89FF" transform="translate(0,0)"/>
+<path d="" fill="#3388FF" transform="translate(0,0)"/>
+<path d="" fill="#377FFF" transform="translate(0,0)"/>
+<path d="M0 0 C2 1 2 1 2 1 Z " fill="#377FFF" transform="translate(2,1)"/>
+<path d="M0 0 C2 1 2 1 2 1 Z " fill="#3687FF" transform="translate(5,0)"/>
+<path d="" fill="#2A80FF" transform="translate(0,0)"/>
+<path d="" fill="#377FED" transform="translate(0,0)"/>
+<path d="" fill="#55AAFF" transform="translate(0,0)"/>
+<path d="" fill="#FFFFFF" transform="translate(0,0)"/>
+<path d="" fill="#377FED" transform="translate(0,0)"/>
+<path d="" fill="#0080FF" transform="translate(0,0)"/>
+<path d="" fill="#FFFFFF" transform="translate(0,0)"/>
+<path d="" fill="#4080F2" transform="translate(0,0)"/>
+<path d="" fill="#0080FF" transform="translate(0,0)"/>
+<path d="" fill="#377FED" transform="translate(0,0)"/>
+<path d="" fill="#5555FF" transform="translate(0,0)"/>
+<path d="" fill="#3070EF" transform="translate(0,0)"/>
+<path d="" fill="#2A80FF" transform="translate(0,0)"/>
+<path d="" fill="#00AAFF" transform="translate(0,0)"/>
+<path d="" fill="#2789FF" transform="translate(0,0)"/>
+<path d="" fill="#00FFFF" transform="translate(0,0)"/>
+<path d="" fill="#00FFFF" transform="translate(0,0)"/>
+<path d="" fill="#00FFFF" transform="translate(0,0)"/>
+<path d="" fill="#2789FF" transform="translate(0,0)"/>
+<path d="" fill="#00FFFF" transform="translate(0,0)"/>
+<path d="" fill="#0055FF" transform="translate(0,0)"/>
+<path d="" fill="#2A80FF" transform="translate(0,0)"/>
+</svg>

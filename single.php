@@ -61,16 +61,20 @@ while ( have_posts() ) :
 							<input name="full_name" type="text" placeholder="<?php esc_attr_e( 'Enter Name', 'aibridze' ); ?>" autocomplete="name" required>
 							<input name="email" type="email" placeholder="<?php esc_attr_e( 'Email Id', 'aibridze' ); ?>" autocomplete="email" required>
 							<div class="single-blog__phone">
+								<div class="single-blog__country">
+									<img data-country-flag src="https://flagcdn.com/us.svg" width="24" height="24" alt="" referrerpolicy="no-referrer">
 								<label class="screen-reader-text" for="single-blog-country-code"><?php esc_html_e( 'Country calling code', 'aibridze' ); ?></label>
 								<select id="single-blog-country-code" name="country_code" aria-label="<?php esc_attr_e( 'Country calling code', 'aibridze' ); ?>">
 									<?php foreach ( aibridze_country_calling_codes() as $country_iso => $calling_code ) : ?>
-										<option value="<?php echo esc_attr( $calling_code ); ?>"<?php selected( 'US', $country_iso ); ?>><?php echo esc_html( aibridze_country_flag( $country_iso ) . ' ' . $country_iso . ' ' . $calling_code ); ?></option>
+										<option data-country="<?php echo esc_attr( strtolower( $country_iso ) ); ?>" value="<?php echo esc_attr( $calling_code ); ?>"<?php selected( 'US', $country_iso ); ?>><?php echo esc_html( $country_iso . ' ' . $calling_code ); ?></option>
 									<?php endforeach; ?>
 								</select>
+								<svg width="12" height="8" viewBox="0 0 12 8" aria-hidden="true"><path d="m1 1 5 5 5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+								</div>
 								<input name="phone" type="tel" placeholder="<?php esc_attr_e( 'Phone Number', 'aibridze' ); ?>" autocomplete="tel">
 							</div>
 							<input type="hidden" name="message" value="<?php esc_attr_e( 'Request for a free consultation from a blog article.', 'aibridze' ); ?>">
-							<button type="submit"><span class="single-blog__quote-button-label"><?php esc_html_e( 'Get Free Quote', 'aibridze' ); ?></span><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/faq/submit-arrow.png' ) ); ?>" width="16" height="16" alt=""></button>
+							<button type="submit"><span class="single-blog__quote-button-label"><?php esc_html_e( 'Get Free Quote', 'aibridze' ); ?></span><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/faq/quote-arrow.svg' ) ); ?>" width="20" height="20" alt=""></button>
 						</form>
 					</div>
 					<div class="single-blog__nda"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/security-shield.png' ) ); ?>" width="16" height="16" alt=""><strong><?php esc_html_e( 'Fully NDA-Protected.', 'aibridze' ); ?></strong></div>

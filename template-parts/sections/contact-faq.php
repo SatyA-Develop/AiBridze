@@ -12,7 +12,7 @@ $contact_faqs = array(
 ?>
 <section class="contact-faq" aria-labelledby="contact-faq-title">
 	<header class="contact-faq__header">
-		<p><?php esc_html_e( 'FAQs', 'aibridze' ); ?></p>
+		<p class="section-callout"><?php esc_html_e( 'FAQs', 'aibridze' ); ?></p>
 		<h2 id="contact-faq-title"><?php esc_html_e( 'Have questions? Check out the FAQs', 'aibridze' ); ?></h2>
 	</header>
 	<div class="contact-faq__accordion" data-faq-accordion>

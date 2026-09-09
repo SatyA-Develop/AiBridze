@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Apprende",
+    "file": "apprende.png"
+  },
+  {
+    "name": "Service Galaxy",
+    "file": "service-galaxy.png"
+  },
+  {
+    "name": "Cofactor",
+    "file": "cofactor.png"
+  },
+  {
+    "name": "UTU Health",
+    "file": "utu-health.png"
+  },
+  {
+    "name": "KOBIL",
+    "file": "kobil.png"
+  },
+  {
+    "name": "Nomics",
+    "file": "nomics.png"
+  },
+  {
+    "name": "EzPay",
+    "file": "ezpay.png"
+  },
+  {
+    "name": "AIHomes Inc.",
+    "file": "aihomes-inc.png"
+  }
+]

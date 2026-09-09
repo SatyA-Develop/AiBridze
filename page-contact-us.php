@@ -8,7 +8,7 @@ get_header();
 		<div class="contact-hero__inner">
 			<h1 id="contact-hero-title"><?php esc_html_e( 'Have an Idea? Let’s Talk.', 'aibridze' ); ?></h1>
 			<p><?php esc_html_e( 'Whether you’re exploring an AI opportunity, planning a new product, automating a business process, or looking to modernize an existing solution, we’d love to understand what you’re building.', 'aibridze' ); ?></p>
-			<a class="button button--primary contact-hero__button" href="#contact-project-form"><span><?php esc_html_e( 'Book Free Consultation', 'aibridze' ); ?></span><span class="button__icon" aria-hidden="true"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/button-arrow.png' ) ); ?>" width="16" height="16" alt=""></span></a>
+			<a class="button button--primary contact-hero__button" href="#contact-project-form"><span><?php esc_html_e( 'Book Free Consultation', 'aibridze' ); ?></span><span class="button__icon" aria-hidden="true"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/button-arrow.svg' ) ); ?>" width="16" height="16" alt=""></span></a>
 		</div>
 	</section>
 	<section class="contact-project" id="contact-project-form" aria-labelledby="contact-project-title">
@@ -16,15 +16,15 @@ get_header();
 			<aside class="contact-project__visual">
 				<h2><?php esc_html_e( 'Your Next Solution Could Start With One Conversation.', 'aibridze' ); ?></h2>
 				<p><?php esc_html_e( 'Tell us what you’re trying to solve. We’ll help you explore the right way forward.', 'aibridze' ); ?></p>
-				<div class="contact-project__experts"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/contact/experts.png' ) ); ?>" width="140" height="80" alt="Our consultation experts"></div>
+				<div class="contact-project__experts"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/contact/experts-grouped.png' ) ); ?>" width="140" height="80" alt="Our consultation experts"></div>
 				<img class="contact-project__handwritten" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/contact/handwritten.png' ) ); ?>" width="441" height="35" alt="Book your free consultation with our experts">
 				<div class="contact-project__reviews">
 					<span><?php esc_html_e( 'Reviewed on', 'aibridze' ); ?></span>
 					<div class="contact-project__review-logos">
-						<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/contact/goodfirms.png' ) ); ?>" width="152" height="20" alt="Mobile App Daily">
-						<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/contact/trustpilot.png' ) ); ?>" width="77" height="22" alt="Clutch">
-						<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/contact/clutch.png' ) ); ?>" width="115" height="29" alt="Trustpilot">
-						<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/contact/shape.png' ) ); ?>" width="152" height="23" alt="GoodFirms">
+						<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/mobile-app-daily-hires.png' ) ); ?>" width="152" height="20" alt="Mobile App Daily">
+						<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/clutch-hires.png' ) ); ?>" width="77" height="22" alt="Clutch">
+						<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/trustpilot-hires.png' ) ); ?>" width="115" height="29" alt="Trustpilot">
+						<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/goodfirms-hires.png' ) ); ?>" width="152" height="23" alt="GoodFirms">
 					</div>
 				</div>
 			</aside>
@@ -52,7 +52,7 @@ get_header();
 			<div class="contact-idea__content">
 				<h2 id="contact-idea-title"><?php esc_html_e( 'Let’s Turn Your Idea Into Something Real.', 'aibridze' ); ?></h2>
 				<p><?php esc_html_e( 'Tell us what you’re trying to achieve, and we’ll help you explore the right AI, software, or automation solution for your business.', 'aibridze' ); ?></p>
-				<a href="#contact-project-form"><span><?php esc_html_e( 'Start a Conversation', 'aibridze' ); ?></span><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/contact/conversation-arrow.png' ) ); ?>" width="16" height="16" alt=""></a>
+				<a href="#contact-project-form"><span><?php esc_html_e( 'Start a Conversation', 'aibridze' ); ?></span><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/button-arrow.svg' ) ); ?>" width="16" height="16" alt=""></a>
 			</div>
 			<img class="contact-idea__image" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/contact/idea-laptop.png' ) ); ?>" width="443" height="280" alt="Laptop illuminated with blue and orange light">
 		</div>

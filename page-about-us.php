@@ -35,7 +35,7 @@ $social_links = aibridze_social_links();
 		<article class="about-purpose__card about-purpose__card--mission">
 			<h2><?php esc_html_e( 'Mission', 'aibridze' ); ?></h2>
 			<p><?php esc_html_e( 'To help businesses solve complex challenges through AI development, intelligent automation, and custom software solutions that improve efficiency, accelerate innovation, and create measurable business value.', 'aibridze' ); ?></p>
-			<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/mission-graph.png' ) ); ?>" width="427" height="225" alt="">
+			<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/mission-graph-hires.png' ) ); ?>" width="1282" height="675" alt="">
 		</article>
 
 		<article class="about-purpose__card about-purpose__card--vision">
@@ -54,8 +54,8 @@ $social_links = aibridze_social_links();
 
 			<article class="about-purpose__review">
 				<p><?php esc_html_e( 'Behind every number is a challenge solved, an idea brought to life, and real business value created.', 'aibridze' ); ?></p>
-				<img class="about-purpose__hand" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/partnership-hand.png' ) ); ?>" width="193" height="269" alt="">
-				<img class="about-purpose__clutch" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/clutch-review.png' ) ); ?>" width="209" height="46" alt="Reviewed on Clutch, 5.0 rating">
+				<img class="about-purpose__hand" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/partnership-hand-hires.png' ) ); ?>" width="1024" height="827" alt="">
+				<img class="about-purpose__clutch" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/clutch-review-hires.png' ) ); ?>" width="619" height="139" alt="Reviewed on Clutch, 5.0 rating">
 			</article>
 		</div>
 	</div>
@@ -137,36 +137,29 @@ $leadership_posts = get_posts(
 	array(
 		'post_type'      => 'leader',
 		'post_status'    => 'publish',
-		'posts_per_page' => 4,
+		'posts_per_page' => -1,
 		'orderby'        => array( 'menu_order' => 'ASC', 'date' => 'ASC' ),
 	)
 );
-$leadership_fallbacks = array(
-	array( 'Sitaram Sharma', 'Co-Founder & Director', 'leader-sitaram.png' ),
-	array( 'Ashish Chauhan', 'Co-Founder & Director', 'leader-ashish.png' ),
-	array( 'Omji Mehrotra', 'Co-Founder & Director', 'leader-omji.png' ),
-	array( 'Anand Prakash', 'Co-Founder & Director', 'leader-anand.png' ),
-);
+if ( $leadership_posts ) :
 ?>
 <section class="about-leadership" aria-labelledby="about-leadership-title">
 	<div class="about-leadership__inner">
-		<p class="about-leadership__eyebrow"><?php esc_html_e( 'Our Leadership', 'aibridze' ); ?></p>
+		<p class="about-leadership__eyebrow section-callout"><?php esc_html_e( 'Our Leadership', 'aibridze' ); ?></p>
 		<h2 id="about-leadership-title"><?php esc_html_e( 'The Vision Behind AiBridze', 'aibridze' ); ?></h2>
 		<p class="about-leadership__description"><?php esc_html_e( 'Led by experienced technology leaders, AiBridze combines expertise in AI development, Generative AI, custom software development, mobile and web application development, and digital transformation to help businesses solve complex challenges through intelligent, scalable technology solutions.', 'aibridze' ); ?></p>
 		<div class="about-leadership__profiles">
-			<?php foreach ( $leadership_fallbacks as $index => $fallback ) :
-				$leader   = $leadership_posts[ $index ] ?? null;
-				$name     = $leader ? get_the_title( $leader ) : $fallback[0];
-				$position = $leader ? (string) get_post_meta( $leader->ID, '_aibridze_leader_position', true ) : $fallback[1];
-				$linkedin = $leader ? (string) get_post_meta( $leader->ID, '_aibridze_leader_linkedin', true ) : '';
-				$image     = $leader && has_post_thumbnail( $leader ) ? get_the_post_thumbnail_url( $leader, 'large' ) : get_theme_file_uri( '/assets/images/about/' . $fallback[2] );
+			<?php foreach ( $leadership_posts as $leader ) :
+				$name     = get_the_title( $leader );
+				$position = (string) get_post_meta( $leader->ID, '_aibridze_leader_position', true );
+				$linkedin = (string) get_post_meta( $leader->ID, '_aibridze_leader_linkedin', true );
 				?>
 				<article class="about-leadership__profile">
-					<div class="about-leadership__portrait"><img src="<?php echo esc_url( $image ); ?>" width="256" height="271" alt="<?php echo esc_attr( $name ); ?>"></div>
+					<div class="about-leadership__portrait"><?php echo get_the_post_thumbnail( $leader, 'large', array( 'alt' => $name, 'loading' => 'lazy', 'decoding' => 'async' ) ); ?></div>
 					<div class="about-leadership__details">
-						<div><h3><?php echo esc_html( $name ); ?></h3><p><?php echo esc_html( $position ?: __( 'Co-Founder & Director', 'aibridze' ) ); ?></p></div>
+						<div><h3><?php echo esc_html( $name ); ?></h3><?php if ( $position ) : ?><p><?php echo esc_html( $position ); ?></p><?php endif; ?></div>
 						<?php if ( $linkedin ) : ?><a href="<?php echo esc_url( $linkedin ); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr( sprintf( __( '%s on LinkedIn', 'aibridze' ), $name ) ); ?>"><?php else : ?><span aria-hidden="true"><?php endif; ?>
-							<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/linkedin-leader.png' ) ); ?>" width="40" height="40" alt="">
+							<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/linkedin-leader.svg' ) ); ?>" width="40" height="40" alt="">
 						<?php echo $linkedin ? '</a>' : '</span>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					</div>
 				</article>
@@ -176,6 +169,7 @@ $leadership_fallbacks = array(
 </section>
 
 <?php
+endif;
 $team_posts = get_posts(
 	array(
 		'post_type'      => 'team',
@@ -184,34 +178,20 @@ $team_posts = get_posts(
 		'orderby'        => array( 'menu_order' => 'ASC', 'date' => 'ASC' ),
 	)
 );
-$team_fallbacks = array(
-	array( 'Praful Swarnkar', 'Lead UX Designer', 'team-praful.png' ),
-	array( 'Amar Mishra', 'Sr. Full Stack Engineer', 'team-amar.png' ),
-	array( 'Hitesh Verma', 'Sr. Flutter Developer', 'team-hitesh.png' ),
-	array( 'Anurag Shrivastava', 'Software Engineer', 'team-anurag.png' ),
-	array( 'Prashant Sharma', 'Full Stack Developer', 'team-prashant.png' ),
-	array( 'Harsh Pratap Singh', 'DevOps Engineer', 'team-harsh.png' ),
-	array( 'Prince Sharma', 'Frontend Engineer', 'team-prince.png' ),
-	array( 'Aman Kumar', 'Backend + AI/ML Engineer', 'team-aman.png' ),
-	array( 'Lalit Verma', 'Backend + AI/ML Engineer', 'team-lalit.png' ),
-	array( 'Bhawya Chandra', 'Business Development Executive', 'team-bhawya.png' ),
-);
-$team_members = $team_posts ?: $team_fallbacks;
+if ( $team_posts ) :
 ?>
 <section class="about-team" aria-labelledby="about-team-title">
 	<div class="about-team__inner">
-		<p class="about-team__eyebrow"><?php esc_html_e( 'Our Core Team', 'aibridze' ); ?></p>
+		<p class="about-team__eyebrow section-callout"><?php esc_html_e( 'Our Core Team', 'aibridze' ); ?></p>
 		<h2 id="about-team-title"><?php esc_html_e( 'Different minds. Shared vision. One team.', 'aibridze' ); ?></h2>
 		<p class="about-team__description"><?php esc_html_e( 'Our AI engineers, machine learning specialists, software developers, UI/UX designers, cloud architects, and product experts collaborate to build AI-powered solutions, Generative AI applications, mobile and web applications, and custom software that help businesses innovate, automate, and scale with confidence.', 'aibridze' ); ?></p>
 		<div class="about-team__grid">
-			<?php foreach ( $team_members as $member ) :
-				$is_post  = $member instanceof WP_Post;
-				$name     = $is_post ? get_the_title( $member ) : $member[0];
-				$position = $is_post ? (string) get_post_meta( $member->ID, '_aibridze_team_position', true ) : $member[1];
-				$image     = $is_post ? ( has_post_thumbnail( $member ) ? get_the_post_thumbnail_url( $member, 'large' ) : '' ) : get_theme_file_uri( '/assets/images/about/' . $member[2] );
+			<?php foreach ( $team_posts as $member ) :
+				$name     = get_the_title( $member );
+				$position = (string) get_post_meta( $member->ID, '_aibridze_team_position', true );
 				?>
 				<article class="about-team__member">
-					<div class="about-team__portrait"><?php if ( $image ) : ?><img src="<?php echo esc_url( $image ); ?>" width="232" height="230" alt="<?php echo esc_attr( $name ); ?>"><?php endif; ?></div>
+					<div class="about-team__portrait"><?php echo get_the_post_thumbnail( $member, 'large', array( 'alt' => $name, 'loading' => 'lazy', 'decoding' => 'async' ) ); ?></div>
 					<h3><?php echo esc_html( $name ); ?></h3>
 					<p><?php echo esc_html( $position ); ?></p>
 				</article>
@@ -220,6 +200,7 @@ $team_members = $team_posts ?: $team_fallbacks;
 	</div>
 </section>
 
+<?php endif; ?>
 <section class="about-careers" aria-labelledby="about-careers-title">
 	<div class="about-careers__panel">
 		<div class="about-careers__copy">
@@ -228,7 +209,7 @@ $team_members = $team_posts ?: $team_fallbacks;
 			<a href="<?php echo esc_url( home_url( '/careers/' ) ); ?>"><?php esc_html_e( 'Explore Careers', 'aibridze' ); ?></a>
 		</div>
 		<picture class="about-careers__media">
-			<source media="(max-width: 700px)" srcset="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/careers-team-mobile.png' ) ); ?>">
+			<source media="(max-width: 1000px)" srcset="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/careers-team-mobile.png' ) ); ?>">
 			<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/careers-team-desktop.png' ) ); ?>" width="568" height="238" alt="<?php esc_attr_e( 'AiBridze team collaborating in the office', 'aibridze' ); ?>">
 		</picture>
 	</div>

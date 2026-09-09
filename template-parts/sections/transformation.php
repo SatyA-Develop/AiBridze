@@ -23,10 +23,11 @@ $businesses          = get_posts(
 		'orderby'        => array( 'menu_order' => 'ASC', 'date' => 'ASC' ),
 	)
 );
-$fallback_logos = array(
-	'/assets/images/consultation/company-logo.png',
-	'/assets/images/footer/clutch.png',
-	'/assets/images/footer/goodfirms.png',
+$businesses = array_filter(
+	$businesses,
+	static function ( $business ) {
+		return (bool) get_the_post_thumbnail_url( $business, 'medium' );
+	}
 );
 ?>
 <section class="transformation" data-transformation aria-labelledby="transformation-heading">
@@ -56,6 +57,7 @@ $fallback_logos = array(
 		</div>
 	</div>
 
+	<?php if ( $businesses ) : ?>
 	<div class="trusted-businesses">
 		<div class="trusted-businesses__inner">
 			<div class="trusted-businesses__title"><?php esc_html_e( 'Trusted by Businesses Across Industries', 'aibridze' ); ?></div>
@@ -63,10 +65,8 @@ $fallback_logos = array(
 				<div class="trusted-businesses__track" data-logo-track>
 					<?php for ( $copy = 0; $copy < 2; $copy++ ) : ?>
 						<div class="trusted-businesses__set"<?php echo 1 === $copy ? ' aria-hidden="true"' : ''; ?>>
-							<?php foreach ( $businesses as $index => $business ) :
-								$logo = has_post_thumbnail( $business ) ? get_the_post_thumbnail_url( $business, 'medium' ) : get_theme_file_uri( $fallback_logos[ $index % count( $fallback_logos ) ] );
-								?>
-								<img src="<?php echo esc_url( $logo ); ?>" width="147" height="66" alt="<?php echo esc_attr( get_the_title( $business ) ); ?>">
+							<?php foreach ( $businesses as $business ) : ?>
+								<?php echo get_the_post_thumbnail( $business, 'medium', array( 'alt' => get_the_title( $business ), 'loading' => 'lazy', 'decoding' => 'async' ) ); ?>
 							<?php endforeach; ?>
 						</div>
 					<?php endfor; ?>
@@ -74,4 +74,5 @@ $fallback_logos = array(
 			</div>
 		</div>
 	</div>
+	<?php endif; ?>
 </section>

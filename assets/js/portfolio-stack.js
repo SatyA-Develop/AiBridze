@@ -3,6 +3,7 @@
   if (!section) return;
   const region = section.querySelector('[data-portfolio-scroll-region]');
   const viewport = section.querySelector('[data-portfolio-viewport]');
+  const heading = section.querySelector('.portfolio-stack__heading');
   const cards = [...section.querySelectorAll('[data-portfolio-card]')];
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   if (!region || !viewport || !cards.length) return;
@@ -22,13 +23,21 @@
   const update = () => {
     frame = 0;
     if (!animated) return;
-    const raw = Math.max(0, Math.min(cards.length - 1, (top - region.getBoundingClientRect().top) / step));
+    const regionTop = region.getBoundingClientRect().top;
+    // The first card rises over the pinned heading before any project changes.
+    const coverDistance = (heading?.offsetHeight || 144) + 90;
+    const cover = clamp((top + coverDistance - regionTop) / coverDistance);
+    heading?.style.setProperty('--portfolio-heading-scale', String(1 - cover * 0.35));
+    heading?.style.setProperty('--portfolio-heading-squeeze', String(1 - cover * 0.5));
+    const raw = Math.max(0, Math.min(cards.length - 1, (top - regionTop) / step));
     const current = Math.min(cards.length - 1, Math.floor(raw));
     const phase = raw - current;
-    // Text changes early; the sharp, opaque image wipe spans most of the interval.
-    select(Math.min(cards.length - 1, current + (phase >= 0.18 ? 1 : 0)));
+    // The incoming image reaches the screen center before its details switch.
+    const center = innerHeight / 2;
+    const centerReveal = clamp((top + viewport.offsetHeight - center) / viewport.offsetHeight);
+    select(Math.min(cards.length - 1, current + (phase >= centerReveal ? 1 : 0)));
     cards.forEach((card, index) => {
-      const reveal = index === 0 ? 1 : clamp((raw - index + 1 - 0.12) / 0.78);
+      const reveal = index === 0 ? 1 : clamp(raw - index + 1);
       card.style.setProperty('--portfolio-image-clip', `${(1 - reveal) * 100}%`);
       card.style.setProperty('--portfolio-image-y', `${(1 - clamp(raw - index + 1)) * 4}%`);
     });
@@ -38,10 +47,17 @@
     animated = innerWidth > 1000 && innerHeight > 680 && !reducedMotion.matches && cards.length > 1;
     section.classList.toggle('is-scroll-animated', animated);
     top = (document.querySelector('[data-site-header]')?.offsetHeight || 0) + 16;
-    step = Math.max(760, innerHeight * 1.25);
+    // One viewport of scroll drives each wipe; the change occurs at its center
+    // crossing rather than after an additional bottom-of-screen delay.
+    step = innerHeight;
     viewport.style.setProperty('--portfolio-top', `${top}px`);
+    section.style.setProperty('--portfolio-top', `${top}px`);
     if (animated) region.style.height = `${viewport.offsetHeight + step * (cards.length - 1)}px`;
-    else region.style.removeProperty('height');
+    else {
+      region.style.removeProperty('height');
+      heading?.style.removeProperty('--portfolio-heading-scale');
+      heading?.style.removeProperty('--portfolio-heading-squeeze');
+    }
     active = -1;
     select(0);
     update();

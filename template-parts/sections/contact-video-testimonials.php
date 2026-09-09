@@ -13,9 +13,11 @@ $videos = array();
 foreach ( $video_posts as $video_post ) {
 	$video_url = (string) get_post_meta( $video_post->ID, '_aibridze_video_url', true );
 	if ( ! $video_url ) continue;
+	$youtube_id = aibridze_testimonial_youtube_id( $video_url );
 	$videos[] = array(
+		'youtube_id' => $youtube_id,
 		'url'    => $video_url,
-		'poster' => has_post_thumbnail( $video_post ) ? get_the_post_thumbnail_url( $video_post, 'large' ) : '',
+		'poster' => has_post_thumbnail( $video_post ) ? get_the_post_thumbnail_url( $video_post, 'large' ) : ( $youtube_id ? 'https://i.ytimg.com/vi/' . $youtube_id . '/hqdefault.jpg' : '' ),
 		'title'  => get_the_title( $video_post ),
 	);
 }
@@ -33,8 +35,8 @@ foreach ( $video_posts as $video_post ) {
 	<div class="contact-videos__viewport">
 		<div class="contact-videos__track" data-contact-video-track>
 			<?php foreach ( $videos as $video ) : ?>
-				<article class="contact-video-card">
-					<video preload="none" playsinline data-lazy-video data-src="<?php echo esc_url( $video['url'] ); ?>"<?php echo $video['poster'] ? ' poster="' . esc_url( $video['poster'] ) . '"' : ''; ?>></video>
+				<article class="contact-video-card" data-video-source="<?php echo esc_url( $video['url'] ); ?>" data-youtube-id="<?php echo esc_attr( $video['youtube_id'] ); ?>">
+					<?php if ( $video['poster'] ) : ?><img class="contact-video-card__poster" src="<?php echo esc_url( $video['poster'] ); ?>" alt="" loading="lazy"><?php else : ?><video preload="none" playsinline data-lazy-video data-src="<?php echo esc_url( $video['url'] ); ?>"></video><?php endif; ?>
 					<button type="button" data-contact-video-play aria-label="<?php echo esc_attr( sprintf( __( 'Play %s', 'aibridze' ), $video['title'] ) ); ?>"><i aria-hidden="true"></i></button>
 				</article>
 			<?php endforeach; ?>

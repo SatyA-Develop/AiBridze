@@ -33,7 +33,7 @@ $items       = get_posts(
 ?>
 <section class="listing-hero">
 	<div class="container">
-		<p class="listing-hero__eyebrow"><?php esc_html_e( 'AIBridze', 'aibridze' ); ?></p>
+		<p class="listing-hero__eyebrow section-callout"><?php esc_html_e( 'AIBridze', 'aibridze' ); ?></p>
 		<h1><?php echo esc_html( $title ); ?></h1>
 		<?php if ( $description ) : ?><p><?php echo esc_html( $description ); ?></p><?php endif; ?>
 	</div>

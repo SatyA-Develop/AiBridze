@@ -3,27 +3,55 @@ document.querySelectorAll('[data-careers-accordion]').forEach((section) => {
   const image = section.querySelector('[data-careers-image]');
   if (!items.length || !image) return;
 
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const animations = new WeakMap();
+  const setPanelOpen = (panel, open) => {
+    const height = panel.getBoundingClientRect().height;
+    animations.get(panel)?.cancel();
+    panel.hidden = false;
+    panel.inert = !open;
+    if (reducedMotion.matches) {
+      panel.hidden = !open;
+      return;
+    }
+    const animation = panel.animate(
+      [{ height: `${height}px` }, { height: `${open ? panel.scrollHeight : 0}px` }],
+      { duration: 320, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }
+    );
+    animations.set(panel, animation);
+    animation.onfinish = () => {
+      panel.hidden = !open;
+      animations.delete(panel);
+    };
+  };
+
   items.forEach((item) => {
     const trigger = item.querySelector('[data-careers-trigger]');
     const panel = item.querySelector('.careers-accordion__panel');
     if (!trigger || !panel) return;
     trigger.addEventListener('click', () => {
-      if (item.classList.contains('is-active')) return;
+      const opening = !item.classList.contains('is-active');
       items.forEach((other) => {
-        const active = other === item;
+        const active = opening && other === item;
+        if (other.classList.contains('is-active') === active) return;
         other.classList.toggle('is-active', active);
         other.querySelector('[data-careers-trigger]')?.setAttribute('aria-expanded', active ? 'true' : 'false');
         const otherPanel = other.querySelector('.careers-accordion__panel');
-        if (otherPanel) otherPanel.hidden = !active;
+        if (otherPanel) setPanelOpen(otherPanel, active);
       });
       const nextImage = trigger.dataset.image;
-      if (!nextImage) return;
+      if (!opening || !nextImage) {
+        image.classList.remove('is-changing');
+        return;
+      }
       image.classList.add('is-changing');
       const preload = new Image();
       preload.onload = () => {
+        if (!item.classList.contains('is-active')) return;
         image.src = nextImage;
         requestAnimationFrame(() => image.classList.remove('is-changing'));
       };
+      preload.onerror = () => image.classList.remove('is-changing');
       preload.src = nextImage;
     });
   });

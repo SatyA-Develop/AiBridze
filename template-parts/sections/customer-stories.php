@@ -13,22 +13,30 @@ $fallback_videos = array(
 $video_urls = array();
 foreach ( $video_posts as $video_post ) {
 	$url = (string) get_post_meta( $video_post->ID, '_aibridze_video_url', true );
-	if ( $url ) $video_urls[] = $url;
+	if ( $url ) $video_urls[] = array( 'url' => $url, 'poster' => has_post_thumbnail( $video_post ) ? get_the_post_thumbnail_url( $video_post, 'large' ) : '' );
 }
-if ( ! $video_urls ) $video_urls = array( $fallback_videos[0], $fallback_videos[1], $fallback_videos[0], $fallback_videos[1] );
+if ( ! $video_urls ) foreach ( array( 0, 1, 0, 1 ) as $fallback_index ) $video_urls[] = array( 'url' => $fallback_videos[$fallback_index], 'poster' => '' );
 ?>
 <section class="customer-stories" data-customer-stories aria-labelledby="customer-stories-title">
 	<header class="customer-stories__header">
-		<p><?php esc_html_e( 'Customer Stories', 'aibridze' ); ?></p>
+		<p class="section-callout"><?php esc_html_e( 'Customer Stories', 'aibridze' ); ?></p>
 		<h2 id="customer-stories-title"><?php esc_html_e( 'Trusted by Businesses, Valued by Clients', 'aibridze' ); ?></h2>
 		<div><?php esc_html_e( "Real feedback from businesses we've helped with AI, custom software, and digital transformation.", 'aibridze' ); ?></div>
 	</header>
 
 	<div class="customer-stories__showcase">
 		<div class="video-stack" data-video-stack>
-			<?php foreach ( $video_urls as $index => $video_url ) : ?>
-				<article class="video-stack__card<?php echo 0 === $index ? ' is-active' : ''; ?>" data-video-card data-index="<?php echo esc_attr( $index ); ?>">
-					<video preload="none" playsinline data-lazy-video data-src="<?php echo esc_url( $video_url ); ?>"></video>
+			<?php foreach ( $video_urls as $index => $video_item ) :
+				$video_url = $video_item['url'];
+				$youtube_id = aibridze_testimonial_youtube_id( $video_url );
+				$poster = $video_item['poster'] ?: ( $youtube_id ? 'https://i.ytimg.com/vi/' . $youtube_id . '/hqdefault.jpg' : '' );
+				?>
+				<article class="video-stack__card<?php echo 0 === $index ? ' is-active' : ''; ?>" data-video-card data-index="<?php echo esc_attr( $index ); ?>" data-video-source="<?php echo esc_url( $video_url ); ?>" data-youtube-id="<?php echo esc_attr( $youtube_id ); ?>">
+					<?php if ( $poster ) : ?>
+						<img src="<?php echo esc_url( $poster ); ?>" alt="" draggable="false" loading="lazy">
+					<?php else : ?>
+						<video preload="metadata" playsinline muted src="<?php echo esc_url( $video_url ); ?>#t=0.1"></video>
+					<?php endif; ?>
 					<button class="video-stack__play" type="button" data-video-play aria-label="<?php esc_attr_e( 'Play testimonial video', 'aibridze' ); ?>">
 						<span class="video-stack__play-icon" aria-hidden="true"></span>
 						<span class="video-stack__pause-icon" aria-hidden="true"></span>
