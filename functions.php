@@ -146,6 +146,7 @@ function aibridze_assets(): void {
 	wp_enqueue_script( 'aibridze-carousel-autoplay', get_theme_file_uri( '/assets/js/carousel-autoplay.js' ), array(), (string) filemtime( get_theme_file_path( '/assets/js/carousel-autoplay.js' ) ), true );
 	wp_enqueue_script( 'aibridze-header', get_theme_file_uri( '/assets/js/header.js' ), array(), (string) filemtime( $script_path ), true );
 	wp_enqueue_script( 'aibridze-footer', get_theme_file_uri( '/assets/js/footer.js' ), array(), (string) filemtime( $footer_script_path ), true );
+	wp_enqueue_script( 'aibridze-content-protection', get_theme_file_uri( '/assets/js/content-protection.js' ), array(), (string) filemtime( get_theme_file_path( '/assets/js/content-protection.js' ) ), true );
 	wp_enqueue_script( 'aibridze-consultation-modal', get_theme_file_uri( '/assets/js/consultation-modal.js' ), array(), (string) filemtime( $modal_script_path ), true );
 	wp_enqueue_script( 'aibridze-transformation', get_theme_file_uri( '/assets/js/transformation.js' ), array(), (string) filemtime( $transformation_script_path ), true );
 	wp_enqueue_script( 'aibridze-manual-cost', get_theme_file_uri( '/assets/js/manual-cost.js' ), array(), (string) filemtime( $manual_cost_script_path ), true );
