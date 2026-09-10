@@ -131,7 +131,8 @@
 
     buildRing();
 
-    gsap.from(cards, {
+    // Tablet breakpoint changes must not slide cards outside the clipped scene.
+    if (desktop) gsap.from(cards, {
       duration: 1.5,
       y: 200,
       stagger: 0.1,
@@ -139,6 +140,7 @@
       onUpdate: () => updateLinks(Number(gsap.getProperty(ring, 'rotationY')) || 0),
       onComplete: updateCards
     });
+    else gsap.set(cards, { y: 0 });
 
     const [drag] = Draggable.create(dragger, {
       type: 'x',
@@ -255,6 +257,8 @@
         window.removeEventListener('pointerup', up);
         window.removeEventListener('pointercancel', up);
         copies.forEach((card) => card.remove());
+        scene.scrollLeft = 0;
+        scene.scrollTop = 0;
       };
     });
   });

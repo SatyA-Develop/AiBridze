@@ -4006,6 +4006,12 @@ body.has-consultation-modal {
 }
 
 /* Certified expertise and compliance. */
+.industries-showcase,
+.compliance-section {
+  /* Seal fractional-pixel joins over the sticky hero behind these sections. */
+  box-shadow: 0 1px 0 #000;
+}
+
 .compliance-section {
   position: relative;
   z-index: 50;
@@ -4106,7 +4112,7 @@ body.has-consultation-modal {
   }
   .compliance-card {
     grid-template-columns: 1fr;
-    width: min(100%, 370px);
+    width: 100%;
     border-radius: 18px;
   }
   .compliance-card__certifications {
@@ -7968,6 +7974,14 @@ body.admin-bar .site-header {
   font-family: "Neue Power", var(--font-display);
   font-size: clamp(3.2rem, 7vw, 6rem);
   line-height: 0.98;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+  .content-page h1 {
+    font-size: 36px;
+    line-height: 1.25;
+  }
 }
 
 .listing-hero p,
