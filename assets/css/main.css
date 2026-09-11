@@ -13995,6 +13995,10 @@ body :is(.section-callout, [class*="__eyebrow"], .category-kicker, .service-kick
 @media (max-width: 1100px) {
   .contact-videos__top { grid-template-columns: 1fr; }
   .contact-videos__stats { max-width: 680px; margin-top: 0; }
+  .contact-videos__stats > div { align-items: flex-start; justify-content: flex-start; }
+  .contact-videos__stats > div + div { padding-left: 16px; }
+  .contact-videos__stats strong,
+  .contact-videos__stats span { text-align: left; }
   .contact-video-card { width: calc((100% - 48px) / 3); min-width: calc((100% - 48px) / 3); }
   .contact-videos__track { gap: 24px; }
 }
