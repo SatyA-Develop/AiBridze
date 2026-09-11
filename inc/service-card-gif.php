@@ -66,6 +66,18 @@ function aibridze_service_card_gif_url( int $category_id ): string {
 	return wp_get_attachment_url( $gif_id ) ?: '';
 }
 
+/** Use a lightweight companion when the selected GIF has been optimized. */
+function aibridze_service_card_animation( int $category_id ): array {
+	$id = (int) get_term_meta( $category_id, '_aibridze_card_gif_id', true );
+	$file = $id ? get_attached_file( $id ) : '';
+	$url = aibridze_service_card_gif_url( $category_id );
+	if ( ! $file || ! $url ) return array();
+	$stem = preg_replace( '/\.gif$/i', '', $file );
+	$url_stem = preg_replace( '/\.gif$/i', '', $url );
+	if ( ! is_file( $stem . '.card.mp4' ) || ! is_file( $stem . '.card.jpg' ) ) return array();
+	return array( 'video' => $url_stem . '.card.mp4', 'poster' => $url_stem . '.card.jpg' );
+}
+
 add_action( 'admin_enqueue_scripts', static function ( string $hook ): void {
 	$screen = get_current_screen();
 	if ( ! $screen || 'service_category' !== $screen->taxonomy || ! in_array( $hook, array( 'edit-tags.php', 'term.php' ), true ) ) return;

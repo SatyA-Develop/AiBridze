@@ -58,6 +58,7 @@ $partners = aibridze_technology_partners();
 				$image_id   = (int) get_term_meta( $category->term_id, '_aibridze_featured_image_id', true );
 				$image_url  = $image_id ? wp_get_attachment_image_url( $image_id, 'large' ) : get_theme_file_uri( $category_fallbacks[ $category->slug ] ?? '/assets/images/service-categories/technology-consulting.png' );
 				$image_url = aibridze_service_card_gif_url( $category->term_id ) ?: $image_url;
+				$animation = aibridze_service_card_animation( $category->term_id );
 				$description = $category->description ?: ( $category_descriptions[ $category->slug ] ?? 'Technology solutions designed to move your business forward.' );
 				?>
 				<article class="service-stack-card" data-service-stack-card style="--card-index: <?php echo esc_attr( $index ); ?>">
@@ -67,7 +68,11 @@ $partners = aibridze_technology_partners();
 						<p><?php echo esc_html( $description ); ?></p>
 						<?php get_template_part( 'template-parts/components/card-button', null, array( 'url' => get_term_link( $category ), 'label' => __( 'View Services', 'aibridze' ) ) ); ?>
 					</div>
-					<img class="service-stack-card__image" src="<?php echo esc_url( $image_url ); ?>" width="374" height="380" loading="lazy" decoding="async" alt="">
+					<?php if ( $animation ) : ?>
+						<video class="service-stack-card__image" width="374" height="380" poster="<?php echo esc_url( $animation['poster'] ); ?>" data-src="<?php echo esc_url( $animation['video'] ); ?>" data-lazy-video autoplay muted loop playsinline preload="none" aria-hidden="true"></video>
+					<?php else : ?>
+						<img class="service-stack-card__image" src="<?php echo esc_url( $image_url ); ?>" width="374" height="380" loading="lazy" decoding="async" alt="">
+					<?php endif; ?>
 				</article>
 			<?php endforeach; ?>
 		</div>
