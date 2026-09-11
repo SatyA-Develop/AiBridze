@@ -52,7 +52,7 @@
       return link;
     });
 
-    let xPos = 0;
+    let dragStartRotation = 0;
     let didDrag = false;
     let cardWidth = 0;
     let angleStep = 0;
@@ -114,7 +114,7 @@
       if (!cardWidth || !viewport.clientWidth) return;
       angleStep = 360 / cards.length;
       const radius = desktop ? viewport.clientWidth * 0.66 : cardWidth * (500 / 300);
-      scene.style.perspective = desktop ? '3200px' : `${cardWidth * (2000 / 300)}px`;
+      scene.style.perspective = desktop ? `${viewport.clientWidth * 1.25}px` : `${cardWidth * 4.5}px`;
 
       // Six cards across desktop; a centered card and two neighbours on iPad.
       if (!built) gsap.set(ring, { rotationY: desktop ? 180 + angleStep / 2 : 180 });
@@ -149,24 +149,17 @@
       dragClickables: true,
       onPress() {
         didDrag = false;
+        gsap.killTweensOf(ring);
+        dragStartRotation = Number(gsap.getProperty(ring, 'rotationY')) || 0;
       },
-      onDragStart(event) {
-        const point = event.touches ? event.touches[0] : event;
-        xPos = Math.round(point.clientX);
+      onDragStart() {
         didDrag = true;
         viewport.classList.add('is-dragging');
       },
-      onDrag(event) {
-        const point = event.touches ? event.touches[0] : event;
-        const nextX = Math.round(point.clientX);
-        gsap.to(ring, {
-          rotationY: `-=${(nextX - xPos) * 0.22}`,
-          duration: 0.5,
-          overwrite: true,
-          ease: 'power1.out',
-          onUpdate: updateCards
-        });
-        xPos = nextX;
+      onDrag() {
+        // Follow the full pointer displacement, without dropping movement to overwritten tweens.
+        gsap.set(ring, { rotationY: dragStartRotation - (this.x - this.startX) * angleStep / cardWidth });
+        updateCards();
       },
       onDragEnd() {
         viewport.classList.remove('is-dragging');

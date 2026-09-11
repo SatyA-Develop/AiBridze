@@ -8,7 +8,7 @@ get_header();
 		<div class="contact-hero__inner">
 			<h1 id="contact-hero-title"><?php esc_html_e( 'Have an Idea? Let’s Talk.', 'aibridze' ); ?></h1>
 			<p><?php esc_html_e( 'Whether you’re exploring an AI opportunity, planning a new product, automating a business process, or looking to modernize an existing solution, we’d love to understand what you’re building.', 'aibridze' ); ?></p>
-			<a class="button button--primary contact-hero__button" href="#contact-project-form"><span><?php esc_html_e( 'Book Free Consultation', 'aibridze' ); ?></span><span class="button__icon" aria-hidden="true"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/button-arrow.svg' ) ); ?>" width="16" height="16" alt=""></span></a>
+			<?php get_template_part( 'template-parts/components/button', null, array( 'label' => __( 'Book Free Consultation', 'aibridze' ), 'url' => '#contact-project-form', 'class' => 'button--hero contact-hero__button' ) ); ?>
 		</div>
 	</section>
 	<section class="contact-project" id="contact-project-form" aria-labelledby="contact-project-title">
@@ -36,9 +36,9 @@ get_header();
 					<?php wp_nonce_field( 'aibridze_consultation', 'aibridze_consultation_nonce' ); ?>
 					<label class="consultation-form__honeypot" aria-hidden="true">Company website<input name="company_website" tabindex="-1" autocomplete="off"></label>
 					<label><span><?php esc_html_e( 'Full Name', 'aibridze' ); ?></span><input name="full_name" type="text" placeholder="Enter Your Name" autocomplete="name" required></label>
-					<label><span><?php esc_html_e( 'Email Address', 'aibridze' ); ?></span><input name="email" type="email" placeholder="Enter Work Email" autocomplete="email" required></label>
-					<label><span><?php esc_html_e( 'Designation', 'aibridze' ); ?></span><input name="designation" type="text" placeholder="Enter Designation" autocomplete="organization-title"></label>
-					<label><span class="screen-reader-text"><?php esc_html_e( 'Your Preferred Budget Range', 'aibridze' ); ?></span><select name="budget"><option value=""><?php esc_html_e( 'Your Preferred Budget Range', 'aibridze' ); ?></option><option>$5k–$15k</option><option>$15k–$50k</option><option>$50k–$100k</option><option>$100k+</option></select></label>
+					<label><span><?php esc_html_e( 'Email Address', 'aibridze' ); ?></span><input name="email" type="email" pattern="[^\s@]+@[^\s@]+\.[^\s@]+" placeholder="Enter Work Email" autocomplete="email" required></label>
+					<label><span><?php esc_html_e( 'Designation (Optional)', 'aibridze' ); ?></span><input name="designation" type="text" placeholder="Enter Designation" autocomplete="organization-title"></label>
+					<label><span class="screen-reader-text"><?php esc_html_e( 'Your Preferred Budget Range (Optional)', 'aibridze' ); ?></span><select name="budget"><option value=""><?php esc_html_e( 'Your Preferred Budget Range (Optional)', 'aibridze' ); ?></option><option>$5k–$15k</option><option>$15k–$50k</option><option>$50k–$100k</option><option>$100k+</option></select></label>
 					<label><span><?php esc_html_e( 'How can we help you?', 'aibridze' ); ?></span><textarea name="message" placeholder="Write Here..." rows="2" required></textarea></label>
 					<button type="submit"><span><?php esc_html_e( 'Submit', 'aibridze' ); ?></span></button>
 				</form>
@@ -52,7 +52,7 @@ get_header();
 			<div class="contact-idea__content">
 				<h2 id="contact-idea-title"><?php esc_html_e( 'Let’s Turn Your Idea Into Something Real.', 'aibridze' ); ?></h2>
 				<p><?php esc_html_e( 'Tell us what you’re trying to achieve, and we’ll help you explore the right AI, software, or automation solution for your business.', 'aibridze' ); ?></p>
-				<a href="#contact-project-form"><span><?php esc_html_e( 'Start a Conversation', 'aibridze' ); ?></span><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/button-arrow.svg' ) ); ?>" width="16" height="16" alt=""></a>
+				<a class="button button--light" href="#contact-project-form"><span><?php esc_html_e( 'Start a Conversation', 'aibridze' ); ?></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 			</div>
 			<img class="contact-idea__image" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/contact/idea-laptop.png' ) ); ?>" width="443" height="280" alt="Laptop illuminated with blue and orange light">
 		</div>

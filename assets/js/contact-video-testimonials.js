@@ -1,8 +1,14 @@
 document.querySelectorAll('[data-contact-videos], [data-customer-stories]').forEach((section) => {
+  // Show a frame for uploaded videos without a featured thumbnail, without playing audio.
+  section.querySelectorAll('[data-testimonial-preview]').forEach((video) => {
+    video.addEventListener('loadedmetadata', () => {
+      if (Number.isFinite(video.duration) && video.duration > 0) video.currentTime = Math.min(.1, video.duration / 2);
+    }, { once: true });
+  });
   const dialog = document.createElement('dialog');
   dialog.className = 'testimonial-video-modal';
   dialog.setAttribute('aria-label', 'Client testimonial video');
-  dialog.innerHTML = '<button type="button" class="testimonial-video-modal__close" aria-label="Close video">&#215;</button><div class="testimonial-video-modal__stage"></div>';
+  dialog.innerHTML = '<button type="button" class="testimonial-video-modal__close" aria-label="Close video"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/></svg></button><div class="testimonial-video-modal__stage"></div>';
   document.body.append(dialog);
   const stage = dialog.querySelector('.testimonial-video-modal__stage');
   let player;

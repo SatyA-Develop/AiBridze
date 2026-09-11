@@ -103,21 +103,32 @@
 })();
 
 (() => {
-  const video = document.querySelector('.hero__video[data-desktop-src]');
+  const video = document.querySelector('.hero__video[data-hero-src]');
   if (!video) return;
-  const mobile = matchMedia('(max-width: 700px)');
-  const updateMedia = () => {
-    if (mobile.matches) {
-      video.pause();
-      if (video.hasAttribute('src')) {
-        video.removeAttribute('src');
-        video.load();
-      }
-    } else {
-      if (!video.hasAttribute('src')) video.src = video.dataset.desktopSrc;
-      video.play().catch(() => {});
+  video.muted = true;
+  const play = () => {
+    if (!video.hasAttribute('src')) {
+      video.src = video.dataset.heroSrc;
+      video.load();
     }
+    video.play().catch(() => {});
   };
-  mobile.addEventListener('change', updateMedia);
-  updateMedia();
+  if (!('IntersectionObserver' in window)) {
+    play();
+    return;
+  }
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !document.hidden) play();
+      else video.pause();
+    });
+  }, { rootMargin: '150px 0px', threshold: 0.01 });
+  observer.observe(video);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) video.pause();
+    else {
+      const rect = video.getBoundingClientRect();
+      if (rect.bottom > -150 && rect.top < window.innerHeight + 150) play();
+    }
+  });
 })();

@@ -66,14 +66,14 @@ $status      = isset( $_GET['consultation'] ) ? sanitize_key( wp_unslash( $_GET[
 					<?php wp_nonce_field( 'aibridze_consultation', 'aibridze_consultation_nonce' ); ?>
 					<label class="consultation-form__honeypot" aria-hidden="true">Company website<input name="company_website" tabindex="-1" autocomplete="off"></label>
 					<label><span><?php esc_html_e( 'Full Name', 'aibridze' ); ?></span><input name="full_name" type="text" placeholder="Enter Your Name" autocomplete="name" required></label>
-					<label><span><?php esc_html_e( 'Email Address', 'aibridze' ); ?></span><input name="email" type="email" placeholder="Enter Work Email" autocomplete="email" required></label>
-					<label><span><?php esc_html_e( 'Designation', 'aibridze' ); ?></span><input name="designation" type="text" placeholder="Enter Designation" autocomplete="organization-title"></label>
-					<label><span class="screen-reader-text"><?php esc_html_e( 'Your Preferred Budget Range', 'aibridze' ); ?></span><select name="budget"><option value=""><?php esc_html_e( 'Your Preferred Budget Range', 'aibridze' ); ?></option><option>$5k–$15k</option><option>$15k–$50k</option><option>$50k–$100k</option><option>$100k+</option></select></label>
+					<label><span><?php esc_html_e( 'Email Address', 'aibridze' ); ?></span><input name="email" type="email" pattern="[^\s@]+@[^\s@]+\.[^\s@]+" placeholder="Enter Work Email" autocomplete="email" required></label>
+					<label><span><?php esc_html_e( 'Designation (Optional)', 'aibridze' ); ?></span><input name="designation" type="text" placeholder="Enter Designation" autocomplete="organization-title"></label>
+					<label><span class="screen-reader-text"><?php esc_html_e( 'Your Preferred Budget Range (Optional)', 'aibridze' ); ?></span><select name="budget"><option value=""><?php esc_html_e( 'Your Preferred Budget Range (Optional)', 'aibridze' ); ?></option><option>$5k–$15k</option><option>$15k–$50k</option><option>$50k–$100k</option><option>$100k+</option></select></label>
 					<label><span><?php esc_html_e( 'How can we help you?', 'aibridze' ); ?></span><textarea name="message" placeholder="Write Here..." rows="2" required></textarea></label>
 					<button class="consultation-form__submit" type="submit"><?php esc_html_e( 'Submit', 'aibridze' ); ?></button>
 				</form>
 			</div>
-			<div class="consultation-modal__security"><span aria-hidden="true">🛡️</span> <?php esc_html_e( 'Share with Confidence. Fully NDA-Protected.', 'aibridze' ); ?></div>
+			<div class="consultation-modal__security"><span aria-hidden="true">🛡️</span> <span><?php esc_html_e( 'Share with Confidence.', 'aibridze' ); ?> <strong><?php esc_html_e( 'Fully NDA-Protected.', 'aibridze' ); ?></strong></span></div>
 		</div>
 	</section>
 </div>

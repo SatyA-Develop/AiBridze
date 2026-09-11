@@ -3,6 +3,23 @@
 
   if (!header) return;
 
+  const studioIcon = header.querySelector('[data-ai-studio-animation]');
+  if (studioIcon && window.lottie) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const animation = window.lottie.loadAnimation({
+      container: studioIcon,
+      renderer: 'svg',
+      loop: true,
+      autoplay: !reducedMotion.matches,
+      path: studioIcon.dataset.aiStudioAnimation,
+      rendererSettings: { preserveAspectRatio: 'xMidYMid meet' },
+    });
+    reducedMotion.addEventListener('change', () => {
+      if (reducedMotion.matches) animation.goToAndStop(0, true);
+      else animation.play();
+    });
+  }
+
   const toggle = header.querySelector('[data-menu-toggle]');
   const navigation = header.querySelector('[data-primary-navigation]');
   const tabButtons = header.querySelectorAll('[data-mega-tab]');

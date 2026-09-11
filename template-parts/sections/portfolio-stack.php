@@ -30,7 +30,7 @@ $projects = get_posts( array( 'post_type' => 'portfolio', 'posts_per_page' => 6,
 						<div><strong><?php echo esc_html( get_post_meta( $project->ID, '_aibridze_portfolio_stat_two', true ) ); ?></strong><span><?php echo esc_html( get_post_meta( $project->ID, '_aibridze_portfolio_stat_two_label', true ) ); ?></span></div>
 					</div></div>
 					<div class="portfolio-card__reveal portfolio-card__reveal--button">
-						<a class="portfolio-card__button" href="<?php echo esc_url( $url ); ?>">View Project <span>→</span></a>
+						<?php get_template_part( 'template-parts/components/card-button', null, array( 'url' => $url, 'label' => __( 'View Project', 'aibridze' ) ) ); ?>
 					</div>
 				</div>
 				<div class="portfolio-card__visual"><img src="<?php echo esc_url( $image ); ?>" width="816" height="638" alt="<?php echo esc_attr( get_the_title( $project ) ); ?>"></div>

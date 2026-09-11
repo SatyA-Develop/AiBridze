@@ -9,9 +9,26 @@ document.querySelectorAll('[data-blog-categories]').forEach((section) => {
   if (!scroller || !previous || !next || !results || !grid || !heading || !pagination) return;
 
   const escapeHtml = (value = '') => String(value).replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;' })[character]);
-  const move = (direction) => scroller.scrollBy({ left: direction * Math.max(220, scroller.clientWidth * 0.65), behavior: 'smooth' });
+  const categories = Array.from(scroller.querySelectorAll('[data-blog-category]'));
+  const move = (direction) => {
+    const index = categories.findIndex((link) => link.classList.contains('is-active'));
+    const link = categories[index + direction];
+    if (link && results.getAttribute('aria-busy') !== 'true') link.click();
+  };
   previous.addEventListener('click', () => move(-1));
   next.addEventListener('click', () => move(1));
+  const updateCategoryArrows = () => {
+    const index = categories.findIndex((link) => link.classList.contains('is-active'));
+    const loading = results.getAttribute('aria-busy') === 'true';
+    previous.disabled = loading || index <= 0;
+    next.disabled = loading || index >= categories.length - 1;
+  };
+  scroller.addEventListener('scroll', updateCategoryArrows, { passive: true });
+  const categoryResize = new ResizeObserver(updateCategoryArrows);
+  categoryResize.observe(scroller);
+  Array.from(scroller.children).forEach((item) => categoryResize.observe(item));
+  document.fonts.ready.then(updateCategoryArrows);
+  updateCategoryArrows();
 
   const pageSequence = (current, total) => {
     if (total <= 7) return Array.from({ length: total }, (_, index) => index + 1);
@@ -37,8 +54,9 @@ document.querySelectorAll('[data-blog-categories]').forEach((section) => {
     if (page > 1) url.pathname = `${url.pathname.replace(/\/$/, '')}/page/${page}/`;
     window.history.pushState({ category, page }, '', url);
   };
-  const loadPosts = async (category, page = 1, fallbackUrl = '', updateHistory = true) => {
+  const loadPosts = async (category, page = 1, fallbackUrl = '', updateHistory = true, scrollToResults = false) => {
     results.setAttribute('aria-busy', 'true');
+    updateCategoryArrows();
     results.classList.add('is-loading');
     const body = new FormData();
     body.append('action', 'aibridze_filter_blogs');
@@ -53,12 +71,26 @@ document.querySelectorAll('[data-blog-categories]').forEach((section) => {
       renderPagination(payload.data.currentPage, payload.data.totalPages);
       heading.textContent = payload.data.heading;
       scroller.querySelectorAll('[data-blog-category]').forEach((link) => link.classList.toggle('is-active', link.dataset.blogCategory === category));
+      const active = categories.find((link) => link.classList.contains('is-active'));
+      if (active) {
+        const bounds = scroller.getBoundingClientRect();
+        const item = active.getBoundingClientRect();
+        scroller.scrollBy({ left: item.left - bounds.left - (bounds.width - item.width) / 2, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+      }
       if (updateHistory) updateUrl(category, payload.data.currentPage);
+      if (scrollToResults) {
+        const headerHeight = document.querySelector('.site-header')?.getBoundingClientRect().height || 0;
+        window.scrollTo({
+          top: Math.max(0, results.getBoundingClientRect().top + window.scrollY - headerHeight - 20),
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+        });
+      }
     } catch (error) {
       if (fallbackUrl) window.location.href = fallbackUrl;
     } finally {
       results.removeAttribute('aria-busy');
       results.classList.remove('is-loading');
+      updateCategoryArrows();
     }
   };
   scroller.addEventListener('click', (event) => {
@@ -74,7 +106,7 @@ document.querySelectorAll('[data-blog-categories]').forEach((section) => {
     const match = control.getAttribute('href')?.match(/\/page\/(\d+)/);
     const page = Number(control.dataset.blogPage || match?.[1] || 1);
     const active = scroller.querySelector('[data-blog-category].is-active');
-    loadPosts(active?.dataset.blogCategory || '', page, control.href || '');
+    loadPosts(active?.dataset.blogCategory || '', page, control.href || '', true, true);
   });
   window.addEventListener('popstate', () => {
     const url = new URL(window.location.href);

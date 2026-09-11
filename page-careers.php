@@ -151,7 +151,7 @@ $career_reasons = array(
 					<label class="consultation-form__honeypot" aria-hidden="true">Company website<input name="company_website" tabindex="-1" autocomplete="off"></label>
 					<div class="career-application__grid">
 						<label><span><?php esc_html_e( 'Full Name', 'aibridze' ); ?><b>*</b></span><input name="full_name" type="text" placeholder="<?php esc_attr_e( 'Your Name', 'aibridze' ); ?>" autocomplete="name" required></label>
-						<label><span><?php esc_html_e( 'Email', 'aibridze' ); ?><b>*</b></span><input name="email" type="email" placeholder="name@example.com" autocomplete="email" required></label>
+						<label><span><?php esc_html_e( 'Email', 'aibridze' ); ?><b>*</b></span><input name="email" type="email" pattern="[^\s@]+@[^\s@]+\.[^\s@]+" placeholder="name@example.com" autocomplete="email" required></label>
 						<label class="career-application__wide"><span><?php esc_html_e( 'Applying For Position', 'aibridze' ); ?><b>*</b></span><select data-application-position required><option value="0"><?php esc_html_e( 'General Application', 'aibridze' ); ?></option><?php foreach ( $opportunities as $opportunity ) : ?><option value="<?php echo esc_attr( (string) $opportunity->ID ); ?>"><?php echo esc_html( $opportunity->post_title ); ?></option><?php endforeach; ?></select></label>
 						<label><span><?php esc_html_e( 'Phone Number', 'aibridze' ); ?><b>*</b></span><input name="phone" type="tel" placeholder="e.g. 9876543210" autocomplete="tel" required></label>
 						<label><span><?php esc_html_e( 'Years of Experience', 'aibridze' ); ?><b>*</b></span><input name="years_experience" type="number" min="0" step="0.5" placeholder="e.g. 5" required></label>

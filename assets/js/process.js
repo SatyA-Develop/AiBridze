@@ -13,6 +13,9 @@
 
   const render = () => {
     frame = 0;
+    // Center the complete timeline when it fits, otherwise leave a trailing gutter.
+    const endSpace = Math.max(40, (sticky.clientWidth - track.scrollWidth) / 2);
+    layout.style.setProperty('--process-end-space', `${endSpace}px`);
     if (window.innerWidth <= 800 || reducedMotion.matches) {
       layout.style.removeProperty('transform');
       images.forEach((image) => {

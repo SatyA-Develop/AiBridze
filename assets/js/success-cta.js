@@ -6,9 +6,10 @@
 
   let isLoaded = false;
   let isVisible = false;
+  const mobile = window.matchMedia('(max-width: 1100px)');
 
   const playFromStart = () => {
-    if (!isVisible) return;
+    if (!isVisible || mobile.matches) return;
     video.currentTime = 0;
     video.play().catch(() => {
       // Muted inline playback is expected; keep the loaded frame if blocked.
@@ -16,6 +17,7 @@
   };
 
   const loadVideo = () => {
+    if (mobile.matches) return;
     if (isLoaded) {
       playFromStart();
       return;
@@ -42,4 +44,8 @@
   );
 
   observer.observe(section);
+  mobile.addEventListener('change', () => {
+    if (mobile.matches) video.pause();
+    else if (isVisible) loadVideo();
+  });
 })();

@@ -46,15 +46,15 @@ $faqs = is_array( $args['faqs'] ) && $args['faqs'] ? $args['faqs'] : $default_fa
 				<?php wp_nonce_field( 'aibridze_consultation', 'aibridze_consultation_nonce' ); ?>
 				<label class="consultation-form__honeypot" aria-hidden="true">Company website<input name="company_website" tabindex="-1" autocomplete="off"></label>
 				<label><span><?php echo esc_html( $args['full_name_label'] ); ?></span><input name="full_name" type="text" placeholder="<?php echo esc_attr( $args['full_name_placeholder'] ); ?>" autocomplete="name" required></label>
-				<label><span><?php echo esc_html( $args['email_label'] ); ?></span><input name="email" type="email" placeholder="<?php echo esc_attr( $args['email_placeholder'] ); ?>" autocomplete="email" required></label>
-				<label><span><?php echo esc_html( $args['designation_label'] ); ?></span><input name="designation" type="text" placeholder="<?php echo esc_attr( $args['designation_placeholder'] ); ?>" autocomplete="organization-title"></label>
-				<label><span class="screen-reader-text"><?php echo esc_html( $args['budget_label'] ); ?></span><select name="budget"><option value=""><?php echo esc_html( $args['budget_label'] ); ?></option><?php foreach ( array_filter( array_map( 'trim', (array) $args['budget_options'] ) ) as $option ) : ?><option><?php echo esc_html( $option ); ?></option><?php endforeach; ?></select></label>
+				<label><span><?php echo esc_html( $args['email_label'] ); ?></span><input name="email" type="email" pattern="[^\s@]+@[^\s@]+\.[^\s@]+" placeholder="<?php echo esc_attr( $args['email_placeholder'] ); ?>" autocomplete="email" required></label>
+				<label><span><?php echo esc_html( $args['designation_label'] . ' (' . __( 'Optional', 'aibridze' ) . ')' ); ?></span><input name="designation" type="text" placeholder="<?php echo esc_attr( $args['designation_placeholder'] ); ?>" autocomplete="organization-title"></label>
+				<label><span class="screen-reader-text"><?php echo esc_html( $args['budget_label'] . ' (' . __( 'Optional', 'aibridze' ) . ')' ); ?></span><select name="budget"><option value=""><?php echo esc_html( $args['budget_label'] . ' (' . __( 'Optional', 'aibridze' ) . ')' ); ?></option><?php foreach ( array_filter( array_map( 'trim', (array) $args['budget_options'] ) ) as $option ) : ?><option><?php echo esc_html( $option ); ?></option><?php endforeach; ?></select></label>
 				<label><span><?php echo esc_html( $args['message_label'] ); ?></span><textarea name="message" placeholder="<?php echo esc_attr( $args['message_placeholder'] ); ?>" rows="2" required></textarea></label>
 				<div class="faq-contact__form-actions">
 					<button type="submit"><span><?php echo esc_html( $args['submit_label'] ); ?></span><span class="faq-contact__submit-arrow" aria-hidden="true"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/faq/submit-arrow.png' ) ); ?>" width="14" height="14" alt=""></span></button>
 				</div>
 			</form>
-			<div class="faq-contact__security"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/faq/security-shield.svg' ) ); ?>" width="22" height="22" alt="" aria-hidden="true"> <span><?php echo esc_html( $args['security_text'] ); ?></span></div>
+			<div class="faq-contact__security"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/faq/security-shield.svg' ) ); ?>" width="22" height="22" alt="" aria-hidden="true"> <span><?php echo str_replace( array( 'Fully NDA-Protected', 'Fully NDA Protected' ), array( '<strong>Fully NDA-Protected</strong>', '<strong>Fully NDA Protected</strong>' ), esc_html( $args['security_text'] ) ); ?></span></div>
 		</div>
 	</div>
 </section>

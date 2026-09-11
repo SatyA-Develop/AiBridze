@@ -14,18 +14,19 @@ $social_links = aibridze_social_links();
 				'template-parts/components/button',
 				null,
 				array(
-					'label' => __( 'Book Free Consultation', 'aibridze' ),
+					'class' => 'button--hero',
+					'label' => __( 'Book You Free Strategy Session', 'aibridze' ),
 					'url'   => '#consultation',
 				)
 			);
 			?>
-			<div class="about-hero__security"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/security-shield.png' ) ); ?>" width="20" height="20" alt=""><span><?php esc_html_e( '100% Confidential Consultation with Expert Guidance', 'aibridze' ); ?></span></div>
+			<div class="about-hero__security"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/faq/security-shield.svg' ) ); ?>" width="20" height="20" alt=""><span><?php esc_html_e( '100% Confidential Consultation with Expert Guidance', 'aibridze' ); ?></span></div>
 		</div>
 		<div class="about-hero__socials" aria-label="<?php esc_attr_e( 'Social links', 'aibridze' ); ?>">
-			<a class="about-hero__social about-hero__social--facebook" href="<?php echo esc_url( $social_links['facebook'] ?: '#' ); ?>" aria-label="Facebook"><span aria-hidden="true">f</span></a>
-			<a class="about-hero__social about-hero__social--instagram" href="<?php echo esc_url( $social_links['instagram'] ?: '#' ); ?>" aria-label="Instagram"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/instagram.png' ) ); ?>" width="12" height="12" alt=""></a>
-			<a class="about-hero__social about-hero__social--linkedin" href="<?php echo esc_url( $social_links['linkedin'] ?: '#' ); ?>" aria-label="LinkedIn"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/linkedin.png' ) ); ?>" width="12" height="12" alt=""></a>
-			<a class="about-hero__social about-hero__social--x" href="<?php echo esc_url( $social_links['x'] ?: '#' ); ?>" aria-label="X"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/x.png' ) ); ?>" width="14" height="14" alt=""></a>
+			<a class="about-hero__social about-hero__social--facebook" href="<?php echo esc_url( $social_links['facebook'] ?: '#' ); ?>" aria-label="Facebook"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/facebook.svg' ) ); ?>" width="8" height="16" alt=""></a>
+			<a class="about-hero__social about-hero__social--instagram" href="<?php echo esc_url( $social_links['instagram'] ?: '#' ); ?>" aria-label="Instagram"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/instagram.svg' ) ); ?>" width="12" height="12" alt=""></a>
+			<a class="about-hero__social about-hero__social--linkedin" href="<?php echo esc_url( $social_links['linkedin'] ?: '#' ); ?>" aria-label="LinkedIn"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/linkedin.svg' ) ); ?>" width="12" height="12" alt=""></a>
+			<a class="about-hero__social about-hero__social--x" href="<?php echo esc_url( $social_links['x'] ?: '#' ); ?>" aria-label="X"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/x.svg' ) ); ?>" width="14" height="14" alt=""></a>
 		</div>
 	</div>
 </section>
@@ -35,7 +36,7 @@ $social_links = aibridze_social_links();
 		<article class="about-purpose__card about-purpose__card--mission">
 			<h2><?php esc_html_e( 'Mission', 'aibridze' ); ?></h2>
 			<p><?php esc_html_e( 'To help businesses solve complex challenges through AI development, intelligent automation, and custom software solutions that improve efficiency, accelerate innovation, and create measurable business value.', 'aibridze' ); ?></p>
-			<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/mission-graph-hires.png' ) ); ?>" width="1282" height="675" alt="">
+			<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/mission-background.png' ) ); ?>" width="855" height="1010" alt="">
 		</article>
 
 		<article class="about-purpose__card about-purpose__card--vision">
@@ -54,7 +55,7 @@ $social_links = aibridze_social_links();
 
 			<article class="about-purpose__review">
 				<p><?php esc_html_e( 'Behind every number is a challenge solved, an idea brought to life, and real business value created.', 'aibridze' ); ?></p>
-				<img class="about-purpose__hand" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/partnership-hand-hires.png' ) ); ?>" width="1024" height="827" alt="">
+				<img class="about-purpose__hand" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/partnership-hand.png' ) ); ?>" width="193" height="271" alt="">
 				<img class="about-purpose__clutch" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/clutch-review-hires.png' ) ); ?>" width="619" height="139" alt="Reviewed on Clutch, 5.0 rating">
 			</article>
 		</div>
@@ -114,15 +115,15 @@ $social_links = aibridze_social_links();
 		<div class="about-technologies__list" aria-label="<?php esc_attr_e( 'Technologies we use', 'aibridze' ); ?>">
 			<?php
 			$technologies = array(
-				array( 'OpenAI', 'tech-openai.png' ),
-				array( 'Claude', 'tech-claude.png' ),
-				array( 'Gemini', 'tech-gemini.png' ),
-				array( 'Python', 'tech-python.png' ),
-				array( 'React', 'tech-react.png' ),
-				array( 'Next.js', 'tech-nextjs.png' ),
-				array( 'Flutter', 'tech-flutter.png' ),
-				array( 'AWS', 'tech-aws.png' ),
-				array( 'Azure', 'tech-azure.png' ),
+				array( 'OpenAI', 'tech-openai.svg' ),
+				array( 'Claude', 'tech-claude.svg' ),
+				array( 'Gemini', 'tech-gemini.svg' ),
+				array( 'Python', 'tech-python.svg' ),
+				array( 'React', 'tech-react.svg' ),
+				array( 'Next.js', 'tech-nextjs.svg' ),
+				array( 'Flutter', 'tech-flutter.svg' ),
+				array( 'AWS', 'tech-aws.svg' ),
+				array( 'Azure', 'tech-azure.svg' ),
 			);
 			foreach ( $technologies as $technology ) :
 				?>

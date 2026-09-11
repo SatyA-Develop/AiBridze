@@ -7,7 +7,8 @@
   const cards = [...section.querySelectorAll('[data-portfolio-card]')];
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   if (!region || !viewport || !cards.length) return;
-  let frame = 0, active = -1, step = 0, top = 0, animated = false;
+  let frame = 0, active = -1, step = 0, top = 0, introHold = 0, animated = false;
+  let transitionFrame = 0, transitioning = false, lastWheel = -Infinity, settleUntil = 0;
   const clamp = (value) => Math.max(0, Math.min(1, value));
   const select = (index) => {
     if (index === active) return;
@@ -29,7 +30,9 @@
     const cover = clamp((top + coverDistance - regionTop) / coverDistance);
     heading?.style.setProperty('--portfolio-heading-scale', String(1 - cover * 0.35));
     heading?.style.setProperty('--portfolio-heading-squeeze', String(1 - cover * 0.5));
-    const raw = Math.max(0, Math.min(cards.length - 1, (top - regionTop) / step));
+    // Hold the first project after it covers the heading before starting the wipes.
+    let raw = Math.max(0, Math.min(cards.length - 1, (top - regionTop - introHold) / step));
+    if (Math.abs(raw - Math.round(raw)) * step < 1) raw = Math.round(raw);
     const current = Math.min(cards.length - 1, Math.floor(raw));
     const phase = raw - current;
     // The incoming image reaches the screen center before its details switch.
@@ -43,16 +46,74 @@
     });
   };
   const requestUpdate = () => { if (!frame) frame = requestAnimationFrame(update); };
+  const transitionTo = (target) => {
+    const from = window.scrollY;
+    const started = performance.now();
+    transitioning = true;
+    const tick = (now) => {
+      const progress = clamp((now - started) / 650);
+      const eased = progress < 0.5 ? 4 * progress ** 3 : 1 - (-2 * progress + 2) ** 3 / 2;
+      window.scrollTo({ top: from + (target - from) * eased, behavior: 'instant' });
+      update();
+      if (progress < 1) transitionFrame = requestAnimationFrame(tick);
+      else {
+        transitionFrame = 0;
+        transitioning = false;
+        settleUntil = now + 180;
+      }
+    };
+    transitionFrame = requestAnimationFrame(tick);
+  };
+  window.addEventListener('wheel', (event) => {
+    if (!animated || event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY) || !event.deltaY) return;
+    if (document.querySelector('dialog[open], .consultation-modal.is-open')) return;
+    const now = performance.now();
+    const continuingGesture = now - lastWheel < 220;
+    const start = window.scrollY + region.getBoundingClientRect().top - top + introHold;
+    const end = start + step * (cards.length - 1);
+    const y = window.scrollY;
+    const direction = Math.sign(event.deltaY);
+    if (transitioning) { lastWheel = now; event.preventDefault(); return; }
+    const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1);
+    const coverDistance = (heading?.offsetHeight || 144) + 90;
+    // Cover the heading as its own step, with the first image fully intact.
+    // Browser scroll positions may round fractional layout coordinates; use
+    // the same tolerance here as below so entry cannot trap the next wheel.
+    const entering = direction > 0 && y < start - 2 &&
+      (y >= start - introHold - coverDistance || y + delta >= start);
+    const returning = direction < 0 && y > end + 2 && y + delta <= end;
+    if (entering || returning) {
+      lastWheel = now;
+      event.preventDefault();
+      transitionTo(entering ? start : end);
+      return;
+    }
+    if (y < start - 2 || y > end + 2) return;
+    lastWheel = now;
+    const index = Math.round((y - start) / step);
+    const next = index + direction;
+    if (next < 0 || next >= cards.length) return;
+    // Briefly absorb momentum after a wipe, but never renew this deadline on
+    // wheel events: a continuous scroll must still advance the next project.
+    if (continuingGesture && now < settleUntil) { event.preventDefault(); return; }
+    event.preventDefault();
+    transitionTo(start + next * step);
+  }, { passive: false });
   const measure = () => {
+    cancelAnimationFrame(transitionFrame);
+    transitioning = false;
+    lastWheel = -Infinity;
+    settleUntil = 0;
     animated = innerWidth > 1000 && innerHeight > 680 && !reducedMotion.matches && cards.length > 1;
     section.classList.toggle('is-scroll-animated', animated);
     top = (document.querySelector('[data-site-header]')?.offsetHeight || 0) + 16;
     // One viewport of scroll drives each wipe; the change occurs at its center
     // crossing rather than after an additional bottom-of-screen delay.
     step = innerHeight;
+    introHold = Math.min(320, Math.max(200, innerHeight * 0.3));
     viewport.style.setProperty('--portfolio-top', `${top}px`);
     section.style.setProperty('--portfolio-top', `${top}px`);
-    if (animated) region.style.height = `${viewport.offsetHeight + step * (cards.length - 1)}px`;
+    if (animated) region.style.height = `${viewport.offsetHeight + introHold + step * (cards.length - 1)}px`;
     else {
       region.style.removeProperty('height');
       heading?.style.removeProperty('--portfolio-heading-scale');

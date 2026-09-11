@@ -42,7 +42,7 @@
 				<li class="menu-item"><a href="<?php echo esc_url( aibridze_page_url( 'about-us', '/about-us/' ) ); ?>"<?php echo aibridze_navigation_attributes( aibridze_page_url( 'about-us', '/about-us/' ), 'about-us' ); ?>>About Us</a></li>
 				<li class="menu-item menu-item--studio">
 					<?php $ai_studio = get_page_by_path( 'ai-studio', OBJECT, array( 'page', 'service' ) ); ?>
-					<a href="<?php echo esc_url( $ai_studio ? get_permalink( $ai_studio ) : home_url( '/ai-studio/' ) ); ?>"<?php echo aibridze_navigation_attributes( $ai_studio ? get_permalink( $ai_studio ) : home_url( '/ai-studio/' ), 'ai-studio' ); ?>><img class="ai-studio-icon" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/ai-studio-star.png' ) ); ?>" width="24" height="24" alt=""> AI Studio</a>
+					<a href="<?php echo esc_url( $ai_studio ? get_permalink( $ai_studio ) : home_url( '/ai-studio/' ) ); ?>"<?php echo aibridze_navigation_attributes( $ai_studio ? get_permalink( $ai_studio ) : home_url( '/ai-studio/' ), 'ai-studio' ); ?>><span class="ai-studio-icon" data-ai-studio-animation="<?php echo esc_url( get_theme_file_uri( '/assets/animations/ai-studio.json' ) ); ?>" aria-hidden="true"></span> AI Studio</a>
 				</li>
 			</ul>
 

@@ -10,6 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 require_once get_theme_file_path( '/inc/service-page-fields.php' );
+require_once get_theme_file_path( '/inc/service-card-gif.php' );
 require_once get_theme_file_path( '/inc/service-category-page-fields.php' );
 require_once get_theme_file_path( '/inc/content-authors.php' );
 require_once get_theme_file_path( '/inc/vector-icons.php' );
@@ -144,12 +145,11 @@ function aibridze_assets(): void {
 	$service_detail_script_path = get_theme_file_path( '/assets/js/service-detail.js' );
 	wp_enqueue_style( 'aibridze-main', get_theme_file_uri( '/assets/css/main.css' ), array(), (string) filemtime( $style_path ) );
 	wp_enqueue_script( 'aibridze-carousel-autoplay', get_theme_file_uri( '/assets/js/carousel-autoplay.js' ), array(), (string) filemtime( get_theme_file_path( '/assets/js/carousel-autoplay.js' ) ), true );
-	wp_enqueue_script( 'aibridze-header', get_theme_file_uri( '/assets/js/header.js' ), array(), (string) filemtime( $script_path ), true );
+	wp_enqueue_script( 'aibridze-lottie', get_theme_file_uri( '/assets/js/vendor/lottie-light.min.js' ), array(), '5.12.2', true );
+	wp_enqueue_script( 'aibridze-header', get_theme_file_uri( '/assets/js/header.js' ), array( 'aibridze-lottie' ), (string) filemtime( $script_path ), true );
 	wp_enqueue_script( 'aibridze-footer', get_theme_file_uri( '/assets/js/footer.js' ), array(), (string) filemtime( $footer_script_path ), true );
-	// Administrators need normal browser tools when reviewing the site.
-	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_enqueue_script( 'aibridze-content-protection', get_theme_file_uri( '/assets/js/content-protection.js' ), array(), (string) filemtime( get_theme_file_path( '/assets/js/content-protection.js' ) ), true );
-	}
+	// Copy and browser shortcut restrictions are temporarily disabled for everyone.
+	wp_enqueue_script( 'aibridze-form-validation', get_theme_file_uri( '/assets/js/form-validation.js' ), array(), (string) filemtime( get_theme_file_path( '/assets/js/form-validation.js' ) ), true );
 	wp_enqueue_script( 'aibridze-consultation-modal', get_theme_file_uri( '/assets/js/consultation-modal.js' ), array(), (string) filemtime( $modal_script_path ), true );
 	wp_enqueue_script( 'aibridze-transformation', get_theme_file_uri( '/assets/js/transformation.js' ), array(), (string) filemtime( $transformation_script_path ), true );
 	wp_enqueue_script( 'aibridze-manual-cost', get_theme_file_uri( '/assets/js/manual-cost.js' ), array(), (string) filemtime( $manual_cost_script_path ), true );
@@ -645,7 +645,8 @@ function aibridze_submit_job_application(): void {
 	}
 
 	$name           = sanitize_text_field( wp_unslash( $_POST['full_name'] ?? '' ) );
-	$email          = sanitize_email( wp_unslash( $_POST['email'] ?? '' ) );
+	$email_raw      = trim( wp_unslash( $_POST['email'] ?? '' ) );
+	$email          = sanitize_email( $email_raw );
 	$phone          = sanitize_text_field( wp_unslash( $_POST['phone'] ?? '' ) );
 	$experience     = sanitize_text_field( wp_unslash( $_POST['years_experience'] ?? '' ) );
 	$current_ctc    = sanitize_text_field( wp_unslash( $_POST['current_ctc'] ?? '' ) );
@@ -656,7 +657,7 @@ function aibridze_submit_job_application(): void {
 	$valid_opportunity = 0 === $opportunity_id || ( $opportunity && 'opportunity' === $opportunity->post_type && 'publish' === $opportunity->post_status );
 	$role_title = 0 === $opportunity_id ? __( 'General Application', 'aibridze' ) : get_the_title( $opportunity_id );
 
-	if ( '' === $name || ! is_email( $email ) || '' === $phone || '' === $experience || ! $valid_opportunity || empty( $_POST['consent'] ) ) {
+	if ( '' === $name || ! is_email( $email_raw ) || $email !== $email_raw || '' === $phone || '' === $experience || ! $valid_opportunity || empty( $_POST['consent'] ) ) {
 		wp_send_json_error( array( 'message' => __( 'Please complete every required field and accept the consent statement.', 'aibridze' ) ), 422 );
 	}
 	if ( empty( $_FILES['resume']['tmp_name'] ) || ! empty( $_FILES['resume']['error'] ) || (int) $_FILES['resume']['size'] > 2 * MB_IN_BYTES ) {
@@ -1330,18 +1331,7 @@ function aibridze_seed_site_content(): void {
 		}
 	}
 
-	$dummy_videos = array(
-		get_theme_file_uri( '/assets/video/hero-ai-technology.mp4' ),
-		get_theme_file_uri( '/assets/video/can_you_color_similar_to_F_.mp4' ),
-		get_theme_file_uri( '/assets/video/hero-ai-technology.mp4' ),
-		get_theme_file_uri( '/assets/video/can_you_color_similar_to_F_.mp4' ),
-	);
-	foreach ( $dummy_videos as $video_order => $video_url ) {
-		$video_slug = 'video-testimonial-' . ( $video_order + 1 );
-		$video_post = get_page_by_path( $video_slug, OBJECT, 'video_testimonial' );
-		$video_id = $video_post ? $video_post->ID : wp_insert_post( array( 'post_title' => sprintf( 'Video Testimonial %d', $video_order + 1 ), 'post_name' => $video_slug, 'post_status' => 'publish', 'post_type' => 'video_testimonial', 'menu_order' => $video_order ) );
-		if ( ! is_wp_error( $video_id ) ) update_post_meta( $video_id, '_aibridze_video_url', $video_url );
-	}
+	// Video testimonials are managed in the CPT; never seed demo clips.
 
 	for ( $portfolio_order = 0; $portfolio_order < 6; $portfolio_order++ ) {
 		$portfolio_slug = 'kobil-super-app-' . ( $portfolio_order + 1 );
@@ -1449,7 +1439,8 @@ function aibridze_handle_consultation(): void {
 	}
 
 	$name        = sanitize_text_field( wp_unslash( $_POST['full_name'] ?? '' ) );
-	$email       = sanitize_email( wp_unslash( $_POST['email'] ?? '' ) );
+	$email_raw   = trim( wp_unslash( $_POST['email'] ?? '' ) );
+	$email       = sanitize_email( $email_raw );
 	$designation = sanitize_text_field( wp_unslash( $_POST['designation'] ?? '' ) );
 	$country_code = sanitize_text_field( wp_unslash( $_POST['country_code'] ?? '' ) );
 	$phone       = sanitize_text_field( wp_unslash( $_POST['phone'] ?? '' ) );
@@ -1457,7 +1448,7 @@ function aibridze_handle_consultation(): void {
 	$budget      = sanitize_text_field( wp_unslash( $_POST['budget'] ?? '' ) );
 	$message     = sanitize_textarea_field( wp_unslash( $_POST['message'] ?? '' ) );
 
-	if ( '' === $name || ! is_email( $email ) || '' === $message ) {
+	if ( '' === $name || ! is_email( $email_raw ) || $email !== $email_raw || '' === $message ) {
 		wp_safe_redirect( add_query_arg( 'consultation', 'invalid', $redirect ) );
 		exit;
 	}
@@ -1533,6 +1524,38 @@ function aibridze_customize_social_links( WP_Customize_Manager $customizer ): vo
 	}
 }
 add_action( 'customize_register', 'aibridze_customize_social_links' );
+
+/** Technology logos for the homepage services section. */
+function aibridze_technology_partners(): array {
+	return array(
+		'mongodb' => 'MongoDB',
+		'nvidia' => 'NVIDIA',
+		'twilio' => 'Twilio',
+		'google-cloud' => 'Google Cloud',
+		'aws' => 'AWS',
+		'microsoft-azure' => 'Microsoft Azure',
+	);
+}
+
+/** Keep service-section logos independent of customer logos. */
+function aibridze_customize_technology_partners( WP_Customize_Manager $customizer ): void {
+	$customizer->add_section( 'aibridze_technology_partners', array(
+		'title' => __( 'Homepage Technology Partners', 'aibridze' ),
+		'priority' => 131,
+	) );
+	foreach ( aibridze_technology_partners() as $slug => $label ) {
+		$setting = 'aibridze_technology_partner_' . $slug;
+		$customizer->add_setting( $setting, array(
+			'default' => get_theme_file_uri( '/assets/images/technology-partners/' . $slug . '.png' ),
+			'sanitize_callback' => 'esc_url_raw',
+		) );
+		$customizer->add_control( new WP_Customize_Image_Control( $customizer, $setting, array(
+			'label' => $label,
+			'section' => 'aibridze_technology_partners',
+		) ) );
+	}
+}
+add_action( 'customize_register', 'aibridze_customize_technology_partners' );
 
 /**
  * Get the dashboard-managed social profiles used across the theme.

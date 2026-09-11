@@ -87,5 +87,5 @@
   if (quotes.length > 1) window.aibridzeAutoplay(section.querySelector('[data-story-quotes]'), () => {
     quoteIndex = (quoteIndex + 1) % quotes.length;
     renderQuotes();
-  }, 5200);
+  }, 3500);
 })();

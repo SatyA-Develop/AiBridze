@@ -18,6 +18,9 @@
       button.setAttribute('aria-expanded', String(open));
       answer.inert = !open;
       answer.hidden = false;
+      // Animate to the same natural box used after the animation is removed.
+      // scrollHeight rounds to integers and can differ from the rendered height.
+      const endHeight = open ? answer.getBoundingClientRect().height : 0;
       if (reducedMotion.matches || !answer.animate) {
         answer.hidden = !open;
         updateEdges();
@@ -25,7 +28,7 @@
       }
       const animation = answer.animate([
         { height: `${startHeight}px`, opacity: startOpacity },
-        { height: `${open ? answer.scrollHeight : 0}px`, opacity: open ? 1 : 0 }
+        { height: `${endHeight}px`, opacity: open ? 1 : 0 }
       ], { duration: 260, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'both' });
       animations.set(answer, animation);
       animation.onfinish = () => {

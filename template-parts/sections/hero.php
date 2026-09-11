@@ -16,9 +16,8 @@ $hero_video_url  = add_query_arg( 'ver', (string) filemtime( $hero_video_path ),
 ?>
 <section class="hero" aria-labelledby="hero-title">
 	<div class="hero__stage" data-hero-stage>
-		<video class="hero__video" data-desktop-src="<?php echo esc_url( $hero_video_url ); ?>" muted loop playsinline preload="none" poster="<?php echo esc_url( get_theme_file_uri( '/assets/images/hero-logistics-port.webp' ) ); ?>" aria-hidden="true">
+		<video class="hero__video" data-hero-src="<?php echo esc_url( $hero_video_url ); ?>" autoplay muted loop playsinline preload="none" poster="<?php echo esc_url( get_theme_file_uri( '/assets/images/hero-logistics-port.webp' ) ); ?>" aria-hidden="true">
 		</video>
-		<img class="hero__mobile-image" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/hero-mobile.webp' ) ); ?>" alt="" aria-hidden="true">
 		<div class="container hero__container">
 			<div class="hero__content">
 			<h1 class="hero__title" id="hero-title"<?php echo 'Transform Your Business with Custom AI Software Development' === $title ? ' aria-label="' . esc_attr( $title ) . '"' : ''; ?>>
@@ -44,6 +43,7 @@ $hero_video_url  = add_query_arg( 'ver', (string) filemtime( $hero_video_path ),
 				'template-parts/components/button',
 				null,
 				array(
+					'class' => 'button--hero',
 					'label' => $button_text,
 					'url'   => $button_url,
 				)

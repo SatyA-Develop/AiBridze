@@ -38,10 +38,10 @@ $social_links = aibridze_social_links();
 					<a href="mailto:info@aibridze.com"><svg class="site-footer__contact-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>info@aibridze.com</span></a>
 				</address>
 				<div class="site-footer__socials" aria-label="<?php esc_attr_e( 'Social links', 'aibridze' ); ?>">
-					<a href="<?php echo esc_url( $social_links['facebook'] ?: '#' ); ?>" aria-label="Facebook"><span aria-hidden="true">f</span></a>
-					<a href="<?php echo esc_url( $social_links['instagram'] ?: '#' ); ?>" aria-label="Instagram"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/instagram.png' ) ); ?>" width="12" height="12" alt=""></a>
-					<a href="<?php echo esc_url( $social_links['linkedin'] ?: '#' ); ?>" aria-label="LinkedIn"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/linkedin.png' ) ); ?>" width="12" height="12" alt=""></a>
-					<a href="<?php echo esc_url( $social_links['x'] ?: '#' ); ?>" aria-label="X"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/x.png' ) ); ?>" width="14" height="14" alt=""></a>
+					<a href="<?php echo esc_url( $social_links['facebook'] ?: '#' ); ?>" aria-label="Facebook"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/facebook.svg' ) ); ?>" width="8" height="16" alt=""></a>
+					<a href="<?php echo esc_url( $social_links['instagram'] ?: '#' ); ?>" aria-label="Instagram"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/instagram.svg' ) ); ?>" width="12" height="12" alt=""></a>
+					<a href="<?php echo esc_url( $social_links['linkedin'] ?: '#' ); ?>" aria-label="LinkedIn"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/linkedin.svg' ) ); ?>" width="12" height="12" alt=""></a>
+					<a href="<?php echo esc_url( $social_links['x'] ?: '#' ); ?>" aria-label="X"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/footer/x.svg' ) ); ?>" width="14" height="14" alt=""></a>
 				</div>
 			</div>
 

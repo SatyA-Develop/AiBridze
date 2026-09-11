@@ -28,15 +28,7 @@ $category_descriptions = array(
 	'web-app-development'      => 'Create secure, scalable applications with modern technologies.',
 	'ui-ux-design'             => 'Design intuitive digital experiences people enjoy using.',
 );
-$partners = get_posts(
-	array(
-		'post_type'      => 'trusted_business',
-		'posts_per_page' => 3,
-		'post_status'    => 'publish',
-		'orderby'        => array( 'menu_order' => 'ASC' ),
-	)
-);
-$partner_fallbacks = array( '/assets/images/consultation/company-logo.png', '/assets/images/footer/goodfirms.png', '/assets/images/footer/clutch.png' );
+$partners = aibridze_technology_partners();
 ?>
 <section class="services-stack" id="home-services" data-services-stack aria-labelledby="services-stack-title">
 	<div class="services-stack__container">
@@ -49,10 +41,10 @@ $partner_fallbacks = array( '/assets/images/consultation/company-logo.png', '/as
 					<div class="services-stack__partner-list">
 						<?php for ( $partner_copy = 0; $partner_copy < 2; $partner_copy++ ) : ?>
 							<div class="services-stack__partner-set"<?php echo 1 === $partner_copy ? ' aria-hidden="true"' : ''; ?>>
-								<?php foreach ( $partners as $index => $partner ) :
-									$partner_logo = has_post_thumbnail( $partner ) ? get_the_post_thumbnail_url( $partner, 'medium' ) : get_theme_file_uri( $partner_fallbacks[ $index % count( $partner_fallbacks ) ] );
+								<?php foreach ( $partners as $slug => $partner ) :
+									$partner_logo = get_theme_mod( 'aibridze_technology_partner_' . $slug, get_theme_file_uri( '/assets/images/technology-partners/' . $slug . '.png' ) );
 									?>
-									<div class="services-stack__partner"><img src="<?php echo esc_url( $partner_logo ); ?>" alt="<?php echo esc_attr( get_the_title( $partner ) ); ?>"></div>
+									<div class="services-stack__partner services-stack__partner--<?php echo esc_attr( $slug ); ?>"><img src="<?php echo esc_url( $partner_logo ); ?>" alt="<?php echo esc_attr( $partner ); ?>"></div>
 								<?php endforeach; ?>
 							</div>
 						<?php endfor; ?>
@@ -65,16 +57,17 @@ $partner_fallbacks = array( '/assets/images/consultation/company-logo.png', '/as
 			<?php foreach ( $categories as $index => $category ) :
 				$image_id   = (int) get_term_meta( $category->term_id, '_aibridze_featured_image_id', true );
 				$image_url  = $image_id ? wp_get_attachment_image_url( $image_id, 'large' ) : get_theme_file_uri( $category_fallbacks[ $category->slug ] ?? '/assets/images/service-categories/technology-consulting.png' );
+				$image_url = aibridze_service_card_gif_url( $category->term_id ) ?: $image_url;
 				$description = $category->description ?: ( $category_descriptions[ $category->slug ] ?? 'Technology solutions designed to move your business forward.' );
 				?>
 				<article class="service-stack-card" data-service-stack-card style="--card-index: <?php echo esc_attr( $index ); ?>">
 					<div class="service-stack-card__content">
 						<span class="service-stack-card__eyebrow section-callout">We Offer</span>
-						<h3><?php echo esc_html( $category->name ); ?></h3>
+						<h3><?php echo esc_html( aibridze_service_category_display_name( $category ) ); ?></h3>
 						<p><?php echo esc_html( $description ); ?></p>
-						<a href="<?php echo esc_url( get_term_link( $category ) ); ?>">View Services <img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/service-categories/button-arrow.png' ) ); ?>" width="12" height="12" alt=""></a>
+						<?php get_template_part( 'template-parts/components/card-button', null, array( 'url' => get_term_link( $category ), 'label' => __( 'View Services', 'aibridze' ) ) ); ?>
 					</div>
-					<img class="service-stack-card__image" src="<?php echo esc_url( $image_url ); ?>" width="374" height="380" alt="">
+					<img class="service-stack-card__image" src="<?php echo esc_url( $image_url ); ?>" width="374" height="380" loading="lazy" decoding="async" alt="">
 				</article>
 			<?php endforeach; ?>
 		</div>
