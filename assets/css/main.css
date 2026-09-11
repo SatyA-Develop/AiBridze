@@ -9381,6 +9381,7 @@ body.admin-bar .site-header {
   .site-footer__legal {
     align-items: center;
     flex-direction: column;
+    order: 1;
     gap: 14px;
     text-align: center;
   }
