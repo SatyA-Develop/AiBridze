@@ -35,8 +35,24 @@
   };
 
   document.addEventListener('DOMContentLoaded', () => {
+    // Testimonial strips only advance when another card is outside the viewport.
+    document.querySelectorAll('[data-contact-video-track]').forEach(track => {
+      window.aibridzeAutoplay(track, () => {
+        const cards = [...track.children];
+        const end = track.scrollWidth - track.clientWidth;
+        if (cards.length < 2 || end <= 2) return;
+        const origin = cards[0].getBoundingClientRect().left;
+        const next = cards.map(card => card.getBoundingClientRect().left - origin)
+          .find(position => position > track.scrollLeft + 2);
+        track.scrollTo({
+          left: track.scrollLeft >= end - 2 ? 0 : Math.min(end, next ?? end),
+          behavior: 'smooth'
+        });
+      }, 3500);
+    });
     const selectors = '[data-carousel-track], [data-category-scroller], [data-contact-video-track], .service-group__grid, .service-process__track, .service-capabilities__track, .service-solutions__track, .service-expertise--rag__track, .service-tech-stack__groups, .service-tech-stack__items, .service-industries__track, .category-value-grid, .category-value-viewport';
     document.querySelectorAll(selectors).forEach(track => {
+      if (track.matches('[data-contact-video-track]')) return;
       const section = track.closest('section') || track;
       window.aibridzeAutoplay(section, () => {
         const end = track.scrollWidth - track.clientWidth;
