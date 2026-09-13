@@ -14697,8 +14697,23 @@ form input:is(:autofill, :-webkit-autofill) {
   .about-technologies__pill { flex: 0 1 160px; width: auto; min-width: 0; justify-content: center; padding-inline: 12px; }
 }
 @media (max-width: 700px) {
-  .about-technologies__pill { padding: 8px 16px 8px 12px; gap: 10px; }
-  .about-technologies__pill img { flex-basis: 24px; width: 24px; height: 24px; }
+  .about-technologies__panel { width: 100%; height: auto; }
+  .about-technologies__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 8px;
+  }
+  .about-technologies__pill {
+    flex: 1 1 104px;
+    width: auto;
+    min-width: 104px;
+    max-width: 160px;
+    padding: 8px;
+    gap: 6px;
+  }
+  .about-technologies__pill img { flex-basis: 22px; width: 22px; height: 22px; }
+  .about-technologies__pill span { font-size: 14px; }
 }
 
 /* One hero CTA design across Home, About Us and Contact Us. */
