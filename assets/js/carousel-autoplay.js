@@ -15,7 +15,7 @@
       const playing = [...element.querySelectorAll('video')].some(video => !video.paused);
       const modalOpen = document.querySelector('.consultation-modal.is-open, dialog[open]');
       if (visible && !document.hidden && !reducedMotion.matches && !hovered && !touching &&
-          !element.contains(document.activeElement) && !playing &&
+          !(element.contains(document.activeElement) && document.activeElement.matches(':focus-visible')) && !playing &&
           (!modalOpen || modalOpen.contains(element))) advance();
       schedule();
     };
@@ -27,14 +27,15 @@
     element.addEventListener('pointerleave', () => { hovered = false; schedule(); });
     element.addEventListener('pointerdown', () => { touching = true; schedule(); });
     window.addEventListener('pointerup', () => { if (touching) { touching = false; schedule(); } });
-    element.addEventListener('pointercancel', () => { touching = false; schedule(); });
+    window.addEventListener('pointercancel', () => { touching = false; schedule(); });
+    window.addEventListener('blur', () => { touching = false; hovered = false; schedule(); });
     ['click', 'focusin', 'focusout', 'wheel'].forEach(type => element.addEventListener(type, schedule, { passive: true }));
     document.addEventListener('visibilitychange', schedule);
     reducedMotion.addEventListener('change', schedule);
     schedule();
   };
 
-  document.addEventListener('DOMContentLoaded', () => {
+  const initialize = () => {
     // Testimonial strips only advance when another card is outside the viewport.
     document.querySelectorAll('[data-contact-video-track]').forEach(track => {
       window.aibridzeAutoplay(track, () => {
@@ -89,5 +90,8 @@
         });
       }, { passive: true });
     });
-  });
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize, { once: true });
+  } else initialize();
 })();
