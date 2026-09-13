@@ -14271,6 +14271,7 @@ body :is(.section-callout, [class*="__eyebrow"], .category-kicker, .service-kick
 .faq-contact__security strong,
 .contact-project__security strong,
 .consultation-modal__security strong { font-weight: 700; }
+.consultation-modal__security > img { width: 20px; height: 20px; flex: 0 0 20px; object-fit: contain; }
 @media (min-width: 701px) and (max-width: 1100px) {
   .faq-contact__faqs > h2 { font-size: 32px; line-height: 1.25; }
 }

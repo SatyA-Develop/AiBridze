@@ -73,7 +73,7 @@ $status      = isset( $_GET['consultation'] ) ? sanitize_key( wp_unslash( $_GET[
 					<button class="consultation-form__submit" type="submit"><?php esc_html_e( 'Submit', 'aibridze' ); ?></button>
 				</form>
 			</div>
-			<div class="consultation-modal__security"><span aria-hidden="true">🛡️</span> <span><?php esc_html_e( 'Share with Confidence.', 'aibridze' ); ?> <strong><?php esc_html_e( 'Fully NDA-Protected.', 'aibridze' ); ?></strong></span></div>
+			<div class="consultation-modal__security"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/consultation/nda-shield.svg' ) ); ?>" width="20" height="20" alt="" aria-hidden="true"> <span><?php esc_html_e( 'Share with Confidence.', 'aibridze' ); ?> <strong><?php esc_html_e( 'Fully NDA-Protected.', 'aibridze' ); ?></strong></span></div>
 		</div>
 	</section>
 </div>
