@@ -11,6 +11,35 @@
 
     let index = 0;
     let drag;
+    let loopWidth = 0;
+    let settleTimer;
+    const copies = [];
+    const setupLoop = () => {
+      copies.forEach(card => card.remove());
+      copies.length = 0;
+      loopWidth = 0;
+      if (!freeScroll.matches) return;
+      const copy = card => {
+        const clone = card.cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        clone.inert = true;
+        clone.removeAttribute('id');
+        clone.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
+        copies.push(clone);
+        return clone;
+      };
+      track.prepend(...cards.map(copy));
+      track.append(...cards.map(copy));
+      loopWidth = cards[0].getBoundingClientRect().left - copies[0].getBoundingClientRect().left;
+      viewport.scrollLeft = loopWidth;
+    };
+    const normalizeLoop = () => {
+      if (!freeScroll.matches || !loopWidth || drag) return;
+      const left = viewport.scrollLeft;
+      if (left < loopWidth || left >= loopWidth * 2) {
+        viewport.scrollLeft = loopWidth + ((left - loopWidth) % loopWidth + loopWidth) % loopWidth;
+      }
+    };
     const move = (direction) => {
       if (freeScroll.matches) {
         const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
@@ -30,10 +59,8 @@
       const distance = cards[0].getBoundingClientRect().width + gap;
       if (freeScroll.matches) {
         track.style.transform = 'none';
-        const atStart = viewport.scrollLeft <= 1;
-        const atEnd = viewport.scrollLeft >= viewport.scrollWidth - viewport.clientWidth - 1;
-        previousButtons.forEach(button => { button.disabled = atStart; button.classList.toggle('is-highlighted', atEnd && !atStart); });
-        nextButtons.forEach(button => { button.disabled = atEnd; button.classList.toggle('is-highlighted', !atEnd); });
+        previousButtons.forEach(button => { button.disabled = false; button.classList.remove('is-highlighted'); });
+        nextButtons.forEach(button => { button.disabled = false; button.classList.add('is-highlighted'); });
         cards.forEach(card => card.removeAttribute('aria-hidden'));
         return;
       }
@@ -61,7 +88,11 @@
       move(1);
     }));
 
-    viewport.addEventListener('scroll', () => { if (freeScroll.matches) render(); }, { passive: true });
+    viewport.addEventListener('scroll', () => {
+      if (!freeScroll.matches) return;
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(normalizeLoop, 180);
+    }, { passive: true });
     // Touch uses native momentum scrolling; mouse/pen users can drag the same strip.
     viewport.addEventListener('pointerdown', event => {
       if (!freeScroll.matches || event.pointerType === 'touch' || event.button !== 0) return;
@@ -77,16 +108,24 @@
     freeScroll.addEventListener('change', () => {
       index = 0;
       viewport.scrollLeft = 0;
+      setupLoop();
       render();
     });
 
-    window.addEventListener('resize', render, { passive: true });
+    let lastWidth = viewport.clientWidth;
+    window.addEventListener('resize', () => {
+      if (viewport.clientWidth !== lastWidth) {
+        lastWidth = viewport.clientWidth;
+        setupLoop();
+      }
+      render();
+    }, { passive: true });
+    setupLoop();
     render();
     window.aibridzeAutoplay(section, () => {
       if (freeScroll.matches) {
-        if (viewport.scrollLeft >= viewport.scrollWidth - viewport.clientWidth - 1) {
-          viewport.scrollTo({ left: 0, behavior: 'smooth' });
-        } else move(1);
+        normalizeLoop();
+        move(1);
         return;
       }
       const visibleCards = window.innerWidth <= 700 ? 1 : window.innerWidth <= 1100 ? 2 : 3;
