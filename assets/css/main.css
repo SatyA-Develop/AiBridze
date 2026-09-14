@@ -2441,16 +2441,11 @@ body.has-consultation-modal {
   transition: background-color 350ms ease-in-out, border-color 350ms ease-in-out;
 }
 
+.career-culture__card:hover,
+.career-culture__card:active,
 .career-culture__card:focus-within {
   background: #444;
   border-color: #444;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .career-culture__card:hover {
-    background: #444;
-    border-color: #444;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
