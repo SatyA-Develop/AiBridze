@@ -6607,7 +6607,7 @@ a:hover > .white-cta-arrow, a:focus-visible > .white-cta-arrow { transform: tran
   cursor: pointer;
 }
 
-.blog-categories__navigation > button:last-child {
+.blog-categories__navigation > button:not(:disabled) {
   border-color: #3477f2;
   color: #fff;
   background: #3477f2;
@@ -14743,7 +14743,17 @@ html body .button.button--hero .button__icon img {
   object-fit: contain;
 }
 
-.blog-categories__navigation > button:disabled { opacity: .3; cursor: not-allowed; pointer-events: none; }
+.blog-categories__navigation > button:disabled {
+  background: #fff;
+  border-color: #dedfe4;
+  color: #6a6c76;
+  opacity: 1;
+  cursor: not-allowed;
+}
+.blog-categories__navigation > button:focus-visible {
+  outline: 2px solid #3477f2;
+  outline-offset: 3px;
+}
 
 .faq-contact__form .form-field-error { display: block; margin-top: 6px; color: #ffb4b4; font: 400 13px/1.5 'Plus Jakarta Sans', sans-serif; }
 .faq-contact__form .form-field-error[hidden] { display: none; }
