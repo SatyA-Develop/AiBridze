@@ -26,7 +26,7 @@ $career_reasons = array(
 		<div class="careers-hero__inner">
 			<h1 id="careers-hero-title"><?php esc_html_e( 'Build What’s Next With AiBridze', 'aibridze' ); ?></h1>
 			<p><?php esc_html_e( 'At AiBridze, we bring together AI, software engineering, creativity and problem-solving to build technology that solves real business challenges. Join a team where your ideas matter, your skills keep evolving, and your work contributes to products and solutions used in the real world.', 'aibridze' ); ?></p>
-			<a class="careers-hero__button" href="#open-opportunities"><?php esc_html_e( 'View Open Opportunities', 'aibridze' ); ?><span aria-hidden="true"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/button-arrow.svg' ) ); ?>" width="16" height="16" alt=""></span></a>
+			<?php get_template_part( 'template-parts/components/button', null, array( 'class' => 'button--hero', 'label' => __( 'View Open Opportunities', 'aibridze' ), 'url' => '#open-opportunities' ) ); ?>
 		</div>
 	</section>
 
