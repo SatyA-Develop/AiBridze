@@ -8,7 +8,7 @@
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   if (!region || !viewport || !cards.length) return;
   let frame = 0, active = -1, step = 0, top = 0, introHold = 0, animated = false;
-  let transitionFrame = 0, transitioning = false, lastWheel = -Infinity, settleUntil = 0;
+  let transitionFrame = 0, transitioning = false, lastWheel = -Infinity;
   const clamp = (value) => Math.max(0, Math.min(1, value));
   const select = (index) => {
     if (index === active) return;
@@ -35,10 +35,9 @@
     if (Math.abs(raw - Math.round(raw)) * step < 1) raw = Math.round(raw);
     const current = Math.min(cards.length - 1, Math.floor(raw));
     const phase = raw - current;
-    // The incoming image reaches the screen center before its details switch.
-    const center = innerHeight / 2;
-    const centerReveal = clamp((top + viewport.offsetHeight - center) / viewport.offsetHeight);
-    select(Math.min(cards.length - 1, current + (phase >= centerReveal ? 1 : 0)));
+    // Switch the left-side details at the midpoint of the image wipe,
+    // regardless of monitor height or the card's position on screen.
+    select(Math.min(cards.length - 1, current + (phase >= 0.5 ? 1 : 0)));
     cards.forEach((card, index) => {
       const reveal = index === 0 ? 1 : clamp(raw - index + 1);
       card.style.setProperty('--portfolio-image-clip', `${(1 - reveal) * 100}%`);
@@ -51,7 +50,7 @@
     const started = performance.now();
     transitioning = true;
     const tick = (now) => {
-      const progress = clamp((now - started) / 1200);
+      const progress = clamp((now - started) / 850);
       const eased = (1 - Math.cos(Math.PI * progress)) / 2;
       window.scrollTo({ top: from + (target - from) * eased, behavior: 'instant' });
       update();
@@ -59,7 +58,6 @@
       else {
         transitionFrame = 0;
         transitioning = false;
-        settleUntil = now + 500;
       }
     };
     transitionFrame = requestAnimationFrame(tick);
@@ -68,7 +66,7 @@
     if (!animated || event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY) || !event.deltaY) return;
     if (document.querySelector('dialog[open], .consultation-modal.is-open')) return;
     const now = performance.now();
-    const continuingGesture = now - lastWheel < 350;
+    const continuingGesture = now - lastWheel < 160;
     const start = window.scrollY + region.getBoundingClientRect().top - top + introHold;
     const end = start + step * (cards.length - 1);
     const y = window.scrollY;
@@ -95,7 +93,7 @@
     if (next < 0 || next >= cards.length) return;
     // One project per gesture: absorb the entire momentum tail, even after
     // the animation finishes. A short quiet interval enables the next swipe.
-    if (continuingGesture || now < settleUntil) { event.preventDefault(); return; }
+    if (continuingGesture) { event.preventDefault(); return; }
     event.preventDefault();
     transitionTo(start + next * step);
   }, { passive: false });
@@ -103,7 +101,6 @@
     cancelAnimationFrame(transitionFrame);
     transitioning = false;
     lastWheel = -Infinity;
-    settleUntil = 0;
     animated = innerWidth > 1000 && innerHeight > 680 && !reducedMotion.matches && cards.length > 1;
     section.classList.toggle('is-scroll-animated', animated);
     top = (document.querySelector('[data-site-header]')?.offsetHeight || 0) + 16;
