@@ -3865,7 +3865,7 @@ body.has-consultation-modal {
   overflow: hidden;
   align-items: stretch;
   border-radius: 20px;
-  background: #e2fcff url("../images/about/careers-background.webp") center / cover no-repeat;
+  background: #e2fcff url("../images/about/build-technology-background.webp") center / cover no-repeat;
 }
 
 .about-careers__panel::before {
@@ -14046,14 +14046,7 @@ body :is(.section-callout, [class*="__eyebrow"], .category-kicker, .service-kick
 
 /* Careers banner: reserve separate space for copy and the diagonal photo. */
 .about-careers__panel { height: auto; min-height: 238px; }
-.about-careers__panel::before {
-  height: auto;
-  opacity: 1;
-  background-image: linear-gradient(#3477f20a, #3477f20a), linear-gradient(#3477f20a, #3477f20a), linear-gradient(#3477f20a, #3477f20a), linear-gradient(#3477f20a, #3477f20a);
-  background-size: 6% 34%, 12% 28%, 12% 28%, 6% 34%;
-  background-position: 36% 6%, 11% 100%, 39% 100%, 4% 62%;
-  background-repeat: no-repeat;
-}
+.about-careers__panel::before { content: none; }
 .about-careers__copy { box-sizing: border-box; width: 57%; height: auto; padding: 32px; }
 .about-careers__copy h2, .about-careers__copy p { width: 100%; }
 .about-careers__copy h2 { font-size: clamp(24px, 2.25vw, 32px); line-height: 1.2; }
