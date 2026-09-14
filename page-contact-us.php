@@ -42,7 +42,7 @@ get_header();
 					<label><span><?php esc_html_e( 'How can we help you?', 'aibridze' ); ?></span><textarea name="message" placeholder="Write Here..." rows="2" required></textarea></label>
 					<button type="submit"><span><?php esc_html_e( 'Submit', 'aibridze' ); ?></span></button>
 				</form>
-				<div class="contact-project__security"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/security-shield.png' ) ); ?>" width="22" height="22" alt=""><span><?php esc_html_e( 'Share with Confidence.', 'aibridze' ); ?> <strong><?php esc_html_e( 'Fully NDA-Protected.', 'aibridze' ); ?></strong></span></div>
+				<div class="contact-project__security"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/consultation/contact-nda-shield.svg' ) ); ?>" width="24" height="24" alt=""><span><?php esc_html_e( 'Share with Confidence.', 'aibridze' ); ?> <strong><?php esc_html_e( 'Fully NDA-Protected.', 'aibridze' ); ?></strong></span></div>
 			</div>
 		</div>
 	</section>

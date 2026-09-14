@@ -7166,7 +7166,7 @@ body.admin-bar .site-header {
 .contact-project__captcha small { color: #888; font-size: 8px; text-align: right; }
 .contact-project__form button { width: 200px; height: 48px; border: 0; border-radius: 40px; color: #fff; background: #3477f2; font: 600 16px/20px "Plus Jakarta Sans", sans-serif; cursor: pointer; }
 .contact-project__security { display: flex; align-items: center; gap: 10px; margin-top: 20px; font-size: 14px; line-height: 16px; }
-.contact-project__security img { width: 22px; height: 22px; object-fit: contain; }
+.contact-project__security img { width: 24px; height: 24px; flex: 0 0 24px; object-fit: contain; }
 
 .contact-videos {
   min-height: 688px;
