@@ -4815,11 +4815,18 @@ body.has-consultation-modal {
 }
 .customer-stories__showcase {
   display: grid;
-  grid-template-columns: 382px minmax(0, 810px);
+  grid-template-columns: 382px minmax(0, 1fr);
   gap: 50px;
   align-items: center;
   width: min(100%, calc(1242px + var(--wide-screen-growth)));
   margin-inline: auto;
+}
+@media (min-width: 1001px) {
+  .customer-stories__showcase {
+    box-sizing: border-box;
+    /* Include the rear cards' left overhang in the centered content bounds. */
+    padding-left: 40px;
+  }
 }
 
 .video-stack {
