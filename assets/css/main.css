@@ -13904,7 +13904,7 @@ body :is(.section-callout, [class*="__eyebrow"], .category-kicker, .service-kick
 }
 
 /* Desktop grids grow with the shared fluid containers. */
-@media (min-width: 1440px) {
+@media (min-width: 1921px) {
   .customer-stories__showcase {
     width: min(100%, calc(1242px + var(--wide-screen-growth)), 1740px);
     grid-template-columns: minmax(0, 382fr) minmax(0, 810fr);
@@ -14471,11 +14471,11 @@ form input:is(:autofill, :-webkit-autofill) {
   caret-color: var(--autofill-text);
 }
 
-/* Grow smoothly from 1320px at 1440px to 1728px at 1920px. */
+/* Standard desktop containers stay capped; fluid expansion starts above 1920px. */
 @media (min-width: 1440px) {
   body:has(:is(.hero, .about-hero, .contact-hero, .careers-page, .blog-archive-hero, .single-blog)) {
-    --container-width: calc(85vw + 96px);
-    --wide-screen-growth: max(0px, calc((100vw - 1440px) * .85));
+    --container-width: min(1440px, calc(100vw - 96px));
+    --wide-screen-growth: 0px;
   }
 
   .about-why, .about-technologies, .about-leadership, .about-team,
@@ -14539,6 +14539,13 @@ form input:is(:autofill, :-webkit-autofill) {
   .all-blog-posts__image { height: auto; aspect-ratio: 405 / 240; }
   .recent-posts__meta { flex-wrap: wrap; }
   .careers-reasons { height: auto; }
+}
+
+@media (min-width: 1921px) {
+  body:has(:is(.hero, .about-hero, .contact-hero, .careers-page, .blog-archive-hero, .single-blog)) {
+    --container-width: 90vw;
+    --wide-screen-growth: max(0px, calc(90vw - 1320px));
+  }
 }
 
 /* Ultrawide screens need proportional media and a readable text measure. */
