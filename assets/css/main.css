@@ -15094,3 +15094,36 @@ html body .industries-showcase .white-cta.industries-showcase__button {
   display: flex;
   margin-inline: auto;
 }
+
+/* Compact reference-style circular Industries gallery. */
+html body .industries-showcase { padding-block: 32px; }
+html body .industries-showcase__header { margin-bottom: 12px; }
+html body .industries-showcase .white-cta.industries-showcase__button { margin-top: 14px; }
+@media (min-width: 701px) {
+  html body .industries-showcase__viewport {
+    --ring-card-width: clamp(180px, 20vw, 360px);
+    --ring-card-height: clamp(240px, 24vw, 430px);
+    height: calc(var(--ring-card-height) * 1.2);
+  }
+}
+
+/* Keep the reference's edge shading without changing the card design. */
+@media (min-width: 701px) {
+  html body .industries-showcase__vignette {
+    width: calc(var(--ring-card-width) * 4.666667);
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    z-index: 20;
+    background: linear-gradient(90deg, #000 12%, transparent 40%, transparent 60%, #000 88%);
+  }
+}
+
+/* Keep About's benefit cards readable on large monitors. */
+@media (min-width: 1921px) {
+  html body .about-why__card h3 { font-size: clamp(22px, .98vw, 28px); }
+  html body .about-why__card p,
+  html body .about-why__footer p { font-size: clamp(20px, .84vw, 24px); line-height: 1.5; }
+  html body .about-why__card-copy { padding: clamp(24px, 1.15vw, 34px); height: auto; min-height: 0; }
+  html body .about-why__card > img { width: 100%; height: auto; }
+}

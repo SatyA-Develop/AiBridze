@@ -4,6 +4,27 @@
   const input = field.querySelector('[data-video-testimonial-input]');
   const preview = field.querySelector('[data-video-testimonial-preview]');
   const remove = field.querySelector('[data-video-testimonial-remove]');
+  const thumbnailInput = field.querySelector('[data-video-thumbnail-input]');
+  const thumbnailPreview = field.querySelector('[data-video-thumbnail-preview]');
+  const thumbnailRemove = field.querySelector('[data-video-thumbnail-remove]');
+  let thumbnailFrame;
+  field.querySelector('[data-video-thumbnail-select]').addEventListener('click', () => {
+    thumbnailFrame ||= wp.media({ title: 'Choose testimonial thumbnail', button: { text: 'Use this image' }, library: { type: 'image' }, multiple: false });
+    thumbnailFrame.off('select').on('select', () => {
+      const image = thumbnailFrame.state().get('selection').first().toJSON();
+      thumbnailInput.value = image.id;
+      thumbnailPreview.src = image.sizes?.medium?.url || image.url;
+      thumbnailPreview.hidden = false;
+      thumbnailRemove.hidden = false;
+    });
+    thumbnailFrame.open();
+  });
+  thumbnailRemove.addEventListener('click', () => {
+    thumbnailInput.value = '';
+    thumbnailPreview.removeAttribute('src');
+    thumbnailPreview.hidden = true;
+    thumbnailRemove.hidden = true;
+  });
   let frame;
   const external = field.querySelector('[data-video-testimonial-external]');
   const update = () => {

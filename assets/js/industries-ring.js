@@ -32,15 +32,6 @@
     const desktop = context.conditions.desktop;
     const clones = [];
     const cards = [...sourceCards];
-    // Fill the wider desktop arc without duplicating the mobile content.
-    if (desktop) {
-      while (cards.length < 18) {
-        const clone = sourceCards[cards.length % sourceCards.length].cloneNode(true);
-        ring.appendChild(clone);
-        clones.push(clone);
-        cards.push(clone);
-      }
-    }
 
     const links = cards.map((card) => {
       const link = document.createElement('div');
@@ -58,13 +49,13 @@
     let angleStep = 0;
     let built = false;
     let disposed = false;
+    let inView = false;
+    let resumeAt = 0;
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
 
-    const getVisibleArc = () => desktop ? angleStep * 3 : angleStep * 1.5;
-    const getCardOpacity = (angle) => {
-      const arc = getVisibleArc();
-      const fade = gsap.utils.clamp(0, 1, (arc - Math.abs(angle)) / (angleStep * 0.55));
-      return fade * fade * (3 - 2 * fade);
-    };
+    // Match the projected front face at the reference's radius/perspective ratio.
+    const getVisibleArc = () => Math.acos(-0.25) * 180 / Math.PI;
 
     const getBackgroundPosition = (index) => {
       const rotation = Number(gsap.getProperty(ring, 'rotationY')) || 0;
@@ -73,18 +64,17 @@
     };
 
     const updateLinks = (rotation) => {
-      const visibleArc = getVisibleArc();
       const viewportRect = viewport.getBoundingClientRect();
       cards.forEach((card, index) => {
         const cardRect = card.getBoundingClientRect();
-        const isVisible = Math.abs(gsap.utils.wrap(-180, 180, rotation - index * angleStep)) < visibleArc;
+        const isVisible = Math.abs(gsap.utils.wrap(-180, 180, rotation - index * angleStep)) < getVisibleArc();
         links[index].style.left = `${cardRect.left - viewportRect.left}px`;
         links[index].style.top = `${cardRect.top - viewportRect.top}px`;
         links[index].style.width = `${cardRect.width}px`;
         links[index].style.height = `${cardRect.height}px`;
         links[index].inert = !isVisible;
         gsap.set(links[index], {
-          autoAlpha: getCardOpacity(gsap.utils.wrap(-180, 180, rotation - index * angleStep)),
+          autoAlpha: isVisible ? 1 : 0,
           pointerEvents: isVisible ? 'auto' : 'none'
         });
       });
@@ -95,10 +85,8 @@
       const visibleArc = getVisibleArc();
       gsap.set(cards, {
         backgroundPosition: (index) => getBackgroundPosition(index),
-        autoAlpha: (index) => {
-          const angle = gsap.utils.wrap(-180, 180, rotation - index * angleStep);
-          return getCardOpacity(angle);
-        },
+        // The browser rotates each face into view; there is no slide-entry fade.
+        autoAlpha: 1,
         pointerEvents: (index) => {
           const angle = gsap.utils.wrap(-180, 180, rotation - index * angleStep);
           return Math.abs(angle) < visibleArc ? 'auto' : 'none';
@@ -113,11 +101,11 @@
       cardWidth = cards[0].offsetWidth;
       if (!cardWidth || !viewport.clientWidth) return;
       angleStep = 360 / cards.length;
-      const radius = desktop ? viewport.clientWidth * 0.66 : cardWidth * (500 / 300);
-      scene.style.perspective = desktop ? `${viewport.clientWidth * 1.25}px` : `${cardWidth * 4.5}px`;
+      const radius = cardWidth * 5 / 3;
+      scene.style.perspective = `${cardWidth * (2000 / 300)}px`;
 
-      // Six cards across desktop; a centered card and two neighbours on iPad.
-      if (!built) gsap.set(ring, { rotationY: desktop ? 180 + angleStep / 2 : 180 });
+      // Use the same circular geometry at desktop and tablet sizes.
+      if (!built) gsap.set(ring, { rotationY: 180 });
       built = true;
       gsap.set(cards, {
         rotationY: (index) => index * -angleStep,
@@ -131,16 +119,7 @@
 
     buildRing();
 
-    // Tablet breakpoint changes must not slide cards outside the clipped scene.
-    if (desktop) gsap.from(cards, {
-      duration: 1.5,
-      y: 200,
-      stagger: 0.1,
-      ease: 'expo.out',
-      onUpdate: () => updateLinks(Number(gsap.getProperty(ring, 'rotationY')) || 0),
-      onComplete: updateCards
-    });
-    else gsap.set(cards, { y: 0 });
+    gsap.set(cards, { y: 0 });
 
     const [drag] = Draggable.create(dragger, {
       type: 'x',
@@ -158,12 +137,14 @@
       },
       onDrag() {
         // Follow the full pointer displacement, without dropping movement to overwritten tweens.
-        gsap.set(ring, { rotationY: dragStartRotation - (this.x - this.startX) * angleStep / cardWidth });
-        updateCards();
+        gsap.to(ring, { rotationY: dragStartRotation - (this.x - this.startX), duration: 0.5, ease: 'power1.out', overwrite: true, onUpdate: updateCards });
       },
       onDragEnd() {
         viewport.classList.remove('is-dragging');
         gsap.set(dragger, { x: 0, y: 0 });
+      },
+      onRelease() {
+        resumeAt = performance.now() + 2000;
       }
     });
 
@@ -179,6 +160,7 @@
     const onKeyDown = (event) => {
       if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
       event.preventDefault();
+      resumeAt = performance.now() + 2000;
       gsap.to(ring, {
         rotationY: `${event.key === 'ArrowLeft' ? '-' : '+'}=${angleStep}`,
         duration: 0.45,
@@ -188,15 +170,16 @@
     };
     viewport.addEventListener('keydown', onKeyDown);
 
-    let inView = false;
+    // A circular ring has no final slide: keep rotating through the same cards.
     const visibility = new IntersectionObserver(([entry]) => { inView = entry.isIntersecting; });
     visibility.observe(viewport);
     const autoplay = (time, delta) => {
-      if (!inView || document.hidden || matchMedia('(prefers-reduced-motion: reduce)').matches ||
-          viewport.matches(':hover, :focus-visible') || viewport.querySelector(':focus-visible, .is-open') ||
-          drag.isPressed || gsap.isTweening(ring)) return;
+      if (!inView || document.hidden || reducedMotion.matches || drag.isPressed ||
+          performance.now() < resumeAt || gsap.isTweening(ring) ||
+          (finePointer.matches && viewport.matches(':hover')) ||
+          viewport.querySelector(':focus-visible, .is-open')) return;
       const rotation = Number(gsap.getProperty(ring, 'rotationY')) || 0;
-      gsap.set(ring, { rotationY: rotation + Math.min(delta, 50) * 0.004 });
+      gsap.set(ring, { rotationY: gsap.utils.wrap(0, 360, rotation + Math.min(delta, 50) * angleStep / 4000) });
       updateCards();
     };
     gsap.ticker.add(autoplay);
@@ -206,9 +189,9 @@
     document.fonts?.ready.then(() => { if (!disposed) buildRing(); });
     return () => {
       disposed = true;
-      observer.disconnect();
-      visibility.disconnect();
       gsap.ticker.remove(autoplay);
+      visibility.disconnect();
+      observer.disconnect();
       drag.kill();
       gsap.killTweensOf(ring);
       scene.style.removeProperty('perspective');

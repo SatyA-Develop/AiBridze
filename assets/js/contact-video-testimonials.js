@@ -76,6 +76,8 @@ document.querySelectorAll('[data-contact-videos], [data-customer-stories]').forE
       player.on('pause', sync);
       player.on('ended', sync);
       player.on('ready', () => { if (dialog.open) player.play()?.catch(() => {}); });
+      // Start native playback within the click gesture, before asynchronous ready events.
+      if (!card.dataset.youtubeId) media.play()?.catch(() => {});
     });
   });
 });

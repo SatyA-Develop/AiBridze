@@ -8,7 +8,7 @@
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   if (!region || !viewport || !cards.length) return;
   let frame = 0, active = -1, step = 0, top = 0, introHold = 0, animated = false;
-  let transitionFrame = 0, transitioning = false, lastWheel = -Infinity;
+  let transitionFrame = 0, transitioning = false, lastWheel = -Infinity, transitionFinished = -Infinity;
   const clamp = (value) => Math.max(0, Math.min(1, value));
   const select = (index) => {
     if (index === active) return;
@@ -58,6 +58,7 @@
       else {
         transitionFrame = 0;
         transitioning = false;
+        transitionFinished = now;
       }
     };
     transitionFrame = requestAnimationFrame(tick);
@@ -91,9 +92,10 @@
     const index = Math.round((y - start) / step);
     const next = index + direction;
     if (next < 0 || next >= cards.length) return;
-    // One project per gesture: absorb the entire momentum tail, even after
-    // the animation finishes. A short quiet interval enables the next swipe.
-    if (continuingGesture) { event.preventDefault(); return; }
+    // Absorb brief momentum tails, but do not require continuous wheel input
+    // to stop entirely. The bounded hold lets sustained scrolling advance
+    // one project at a time without skipping through several projects.
+    if (continuingGesture && now - transitionFinished < 300) { event.preventDefault(); return; }
     event.preventDefault();
     transitionTo(start + next * step);
   }, { passive: false });
@@ -101,6 +103,7 @@
     cancelAnimationFrame(transitionFrame);
     transitioning = false;
     lastWheel = -Infinity;
+    transitionFinished = -Infinity;
     animated = innerWidth > 1000 && innerHeight > 680 && !reducedMotion.matches && cards.length > 1;
     section.classList.toggle('is-scroll-animated', animated);
     top = (document.querySelector('[data-site-header]')?.offsetHeight || 0) + 16;

@@ -1042,6 +1042,7 @@ add_action( 'save_post_testimonial', 'aibridze_save_testimonial' );
 require_once get_theme_file_path( '/inc/testimonial-video-source.php' );
 
 function aibridze_register_video_testimonial_meta(): void {
+	register_post_meta( 'video_testimonial', '_aibridze_video_thumbnail_id', array( 'type' => 'integer', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => 'absint', 'auth_callback' => static fn(): bool => current_user_can( 'edit_posts' ) ) );
 	register_post_meta( 'video_testimonial', '_aibridze_video_url', array( 'type' => 'string', 'single' => true, 'show_in_rest' => true, 'sanitize_callback' => 'esc_url_raw', 'auth_callback' => static fn(): bool => current_user_can( 'edit_posts' ) ) );
 }
 add_action( 'init', 'aibridze_register_video_testimonial_meta' );
@@ -1056,12 +1057,18 @@ function aibridze_render_video_testimonial_meta_box( WP_Post $post ): void {
 	wp_nonce_field( 'aibridze_save_video_testimonial', 'aibridze_video_testimonial_nonce' );
 	?>
 	<div data-video-testimonial-field>
+		<p><strong><?php esc_html_e( 'Video thumbnail', 'aibridze' ); ?></strong></p>
+		<?php $thumbnail_id = absint( get_post_meta( $post->ID, '_aibridze_video_thumbnail_id', true ) ); ?>
+		<input type="hidden" name="aibridze_video_thumbnail_id" value="<?php echo esc_attr( $thumbnail_id ); ?>" data-video-thumbnail-input>
+		<img data-video-thumbnail-preview src="<?php echo esc_url( $thumbnail_id ? wp_get_attachment_image_url( $thumbnail_id, 'medium' ) : '' ); ?>" alt="" style="max-width:300px;height:auto" <?php echo $thumbnail_id ? '' : 'hidden'; ?>>
+		<p><button type="button" class="button" data-video-thumbnail-select><?php esc_html_e( 'Choose thumbnail', 'aibridze' ); ?></button> <button type="button" class="button-link-delete" data-video-thumbnail-remove <?php echo $thumbnail_id ? '' : 'hidden'; ?>><?php esc_html_e( 'Remove thumbnail', 'aibridze' ); ?></button></p>
+		<p class="description"><?php esc_html_e( 'This image fills the testimonial card. The video opens when visitors click Play.', 'aibridze' ); ?></p>
 		<video controls width="360" style="display:none;max-width:100%;margin-bottom:12px" data-video-testimonial-preview></video>
 		<p data-video-testimonial-external hidden>YouTube video selected. It will open in the website’s external video player.</p>
 		<label for="testimonial-video-url">YouTube URL or uploaded video URL</label>
 		<input type="url" id="testimonial-video-url" class="widefat" name="aibridze_video_testimonial_url" value="<?php echo esc_attr( $video_url ); ?>" placeholder="https://" data-video-testimonial-input>
 		<p><button class="button button-primary" type="button" data-video-testimonial-select><?php esc_html_e( 'Choose video', 'aibridze' ); ?></button> <button class="button-link-delete" type="button" data-video-testimonial-remove<?php echo $video_url ? '' : ' hidden'; ?>><?php esc_html_e( 'Remove video', 'aibridze' ); ?></button></p>
-		<p class="description"><?php esc_html_e( 'Paste a YouTube watch, share, Shorts, or embed URL. Set a title and optional Featured Image; otherwise YouTube supplies the thumbnail. Publish to display on Contact Us. Use Order to arrange the cards.', 'aibridze' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Paste a YouTube watch, share, Shorts, or embed URL. Set a title and Video thumbnail above; otherwise the Featured Image or YouTube thumbnail is used. Publish to display in the testimonial sections. Use Order to arrange the cards.', 'aibridze' ); ?></p>
 	</div>
 	<?php
 }
@@ -1070,6 +1077,10 @@ function aibridze_save_video_testimonial( int $post_id ): void {
 	if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || wp_is_post_revision( $post_id ) ) return;
 	$nonce = sanitize_text_field( wp_unslash( $_POST['aibridze_video_testimonial_nonce'] ?? '' ) );
 	if ( ! wp_verify_nonce( $nonce, 'aibridze_save_video_testimonial' ) || ! current_user_can( 'edit_post', $post_id ) ) return;
+	$thumbnail_id = absint( $_POST['aibridze_video_thumbnail_id'] ?? 0 );
+	if ( ! $thumbnail_id || wp_attachment_is_image( $thumbnail_id ) ) {
+		update_post_meta( $post_id, '_aibridze_video_thumbnail_id', $thumbnail_id );
+	}
 	update_post_meta( $post_id, '_aibridze_video_url', esc_url_raw( wp_unslash( $_POST['aibridze_video_testimonial_url'] ?? '' ) ) );
 }
 add_action( 'save_post_video_testimonial', 'aibridze_save_video_testimonial' );

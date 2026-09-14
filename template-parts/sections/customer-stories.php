@@ -6,16 +6,11 @@
  */
 $video_posts = get_posts( array( 'post_type' => 'video_testimonial', 'posts_per_page' => 4, 'post_status' => 'publish', 'orderby' => array( 'menu_order' => 'ASC', 'date' => 'ASC' ) ) );
 $testimonials = get_posts( array( 'post_type' => 'testimonial', 'posts_per_page' => 4, 'post_status' => 'publish', 'orderby' => array( 'menu_order' => 'ASC', 'date' => 'ASC' ) ) );
-$fallback_videos = array(
-	get_theme_file_uri( '/assets/video/hero-ai-technology.mp4' ),
-	get_theme_file_uri( '/assets/video/can_you_color_similar_to_F_.mp4' ),
-);
 $video_urls = array();
 foreach ( $video_posts as $video_post ) {
 	$url = (string) get_post_meta( $video_post->ID, '_aibridze_video_url', true );
-	if ( $url ) $video_urls[] = array( 'url' => $url, 'poster' => has_post_thumbnail( $video_post ) ? get_the_post_thumbnail_url( $video_post, 'large' ) : '' );
+	if ( $url ) $video_urls[] = array( 'url' => $url, 'poster' => aibridze_testimonial_thumbnail( $video_post->ID ) );
 }
-if ( ! $video_urls ) foreach ( array( 0, 1, 0, 1 ) as $fallback_index ) $video_urls[] = array( 'url' => $fallback_videos[$fallback_index], 'poster' => '' );
 ?>
 <section class="customer-stories" data-customer-stories aria-labelledby="customer-stories-title">
 	<header class="customer-stories__header">
@@ -35,7 +30,7 @@ if ( ! $video_urls ) foreach ( array( 0, 1, 0, 1 ) as $fallback_index ) $video_u
 					<?php if ( $poster ) : ?>
 						<img src="<?php echo esc_url( $poster ); ?>" alt="" draggable="false" loading="lazy">
 					<?php else : ?>
-						<video preload="metadata" playsinline muted src="<?php echo esc_url( $video_url ); ?>#t=0.1"></video>
+						<span class="video-stack__placeholder" aria-hidden="true"></span>
 					<?php endif; ?>
 					<button class="video-stack__play" type="button" data-video-play aria-label="<?php esc_attr_e( 'Play testimonial video', 'aibridze' ); ?>">
 						<span class="video-stack__play-icon" aria-hidden="true"></span>

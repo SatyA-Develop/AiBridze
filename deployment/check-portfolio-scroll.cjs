@@ -28,7 +28,12 @@ assert.equal(s.wheel(1950), false, 'Page can scroll beyond final project');
 const tail = setup(); tail.wheel(0);
 for (let t=50;t<=1100;t+=50) {tail.tick(t); tail.wheel(t);}
 assert.equal(tail.win.scrollY, 2066, 'Momentum does not skip a project');
-tail.wheel(1300); tail.tick(2150); assert.equal(tail.win.scrollY, 2966);
+// Keep scrolling without any quiet interval: it must resume after the bounded hold.
+for (let t=1150;t<=2000;t+=50) {tail.tick(t); tail.wheel(t);}
+assert.equal(tail.win.scrollY, 2966, 'Continuous wheel input cannot lock the carousel');
+const reverse = setup(); reverse.win.scrollY = 2966; reverse.wheel(0, -100);
+for (let t=50;t<=2000;t+=50) {reverse.tick(t); reverse.wheel(t, -100);}
+assert.equal(reverse.win.scrollY, 1166, 'Continuous upward scrolling also advances');
 const intro = setup(); intro.win.scrollY = 950; intro.wheel(0); intro.tick(850);
 assert.equal(intro.win.scrollY,1166); assert(intro.cards[0].classList['is-active'], 'Heading gets a separate scroll step');
 assert.equal(setup(800).wheel(0), false, 'Mobile and tablet retain native scrolling');

@@ -15,3 +15,13 @@ function aibridze_testimonial_youtube_id( string $url ): string {
 	}
 	return preg_match( '/^[A-Za-z0-9_-]{11}$/', $id ) ? $id : '';
 }
+
+/** Shared poster source for every video testimonial section. */
+function aibridze_testimonial_thumbnail( int $post_id ): string {
+	$image_id = absint( get_post_meta( $post_id, '_aibridze_video_thumbnail_id', true ) );
+	$poster = $image_id ? wp_get_attachment_image_url( $image_id, 'large' ) : false;
+	if ( ! $poster ) $poster = get_the_post_thumbnail_url( $post_id, 'large' );
+	if ( $poster ) return $poster;
+	$youtube_id = aibridze_testimonial_youtube_id( (string) get_post_meta( $post_id, '_aibridze_video_url', true ) );
+	return $youtube_id ? 'https://i.ytimg.com/vi/' . $youtube_id . '/hqdefault.jpg' : '';
+}
