@@ -4371,15 +4371,16 @@ body.has-consultation-modal {
 }
 .faq-contact__submit-arrow {
   display: grid;
-  width: 14px;
-  height: 14px;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
   overflow: hidden;
   place-items: center;
 }
 .faq-contact__submit-arrow img {
   display: block;
-  width: 14px;
-  height: 14px;
+  width: 20px;
+  height: 20px;
   object-fit: contain;
 }
 .faq-contact__form-actions > button:hover .faq-contact__submit-arrow img,
@@ -5923,6 +5924,9 @@ body.admin-bar .site-header {
   opacity: 1;
   transform: translate(0, -50%);
 }
+.white-cta-arrow { display: block; width: 20px; height: 20px; flex: 0 0 20px; object-fit: contain; transition: transform 250ms ease; }
+a:hover > .white-cta-arrow, a:focus-visible > .white-cta-arrow { transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) { .white-cta-arrow { transition: none; } }
 
 .mega-menu .mega-card:hover .mega-card__icon,
 .mega-menu .mega-card:focus-visible .mega-card__icon {
@@ -14798,7 +14802,7 @@ html body .success-cta__button {
   width: 24px;
   height: 24px;
 }
-.success-cta__arrow img { display: block; width: 12px; height: 12px; }
+.success-cta__arrow img { display: block; width: 20px; height: 20px; }
 
 /* Matching bottom strips for Services and Industries mega menus. */
 @media (min-width: 1101px) {

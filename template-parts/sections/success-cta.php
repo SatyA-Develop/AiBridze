@@ -37,7 +37,7 @@ $success_video_url  = add_query_arg(
 
 			<a class="success-cta__button" href="#consultation" data-consultation-open>
 				<span>Let's Build Together</span>
-				<span class="success-cta__arrow" aria-hidden="true"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/success-cta-arrow.svg' ) ); ?>" width="12" height="12" alt=""></span>
+				<span class="success-cta__arrow" aria-hidden="true"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/faq/submit-arrow.svg' ) ); ?>" width="20" height="20" alt=""></span>
 			</a>
 		</div>
 	</div>

@@ -47,6 +47,6 @@ $ring_industries = $industries;
 	</div>
 
 	<a class="industries-showcase__button" href="<?php echo esc_url( aibridze_page_url( 'industries', '/industries/' ) ); ?>">
-		<span><?php esc_html_e( 'View All Industries', 'aibridze' ); ?></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M4 12h16M13 5l7 7-7 7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+		<span><?php esc_html_e( 'View All Industries', 'aibridze' ); ?></span><img class="white-cta-arrow" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/faq/submit-arrow.svg' ) ); ?>" width="20" height="20" alt="" aria-hidden="true">
 	</a>
 </section>
