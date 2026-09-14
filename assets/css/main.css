@@ -5373,7 +5373,7 @@ body.has-consultation-modal {
     margin-bottom: 28px;
   }
   .portfolio-stack__heading h2 {
-    text-align: left;
+    text-align: center;
     font-family: "Plus Jakarta Sans", var(--font-display);
     font-size: clamp(30px, 8.3vw, 34px);
     font-weight: 700;
@@ -14577,7 +14577,7 @@ form input:is(:autofill, :-webkit-autofill) {
   .blog-archive-hero h1 { max-width: 26ch; }
   .careers-hero__inner > p, .contact-hero__inner > p { max-width: 70ch; }
 
-  .services-stack__intro h2, .portfolio-stack__heading h2,
+  .services-stack__intro h2,
   .customer-stories h2, .industries-showcase h2, .faq-contact__faqs > h2,
   .about-why h2, .about-leadership h2, .about-team h2,
   .careers-reasons h2, .career-openings__header h2, .career-culture__header h2,

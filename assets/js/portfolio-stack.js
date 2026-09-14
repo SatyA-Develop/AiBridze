@@ -51,8 +51,8 @@
     const started = performance.now();
     transitioning = true;
     const tick = (now) => {
-      const progress = clamp((now - started) / 650);
-      const eased = progress < 0.5 ? 4 * progress ** 3 : 1 - (-2 * progress + 2) ** 3 / 2;
+      const progress = clamp((now - started) / 1200);
+      const eased = (1 - Math.cos(Math.PI * progress)) / 2;
       window.scrollTo({ top: from + (target - from) * eased, behavior: 'instant' });
       update();
       if (progress < 1) transitionFrame = requestAnimationFrame(tick);
