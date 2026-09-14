@@ -59,7 +59,7 @@
       else {
         transitionFrame = 0;
         transitioning = false;
-        settleUntil = now + 180;
+        settleUntil = now + 500;
       }
     };
     transitionFrame = requestAnimationFrame(tick);
@@ -68,7 +68,7 @@
     if (!animated || event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY) || !event.deltaY) return;
     if (document.querySelector('dialog[open], .consultation-modal.is-open')) return;
     const now = performance.now();
-    const continuingGesture = now - lastWheel < 220;
+    const continuingGesture = now - lastWheel < 350;
     const start = window.scrollY + region.getBoundingClientRect().top - top + introHold;
     const end = start + step * (cards.length - 1);
     const y = window.scrollY;
@@ -93,9 +93,9 @@
     const index = Math.round((y - start) / step);
     const next = index + direction;
     if (next < 0 || next >= cards.length) return;
-    // Briefly absorb momentum after a wipe, but never renew this deadline on
-    // wheel events: a continuous scroll must still advance the next project.
-    if (continuingGesture && now < settleUntil) { event.preventDefault(); return; }
+    // One project per gesture: absorb the entire momentum tail, even after
+    // the animation finishes. A short quiet interval enables the next swipe.
+    if (continuingGesture || now < settleUntil) { event.preventDefault(); return; }
     event.preventDefault();
     transitionTo(start + next * step);
   }, { passive: false });
