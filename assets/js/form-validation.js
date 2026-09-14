@@ -14,24 +14,20 @@
       input.setCustomValidity('Please enter a valid email address, such as name@example.com.');
     }
   };
-  const scan = (root) => {
-    if (root.matches?.(selector)) validate(root);
-    root.querySelectorAll?.(selector).forEach(validate);
-  };
-  scan(document);
-  // Blog listing forms show errors beside the fields instead of browser popups.
-  const inlineForms = document.querySelector('[data-blog-categories]')
-    ? [...document.querySelectorAll('.faq-contact__form')] : [];
+  // All lead/application forms use the same inline feedback, including popups.
+  const inlineForms = new WeakSet();
+  const errors = new WeakMap();
   let errorId = 0;
   const showError = (field) => {
     if (field.matches(selector)) validate(field);
-    let error = field.parentElement.querySelector('.form-field-error');
+    let error = errors.get(field);
     if (!error) {
       error = document.createElement('small');
       error.className = 'form-field-error';
-      error.id = `blog-field-error-${++errorId}`;
+      error.id = `form-field-error-${++errorId}`;
       error.setAttribute('aria-live', 'polite');
       field.insertAdjacentElement('afterend', error);
+      errors.set(field, error);
       field.setAttribute('aria-describedby', [field.getAttribute('aria-describedby'), error.id].filter(Boolean).join(' '));
     }
     const message = field.validity.valueMissing
@@ -42,26 +38,37 @@
     field.setAttribute('aria-invalid', String(Boolean(message)));
     return !message;
   };
-  inlineForms.forEach(form => {
+  const setupForm = (form) => {
+    if (inlineForms.has(form) || !form.querySelector(selector)) return;
+    inlineForms.add(form);
     form.noValidate = true;
     form.addEventListener('focusout', event => {
       if (event.target.matches('input:not([type="hidden"]), textarea, select') && event.target.willValidate) showError(event.target);
     });
-    form.addEventListener('input', event => {
-      if (event.target.hasAttribute('aria-invalid')) showError(event.target);
-    });
+    ['input', 'change'].forEach(type => form.addEventListener(type, event => {
+      if (event.target.willValidate && event.target.hasAttribute('aria-invalid')) showError(event.target);
+    }));
     form.addEventListener('reset', () => {
       form.querySelectorAll('.form-field-error').forEach(error => { error.textContent = ''; error.hidden = true; });
       form.querySelectorAll('[aria-invalid]').forEach(field => field.removeAttribute('aria-invalid'));
     });
-  });
+  };
+  const scan = (root) => {
+    if (root.matches?.(selector)) validate(root);
+    root.querySelectorAll?.(selector).forEach(validate);
+    if (root.matches?.('form')) setupForm(root);
+    root.querySelectorAll?.('form').forEach(setupForm);
+    const parentForm = root.closest?.('form');
+    if (parentForm) setupForm(parentForm);
+  };
+  scan(document);
   ['input', 'change', 'focusout', 'invalid'].forEach(type => {
     document.addEventListener(type, event => {
       if (event.target.matches?.(selector)) validate(event.target);
     }, true);
   });
   document.addEventListener('submit', event => {
-    if (inlineForms.includes(event.target)) {
+    if (inlineForms.has(event.target)) {
       const fields = [...event.target.elements].filter(field => field.willValidate && field.matches('input, textarea, select'));
       const invalidFields = fields.filter(field => !showError(field));
       if (invalidFields.length) {
@@ -70,14 +77,6 @@
         invalidFields[0].focus();
       }
       return;
-    }
-    const fields = [...event.target.querySelectorAll(selector)];
-    fields.forEach(validate);
-    const invalid = fields.find(field => !field.disabled && !field.validity.valid);
-    if (invalid) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      invalid.reportValidity();
     }
   }, true);
   document.addEventListener('reset', event => {

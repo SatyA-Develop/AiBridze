@@ -15063,3 +15063,18 @@ html body .white-cta:focus-visible { outline: 2px solid #3477f2; outline-offset:
   html body .white-cta .white-cta__icon { transition: none; }
   html body .white-cta:is(:hover, :focus-visible) .white-cta__icon { transform: none; }
 }
+
+/* Inline validation feedback for every email/contact form. */
+form .form-field-error {
+  display: block;
+  flex-basis: 100%;
+  width: 100%;
+  margin-top: 6px;
+  color: #b42318;
+  font: 400 13px/1.5 "Plus Jakarta Sans", sans-serif;
+}
+form .form-field-error[hidden] { display: none; }
+:is(.faq-contact__form, .single-blog__quote-form, .contact-project__form) .form-field-error { color: #ffb4b4; }
+form [aria-invalid="true"] { border-bottom-color: #b42318; }
+:is(.faq-contact__form, .single-blog__quote-form, .contact-project__form) [aria-invalid="true"] { border-bottom-color: #ffb4b4; }
+.single-blog__phone:has(.form-field-error:not([hidden])) { flex-wrap: wrap; height: auto; }
