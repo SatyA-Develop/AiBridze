@@ -12,6 +12,7 @@
     cards.forEach((card, index) => {
       const distance = (index - activeIndex % cards.length + cards.length) % cards.length;
       card.classList.toggle('is-active', distance === 0);
+      card.inert = distance !== 0;
       card.querySelector('[data-video-play]').tabIndex = distance ? -1 : 0;
       card.style.zIndex = String(cards.length - distance);
       if (distance > 0) {
