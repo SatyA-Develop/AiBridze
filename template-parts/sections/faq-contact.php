@@ -51,7 +51,7 @@ $faqs = is_array( $args['faqs'] ) && $args['faqs'] ? $args['faqs'] : $default_fa
 				<label><span class="screen-reader-text"><?php echo esc_html( $args['budget_label'] . ' (' . __( 'Optional', 'aibridze' ) . ')' ); ?></span><select name="budget"><option value=""><?php echo esc_html( $args['budget_label'] . ' (' . __( 'Optional', 'aibridze' ) . ')' ); ?></option><?php foreach ( array_filter( array_map( 'trim', (array) $args['budget_options'] ) ) as $option ) : ?><option><?php echo esc_html( $option ); ?></option><?php endforeach; ?></select></label>
 				<label><span><?php echo esc_html( $args['message_label'] ); ?></span><textarea name="message" placeholder="<?php echo esc_attr( $args['message_placeholder'] ); ?>" rows="2" required></textarea></label>
 				<div class="faq-contact__form-actions">
-					<button type="submit"><span><?php echo esc_html( $args['submit_label'] ); ?></span><span class="faq-contact__submit-arrow" aria-hidden="true"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/faq/submit-arrow.svg' ) ); ?>" width="20" height="20" alt=""></span></button>
+					<?php get_template_part( 'template-parts/components/white-cta', null, array( 'label' => $args['submit_label'], 'submit' => true ) ); ?>
 				</div>
 			</form>
 			<div class="faq-contact__security"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/faq/security-shield.svg' ) ); ?>" width="22" height="22" alt="" aria-hidden="true"> <span><?php echo str_replace( array( 'Fully NDA-Protected', 'Fully NDA Protected' ), array( '<strong>Fully NDA-Protected</strong>', '<strong>Fully NDA Protected</strong>' ), esc_html( $args['security_text'] ) ); ?></span></div>
