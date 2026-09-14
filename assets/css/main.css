@@ -15088,3 +15088,9 @@ form .form-field-error[hidden] { display: none; }
 form [aria-invalid="true"] { border-bottom-color: #b42318; }
 :is(.faq-contact__form, .single-blog__quote-form, .contact-project__form) [aria-invalid="true"] { border-bottom-color: #ffb4b4; }
 .single-blog__phone:has(.form-field-error:not([hidden])) { flex-wrap: wrap; height: auto; }
+
+/* Center this standalone CTA; inline-flex does not absorb automatic side margins. */
+html body .industries-showcase .white-cta.industries-showcase__button {
+  display: flex;
+  margin-inline: auto;
+}
