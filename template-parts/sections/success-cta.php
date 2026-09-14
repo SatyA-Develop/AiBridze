@@ -35,10 +35,7 @@ $success_video_url  = add_query_arg(
 				</div>
 			</div>
 
-			<a class="success-cta__button" href="#consultation" data-consultation-open>
-				<span>Let's Build Together</span>
-				<span class="success-cta__arrow" aria-hidden="true"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/faq/submit-arrow.svg' ) ); ?>" width="20" height="20" alt=""></span>
-			</a>
+			<?php get_template_part( 'template-parts/components/white-cta', null, array( 'label' => __( "Let's Build Together", 'aibridze' ), 'url' => '#consultation', 'consultation' => true, 'class' => 'success-cta__button' ) ); ?>
 		</div>
 	</div>
 </section>

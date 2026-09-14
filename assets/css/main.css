@@ -15018,3 +15018,48 @@ html body :is(a, button):is(:hover, :focus-visible) :is(.white-cta-arrow, .succe
 @media (prefers-reduced-motion: reduce) {
   html body :is(a, button):is(:hover, :focus-visible) :is(.white-cta-arrow, .success-cta__arrow img, .faq-contact__submit-arrow img) { transform: none; transition: none; }
 }
+
+/* One component for industry, growth, contact and article CTAs. */
+html body .white-cta {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: fit-content;
+  min-width: 0;
+  max-width: 100%;
+  height: auto;
+  min-height: 48px;
+  padding: 10px 20px;
+  gap: 6px;
+  border: 1px solid transparent;
+  border-top-width: 2px;
+  border-radius: 100px;
+  background: linear-gradient(180deg, #fff, #eee) padding-box,
+    linear-gradient(180deg, #c9c9c9, #f7f7f7 50%, #c9c9c9) border-box;
+  color: #070707;
+  font: 600 14px/24px "Plus Jakarta Sans", sans-serif;
+  text-decoration: none;
+  white-space: normal;
+  cursor: pointer;
+  box-shadow: none;
+  transform: none;
+}
+html body .white-cta__label { font: inherit; color: inherit; }
+html body .white-cta .white-cta__icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  object-fit: contain;
+  transform: translateX(0);
+  transition: transform 250ms ease;
+  animation: none;
+}
+html body .white-cta:is(:hover, :focus-visible) .white-cta__icon { transform: translateX(3px); }
+html body .white-cta:focus-visible { outline: 2px solid #3477f2; outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  html body .white-cta .white-cta__icon { transition: none; }
+  html body .white-cta:is(:hover, :focus-visible) .white-cta__icon { transform: none; }
+}

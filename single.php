@@ -74,7 +74,7 @@ while ( have_posts() ) :
 								<input name="phone" type="tel" placeholder="<?php esc_attr_e( 'Phone Number', 'aibridze' ); ?>" autocomplete="tel">
 							</div>
 							<input type="hidden" name="message" value="<?php esc_attr_e( 'Request for a free consultation from a blog article.', 'aibridze' ); ?>">
-							<button type="submit"><span class="single-blog__quote-button-label"><?php esc_html_e( 'Get Free Quote', 'aibridze' ); ?></span><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/faq/quote-arrow.svg' ) ); ?>" width="20" height="20" alt=""></button>
+							<?php get_template_part( 'template-parts/components/white-cta', null, array( 'label' => __( 'Get Free Quote', 'aibridze' ), 'submit' => true ) ); ?>
 						</form>
 					</div>
 					<div class="single-blog__nda"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/security-shield.png' ) ); ?>" width="16" height="16" alt=""><strong><?php esc_html_e( 'Fully NDA-Protected.', 'aibridze' ); ?></strong></div>

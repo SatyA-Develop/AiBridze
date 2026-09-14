@@ -52,7 +52,7 @@ get_header();
 			<div class="contact-idea__content">
 				<h2 id="contact-idea-title"><?php esc_html_e( 'Let’s Turn Your Idea Into Something Real.', 'aibridze' ); ?></h2>
 				<p><?php esc_html_e( 'Tell us what you’re trying to achieve, and we’ll help you explore the right AI, software, or automation solution for your business.', 'aibridze' ); ?></p>
-				<a class="button button--light" href="#contact-project-form"><span><?php esc_html_e( 'Start a Conversation', 'aibridze' ); ?></span><img class="white-cta-arrow" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/faq/submit-arrow.svg' ) ); ?>" width="20" height="20" alt="" aria-hidden="true"></a>
+				<?php get_template_part( 'template-parts/components/white-cta', null, array( 'label' => __( 'Start a Conversation', 'aibridze' ), 'url' => '#contact-project-form' ) ); ?>
 			</div>
 			<img class="contact-idea__image" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/contact/idea-laptop.png' ) ); ?>" width="443" height="280" alt="Laptop illuminated with blue and orange light">
 		</div>
