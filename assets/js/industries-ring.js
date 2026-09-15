@@ -27,11 +27,11 @@
     viewport.addEventListener('click', onToggle);
 
     const responsive = gsap.matchMedia();
-    responsive.add({ desktop: '(min-width: 1367px)', tablet: '(min-width: 701px) and (max-width: 1366px)' }, (context) => {
+    responsive.add({ wide: '(min-width: 1921px)', desktop: '(min-width: 1367px)', tablet: '(min-width: 701px) and (max-width: 1366px)' }, (context) => {
     if (!context.conditions.desktop && !context.conditions.tablet) return;
     const desktop = context.conditions.desktop;
     const clones = [];
-    const cards = [...sourceCards];
+    const cards = sourceCards.slice(0, context.conditions.wide ? 12 : 10);
 
     const links = cards.map((card) => {
       const link = document.createElement('div');
@@ -101,8 +101,8 @@
       cardWidth = cards[0].offsetWidth;
       if (!cardWidth || !viewport.clientWidth) return;
       angleStep = 360 / cards.length;
-      const radius = cardWidth * 5 / 3;
-      scene.style.perspective = `${cardWidth * (2000 / 300)}px`;
+      const radius = cardWidth * (context.conditions.wide ? (5 / 3) * Math.tan(Math.PI / 10) / Math.tan(Math.PI / cards.length) : 5 / 3);
+      scene.style.perspective = `${radius * 4}px`;
 
       // Use the same circular geometry at desktop and tablet sizes.
       if (!built) gsap.set(ring, { rotationY: 180 });

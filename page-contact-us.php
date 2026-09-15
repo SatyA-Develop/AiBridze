@@ -17,7 +17,7 @@ get_header();
 				<h2><?php esc_html_e( 'Your Next Solution Could Start With One Conversation.', 'aibridze' ); ?></h2>
 				<p><?php esc_html_e( 'Tell us what you’re trying to solve. We’ll help you explore the right way forward.', 'aibridze' ); ?></p>
 				<div class="contact-project__experts"><img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/contact/experts-grouped.png' ) ); ?>" width="140" height="80" alt="Our consultation experts"></div>
-				<img class="contact-project__handwritten" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/contact/handwritten.png' ) ); ?>" width="441" height="35" alt="Book your free consultation with our experts">
+				<img class="contact-project__handwritten" src="<?php echo esc_url( get_theme_file_uri( '/assets/images/contact/consultation-handwritten.png' ) ); ?>" width="441" height="35" alt="Book your free consultation with our experts">
 				<div class="contact-project__reviews">
 					<span><?php esc_html_e( 'Reviewed on', 'aibridze' ); ?></span>
 					<div class="contact-project__review-logos">

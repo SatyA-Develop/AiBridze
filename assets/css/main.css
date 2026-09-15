@@ -14996,17 +14996,18 @@ html body .success-cta__button { margin-top: 0; }
   .menu-item--mega.is-mega-open .mega-menu { transform: translateY(0); }
 }
 
-/* Shared CTA variants: gradient rims remain intact in every interaction state. */
+/* Shared CTA variants: layered backgrounds preserve the rounded bottom stroke. */
 :root { --cta-blue-rim: linear-gradient(148deg, #72F3FB 22.88%, #3477F2 93.65%); }
 html body :is(.button.button--primary, .button.button--hero, .button--style-1,
 .header-contact, .careers-hero__button, .service-button:not(.service-button--light),
 .vision-action-cta__button, .voice-action-cta__button, .consultation-form__submit,
 .contact-project__form button[type="submit"], .about-why__footer a) {
   box-sizing: border-box;
-  border: 1px solid transparent;
+  border: 0 solid transparent;
   border-bottom-width: 2px;
-  border-radius: 100px;
-  background: linear-gradient(#3477F2, #3477F2) padding-box, var(--cta-blue-rim) border-box;
+  border-radius: 40px;
+  background: linear-gradient(#3477F2, #3477F2) padding-box,
+    linear-gradient(148.33deg, #72F3FB 22.88%, #3477F2 93.65%) border-box;
   color: #fff;
   box-shadow: none;
 }
@@ -15178,4 +15179,57 @@ html body .industries-showcase .white-cta.industries-showcase__button { margin-t
 }
 @media (max-width: 380px) {
   .contact-project__form > label:not(.consultation-form__honeypot) > select { font-size: 12px; padding-right: 18px; }
+}
+
+/* Let the circular gallery fill wide monitors and reveal its outer cards. */
+@media (min-width: 1921px) {
+  html body .industries-showcase__viewport {
+    --ring-card-width: clamp(360px, 18.75vw, 720px);
+    --ring-card-height: calc(var(--ring-card-width) * 1.194444);
+  }
+  html body .industries-showcase__vignette {
+    background: linear-gradient(90deg, #000 0%, transparent 22%, transparent 78%, #000 100%);
+  }
+}
+
+/* Keep the extra wide-screen faces inside the shared page container. */
+@media (min-width: 701px) and (max-width: 1920px) { .industry-showcase-card:nth-child(n + 11) { display: none; } }
+@media (min-width: 1921px) {
+  html body .industries-showcase__viewport {
+    width: var(--container-width);
+    margin-inline: auto;
+    --ring-card-width: calc(var(--container-width) / 4.2);
+  }
+  .industry-showcase-card:nth-child(n + 11) { display: block; }
+  html body .industries-showcase__vignette { width: 100%; }
+}
+
+/* The form determines the desktop row height; expanded answers scroll inside it. */
+@media (min-width: 901px) {
+  .faq-contact__inner { align-items: stretch; }
+  .faq-contact__faqs {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    contain: size;
+  }
+  .faq-contact__faqs > :is(p, h2) { flex-shrink: 0; }
+  .faq-contact .faq-accordion {
+    flex: 1 1 0;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+  .faq-contact__form-panel { align-self: stretch; }
+}
+@media (max-width: 700px) {
+  .faq-contact__inner { width: 100%; }
+  .faq-contact__form-panel { margin-top: 24px; padding-inline: 20px; }
+  .faq-contact__form-panel > p { font-size: 14px; line-height: 1.5; }
+  .faq-contact__form { gap: 16px; }
+  .faq-contact__form > label:not(.consultation-form__honeypot) > :is(input, textarea) { font-size: 16px; }
+  .faq-contact__security { width: 100%; box-sizing: border-box; font-size: 11px; }
+}
+@media (max-width: 380px) {
+  .faq-contact__form > label:not(.consultation-form__honeypot) > select { font-size: 12px; padding-right: 16px; }
 }

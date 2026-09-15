@@ -7,7 +7,7 @@
 $industries = get_posts(
 	array(
 		'post_type'      => 'industry',
-		'posts_per_page' => 10,
+		'posts_per_page' => 12,
 		'post_status'    => 'publish',
 		'orderby'        => array( 'menu_order' => 'ASC', 'date' => 'ASC' ),
 	)
