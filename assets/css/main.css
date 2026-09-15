@@ -15153,3 +15153,29 @@ html body .industries-showcase .white-cta.industries-showcase__button { margin-t
   html body .about-why__card-copy { padding: clamp(24px, 1.15vw, 34px); height: auto; min-height: 0; }
   html body .about-why__card > img { width: 100%; height: auto; }
 }
+
+/* Contact consultation reference: full-width mobile banner and comfortable form rhythm. */
+@media (max-width: 700px) {
+  .contact-project__inner { width: 100%; min-height: 0; }
+  .contact-project__visual { border-radius: 16px 16px 0 0; padding: 24px 20px 32px; background-size: 100% 100%; }
+  .contact-project__visual h2 { max-width: none; font-size: 26px; line-height: 32px; }
+  .contact-project__visual > p { max-width: none; font-size: 16px; line-height: 23px; margin: 16px 0 24px; }
+  .contact-project__experts { width: 100px; }
+  .contact-project__handwritten { width: 100%; margin-top: 24px; }
+  .contact-project__reviews { margin-top: 32px; }
+  .contact-project__review-logos { gap: 16px; }
+  .contact-project__review-logos img:nth-child(1) { width: 46%; }
+  .contact-project__review-logos img:nth-child(2) { width: 24%; }
+  .contact-project__review-logos img:nth-child(3) { width: 34%; }
+  .contact-project__review-logos img:nth-child(4) { width: 46%; }
+  .contact-project__form-panel { padding: 24px 0 0; }
+  .contact-project__form-panel > h2 { font-size: 24px; line-height: 32px; }
+  .contact-project__form-panel > p { font-size: 16px; line-height: 24px; margin: 12px 0 24px; }
+  .contact-project__form { gap: 24px; }
+  .contact-project__form > label > span:not(.screen-reader-text) { font-size: 14px; line-height: 20px; }
+  .contact-project__form > label:not(.consultation-form__honeypot) > :is(input, textarea, select) { font-size: 16px; }
+  .contact-project__security { align-items: flex-start; gap: 8px; line-height: 22px; }
+}
+@media (max-width: 380px) {
+  .contact-project__form > label:not(.consultation-form__honeypot) > select { font-size: 12px; padding-right: 18px; }
+}
