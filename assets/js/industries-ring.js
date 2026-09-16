@@ -7,9 +7,8 @@
     const ring = viewport.querySelector('.industries-showcase__ring');
     const scene = viewport.querySelector('.industries-showcase__scene');
     const dragger = viewport.querySelector('.industries-showcase__dragger');
-    const linksLayer = viewport.querySelector('.industries-showcase__links');
     const sourceCards = gsap.utils.toArray(viewport.querySelectorAll('.industry-showcase-card'));
-    if (!ring || !scene || !dragger || !linksLayer || sourceCards.length < 2) return;
+    if (!ring || !scene || !dragger || sourceCards.length < 2) return;
 
     const onToggle = (event) => {
       const button = event.target.closest('.industry-showcase-card__toggle');
@@ -29,19 +28,7 @@
     const responsive = gsap.matchMedia();
     responsive.add({ wide: '(min-width: 1921px)', desktop: '(min-width: 1367px)', tablet: '(min-width: 701px) and (max-width: 1366px)' }, (context) => {
     if (!context.conditions.desktop && !context.conditions.tablet) return;
-    const desktop = context.conditions.desktop;
-    const clones = [];
     const cards = sourceCards.slice(0, context.conditions.wide ? 12 : 10);
-
-    const links = cards.map((card) => {
-      const link = document.createElement('div');
-      link.className = 'industries-showcase__interaction';
-      link.append(card.querySelector('.industry-showcase-card__toggle').cloneNode(true));
-      link.append(card.querySelector('.industry-showcase-card__cta').cloneNode(true));
-      card.querySelectorAll('button, a').forEach((item) => { item.tabIndex = -1; });
-      linksLayer.appendChild(link);
-      return link;
-    });
 
     let dragStartRotation = 0;
     let didDrag = false;
@@ -63,23 +50,6 @@
       return `${50 + Math.sin(angle) * 25}% center`;
     };
 
-    const updateLinks = (rotation) => {
-      const viewportRect = viewport.getBoundingClientRect();
-      cards.forEach((card, index) => {
-        const cardRect = card.getBoundingClientRect();
-        const isVisible = Math.abs(gsap.utils.wrap(-180, 180, rotation - index * angleStep)) < getVisibleArc();
-        links[index].style.left = `${cardRect.left - viewportRect.left}px`;
-        links[index].style.top = `${cardRect.top - viewportRect.top}px`;
-        links[index].style.width = `${cardRect.width}px`;
-        links[index].style.height = `${cardRect.height}px`;
-        links[index].inert = !isVisible;
-        gsap.set(links[index], {
-          autoAlpha: isVisible ? 1 : 0,
-          pointerEvents: isVisible ? 'auto' : 'none'
-        });
-      });
-    };
-
     const updateCards = () => {
       const rotation = Number(gsap.getProperty(ring, 'rotationY')) || 0;
       const visibleArc = getVisibleArc();
@@ -93,7 +63,10 @@
         },
         scaleX: 1
       });
-      updateLinks(rotation);
+      // Keep controls on the same 3D face and exclude back-facing cards from focus.
+      cards.forEach((card, index) => {
+        card.inert = Math.abs(gsap.utils.wrap(-180, 180, rotation - index * angleStep)) >= visibleArc;
+      });
     };
 
     const buildRing = () => {
@@ -197,9 +170,7 @@
       scene.style.removeProperty('perspective');
       viewport.removeEventListener('keydown', onKeyDown);
       viewport.removeEventListener('click', onClick, true);
-      links.forEach((link) => link.remove());
-      clones.forEach((clone) => clone.remove());
-      sourceCards.forEach((card) => card.querySelectorAll('button, a').forEach((item) => item.removeAttribute('tabindex')));
+      sourceCards.forEach((card) => { card.inert = false; });
     };
     });
     responsive.add('(max-width: 700px)', () => {

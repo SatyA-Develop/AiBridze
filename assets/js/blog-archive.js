@@ -19,9 +19,11 @@ document.querySelectorAll('[data-blog-categories]').forEach((section) => {
   next.addEventListener('click', () => move(1));
   const updateCategoryArrows = () => {
     const index = categories.findIndex((link) => link.classList.contains('is-active'));
-    const loading = results.getAttribute('aria-busy') === 'true';
-    previous.disabled = loading || index <= 0;
-    next.disabled = loading || index >= categories.length - 1;
+    const atEnd = index >= categories.length - 1;
+    previous.disabled = index <= 0;
+    next.disabled = atEnd;
+    previous.classList.toggle('is-primary', atEnd && !previous.disabled);
+    next.classList.toggle('is-primary', !atEnd);
   };
   scroller.addEventListener('scroll', updateCategoryArrows, { passive: true });
   const categoryResize = new ResizeObserver(updateCategoryArrows);

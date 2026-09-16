@@ -99,6 +99,6 @@ $category_extras = array(
 	</div>
 	<div class="mega-menu__footer">
 		<span><?php esc_html_e( "Can't find the service you need? Our expertise goes beyond the list.", 'aibridze' ); ?></span>
-		<a href="<?php echo esc_url( aibridze_page_url( 'contact-us', '/contact-us/' ) ); ?>"><?php esc_html_e( "Let's discuss your project", 'aibridze' ); ?></a>
+		<?php get_template_part( 'template-parts/components/mega-menu-cta' ); ?>
 	</div>
 </div>
