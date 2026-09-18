@@ -2847,7 +2847,10 @@ body.has-consultation-modal {
     min-height: 0;
   }
 
-  .about-hero__media,
+  .about-hero__media {
+    background-image: url("../images/about/hero-about-mobile.webp");
+  }
+
   .about-hero__socials {
     display: none;
   }
