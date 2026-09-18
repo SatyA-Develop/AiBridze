@@ -14892,6 +14892,7 @@ html body .success-cta__button {
 /* Responsive footer rows must size to content when stacked. */
 @media (max-width: 1250px) {
   .site-footer__legal, .site-footer__recognition { flex: 0 1 auto; width: 100%; }
+  .site-footer__legal { order: 1; }
   .site-footer__recognition { max-width: 567px; }
 }
 .site-footer__legal > span { min-width: 0; }
