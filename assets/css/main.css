@@ -1397,7 +1397,8 @@ body.has-consultation-modal {
   position: absolute;
   inset: 0;
   background: radial-gradient(85.22% 74.1% at 50% 42.3%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.353122) 35.69%, #000 94.65%);
-  content: none;
+  content: "";
+  pointer-events: none;
 }
 
 .careers-hero__inner {
@@ -5289,9 +5290,17 @@ body.has-consultation-modal {
   text-transform: uppercase;
 }
 .portfolio-card__topline a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   color: #fff;
-  text-decoration: none;
+  font: 500 16px/24px "Plus Jakarta Sans", sans-serif;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  white-space: nowrap;
 }
+.portfolio-card__topline a svg { display: block; width: 20px; height: 20px; flex: 0 0 20px; }
 .portfolio-card__logo {
   width: auto;
   max-width: 170px;
@@ -14944,7 +14953,7 @@ html body .success-cta__button { margin-top: 0; }
 @media (min-width: 701px) and (max-width: 1300px) {
   .about-purpose { padding: 56px 32px; }
   .container.about-purpose__grid { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-  .about-purpose__card { min-height: 505px; padding: 16px; }
+  .about-purpose__card { min-height: 300px; height: auto; padding: 20px; }
   .about-purpose__card h2 { font-size: 15px; margin-bottom: 16px; }
   .about-purpose__card > p { font-size: clamp(14px, 1.55vw, 17px); line-height: 1.6; }
   .about-purpose__impact { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto; gap: 24px; }
@@ -15261,4 +15270,37 @@ html body .mega-menu__footer .mega-menu-cta {
   font: 600 14px/18px "Plus Jakarta Sans", sans-serif;
   white-space: nowrap;
   text-decoration: none;
+}
+
+/* Keep both delivery labels beneath their values on phones. */
+@media (max-width: 700px) {
+  .success-cta__stats {
+    grid-template-columns: minmax(0, 1fr) minmax(min-content, 1fr);
+    gap: 16px;
+  }
+  .success-cta__stat {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .success-cta__stat + .success-cta__stat { padding-left: 0; }
+  .success-cta__stat span { overflow-wrap: normal; word-break: normal; }
+  .success-cta__stat strong { width: auto; }
+}
+
+/* Tablet process cards: readable two-column layout in normal document flow. */
+@media (min-width: 701px) and (max-width: 1100px) {
+  .process-section { height: auto; }
+  .process-section__sticky { position: relative; top: auto; display: block; padding: 48px 0; overflow: visible; }
+  .process-section__layout { display: block; box-sizing: border-box; width: 100%; padding: 0 32px; transform: none; }
+  .process-section__heading { padding: 0; text-align: center; }
+  .process-section__heading h2 { width: auto; max-width: none; font-size: 36px; line-height: 1.25; }
+  .process-section__viewport { margin-top: 32px; padding: 0; }
+  .process-section__track { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 36px 28px; }
+  .process-card { display: flex; flex-direction: column; width: auto; min-width: 0; min-height: 0; padding: 0; border: 0; }
+  .process-card__step { align-self: flex-start; }
+  .process-card h3 { max-width: none; min-height: 0; margin: 16px 0 12px; font-size: 26px; line-height: 1.25; }
+  .process-card > p { width: auto; min-height: 0; margin: 0 0 20px; font-size: 16px; line-height: 1.5; }
+  .process-card__media { width: 100%; height: auto; aspect-ratio: 280 / 219; margin-top: auto; }
 }

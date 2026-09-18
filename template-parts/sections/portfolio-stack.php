@@ -21,7 +21,7 @@ $projects = get_posts( array( 'post_type' => 'portfolio', 'posts_per_page' => 6,
 			?>
 			<article class="portfolio-card" data-portfolio-card style="--portfolio-index:<?php echo esc_attr( $index ); ?>">
 				<div class="portfolio-card__content">
-					<div class="portfolio-card__reveal"><div class="portfolio-card__topline"><span>Our Work</span><a href="<?php echo esc_url( get_post_type_archive_link( 'portfolio' ) ); ?>">All Projects ↗</a></div></div>
+					<div class="portfolio-card__reveal"><div class="portfolio-card__topline"><span>Our Work</span><a href="<?php echo esc_url( get_post_type_archive_link( 'portfolio' ) ); ?>">All Projects<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div></div>
 					<div class="portfolio-card__reveal"><img class="portfolio-card__logo" src="<?php echo esc_url( $logo ); ?>" width="150" height="55" alt="<?php echo esc_attr( get_the_title( $project ) ); ?> logo"></div>
 					<div class="portfolio-card__reveal"><h3><?php echo esc_html( get_the_title( $project ) ); ?></h3></div>
 					<div class="portfolio-card__reveal"><p class="portfolio-card__description"><?php echo esc_html( get_the_excerpt( $project ) ); ?></p></div>

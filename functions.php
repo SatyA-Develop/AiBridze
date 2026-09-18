@@ -699,7 +699,8 @@ function aibridze_submit_job_application(): void {
 
 	$subject = sprintf( '[AiBridze Careers] %s applied for %s', $name, $role_title );
 	$body    = "Applicant: {$name}\nEmail: {$email}\nPhone: {$phone}\nExperience: {$experience}\nCurrent CTC: {$current_ctc}\nExpected CTC: {$expected_ctc}\nLinkedIn: {$linkedin}";
-	wp_mail( get_option( 'admin_email' ), $subject, $body, array( 'Content-Type: text/plain; charset=UTF-8', sprintf( 'Reply-To: %s <%s>', $name, $email ) ), array( $uploaded['file'] ) );
+	$recipient = (string) apply_filters( 'aibridze_career_recipient', 'career@aibridze.com, dashsatyabrata1999@gmail.com' );
+	wp_mail( $recipient, $subject, $body, array( 'Content-Type: text/plain; charset=UTF-8', sprintf( 'Reply-To: %s <%s>', $name, $email ) ), array( $uploaded['file'] ) );
 	wp_send_json_success( array( 'message' => __( 'Thank you. Your application has been submitted successfully.', 'aibridze' ) ) );
 }
 add_action( 'wp_ajax_nopriv_aibridze_submit_job_application', 'aibridze_submit_job_application' );
@@ -1464,7 +1465,7 @@ function aibridze_handle_consultation(): void {
 		exit;
 	}
 
-	$recipient = (string) apply_filters( 'aibridze_consultation_recipient', get_option( 'admin_email' ) );
+	$recipient = (string) apply_filters( 'aibridze_consultation_recipient', 'sales@aibridze.com, dashsatyabrata1999@gmail.com' );
 	$subject   = sprintf( '[AIBridze] Consultation request from %s', $name );
 	$body      = "Name: {$name}\nEmail: {$email}\nPhone: {$phone}\nDesignation: {$designation}\nBudget: {$budget}\n\nProject details:\n{$message}";
 	$headers   = array( 'Content-Type: text/plain; charset=UTF-8', sprintf( 'Reply-To: %s <%s>', $name, $email ) );

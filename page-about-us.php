@@ -210,8 +210,7 @@ if ( $team_posts ) :
 			<a href="<?php echo esc_url( home_url( '/careers/' ) ); ?>"><?php esc_html_e( 'Explore Careers', 'aibridze' ); ?></a>
 		</div>
 		<picture class="about-careers__media">
-			<source media="(max-width: 1000px)" srcset="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/careers-team-mobile.png' ) ); ?>">
-			<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/careers-team-desktop.png' ) ); ?>" width="568" height="238" alt="<?php esc_attr_e( 'AiBridze team collaborating in the office', 'aibridze' ); ?>">
+			<img src="<?php echo esc_url( get_theme_file_uri( '/assets/images/about/careers-team-clear.webp' ) ); ?>" width="2528" height="1686" alt="<?php esc_attr_e( 'AiBridze team collaborating in the office', 'aibridze' ); ?>">
 		</picture>
 	</div>
 </section>
