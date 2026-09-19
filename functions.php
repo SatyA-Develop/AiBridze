@@ -16,6 +16,8 @@ require_once get_theme_file_path( '/inc/content-authors.php' );
 require_once get_theme_file_path( '/inc/vector-icons.php' );
 require_once get_theme_file_path( '/inc/navigation-state.php' );
 require_once get_theme_file_path( '/inc/svg-uploads.php' );
+require_once get_theme_file_path( '/inc/enquiry-email.php' );
+require_once get_theme_file_path( '/inc/form-submissions.php' );
 
 function aibridze_setup(): void {
 	add_theme_support( 'title-tag' );
@@ -676,32 +678,44 @@ function aibridze_submit_job_application(): void {
 		wp_send_json_error( array( 'message' => sanitize_text_field( $uploaded['error'] ) ), 422 );
 	}
 
-	$attachment_id = wp_insert_attachment( array( 'post_mime_type' => $uploaded['type'], 'post_title' => sanitize_file_name( pathinfo( $uploaded['file'], PATHINFO_FILENAME ) ), 'post_status' => 'inherit' ), $uploaded['file'] );
+	$attachment_id = wp_insert_attachment( array( 'post_mime_type' => $uploaded['type'], 'post_title' => sanitize_file_name( pathinfo( $uploaded['file'], PATHINFO_FILENAME ) ), 'post_status' => 'inherit' ), $uploaded['file'], 0, true );
+	if ( is_wp_error( $attachment_id ) || ! $attachment_id ) {
+		wp_send_json_error( array( 'message' => 'Your resume could not be saved. Please try again.' ), 500 );
+	}
 	if ( ! is_wp_error( $attachment_id ) ) {
 		require_once ABSPATH . 'wp-admin/includes/image.php';
 		wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $uploaded['file'] ) );
 	}
 
+	$fields = array( 'name' => $name, 'email' => $email, 'phone' => $phone, 'years_experience' => $experience, 'current_ctc' => $current_ctc, 'expected_ctc' => $expected_ctc, 'linkedin' => $linkedin, 'opportunity_id' => $opportunity_id, 'resume_id' => (int) $attachment_id );
+	$fields['position'] = $role_title;
+	$fields['resume_name'] = wp_basename( $uploaded['file'] );
+	$fields['resume_url'] = $uploaded['url'];
+	$fields['consent'] = true;
+	$fields['submitted_on'] = current_time( 'mysql' );
 	$application_id = wp_insert_post(
 		array(
 			'post_type'   => 'job_application',
 			'post_status' => 'private',
 			'post_title'  => sprintf( '%s — %s', $name, $role_title ),
-		)
+			'post_content' => wp_slash( wp_json_encode( $fields, JSON_UNESCAPED_UNICODE ) ),
+			'meta_input' => array( '_aibridze_mail_status' => 'pending', '_aibridze_reply_status' => 'pending' ),
+		), true
 	);
-	if ( is_wp_error( $application_id ) ) {
+	if ( is_wp_error( $application_id ) || ! $application_id ) {
 		wp_send_json_error( array( 'message' => __( 'Your application could not be saved. Please try again.', 'aibridze' ) ), 500 );
 	}
-	$fields = array( 'name' => $name, 'email' => $email, 'phone' => $phone, 'years_experience' => $experience, 'current_ctc' => $current_ctc, 'expected_ctc' => $expected_ctc, 'linkedin' => $linkedin, 'opportunity_id' => $opportunity_id, 'resume_id' => (int) $attachment_id );
 	foreach ( $fields as $key => $value ) {
 		update_post_meta( $application_id, '_aibridze_application_' . $key, $value );
 	}
 
 	$subject = sprintf( '[AiBridze Careers] %s applied for %s', $name, $role_title );
-	$body    = "Applicant: {$name}\nEmail: {$email}\nPhone: {$phone}\nExperience: {$experience}\nCurrent CTC: {$current_ctc}\nExpected CTC: {$expected_ctc}\nLinkedIn: {$linkedin}";
+	$templates = aibridze_career_emails( $fields );
+	$body = $templates['admin'];
 	$recipient = (string) apply_filters( 'aibridze_career_recipient', 'career@aibridze.com, dashsatyabrata1999@gmail.com' );
-	$mail_sent = wp_mail( $recipient, $subject, $body, array( 'Content-Type: text/plain; charset=UTF-8', sprintf( 'Reply-To: %s <%s>', $name, $email ) ), array( $uploaded['file'] ) );
+	$mail_sent = aibridze_send_record_mail( $application_id, 'notification', $recipient, $subject, $body, array( 'Content-Type: text/plain; charset=UTF-8', sprintf( 'Reply-To: %s <%s>', $name, $email ) ), array( $uploaded['file'] ) );
 	update_post_meta( $application_id, '_aibridze_application_notification_status', $mail_sent ? 'accepted' : 'failed' );
+	aibridze_send_record_mail( $application_id, 'reply', $email, 'Your application to AiBridze has been received', $templates['reply'], array( 'Content-Type: text/plain; charset=UTF-8', 'Reply-To: career@aibridze.com' ) );
 	wp_send_json_success( array( 'message' => $mail_sent
 		? __( 'Resume submitted successfully! Thank you for your interest in joining our team. We’ll review your profile and get back to you if your experience matches an opportunity.', 'aibridze' )
 		: __( 'Your application has been saved for our team to review. Please do not submit it again.', 'aibridze' ) ) );
@@ -1478,13 +1492,27 @@ function aibridze_handle_consultation(): void {
 		);
 	}
 	require_once get_theme_file_path( '/inc/enquiry-email.php' );
-	$notification = aibridze_enquiry_email( compact( 'name', 'email', 'phone', 'country_code', 'designation', 'budget', 'message' ), $article );
+	$fields = compact( 'name', 'email', 'phone', 'country_code', 'designation', 'budget', 'message' );
+	$fields['subject'] = sanitize_text_field( wp_unslash( $_POST['subject'] ?? '' ) );
+	$fields['company'] = sanitize_text_field( wp_unslash( $_POST['company'] ?? '' ) );
+	$fields['submitted_on'] = current_time( 'mysql' );
+	$fields['remote_ip'] = filter_var( $_SERVER['REMOTE_ADDR'] ?? '', FILTER_VALIDATE_IP ) ?: '';
+	$fields['source_url'] = esc_url_raw( $redirect );
+	$fields['form_type'] = $article ? 'blog' : 'enquiry';
+	$fields['article'] = $article;
+	$submission_id = aibridze_save_enquiry( $fields );
+	if ( is_wp_error( $submission_id ) || ! $submission_id ) {
+		wp_safe_redirect( add_query_arg( 'consultation', 'error', $redirect ) );
+		exit;
+	}
+	$notification = aibridze_enquiry_email( $fields, $article );
 	$subject      = $notification['subject'];
 	$body         = $notification['body'];
 	$headers   = array( 'Content-Type: text/plain; charset=UTF-8', sprintf( 'Reply-To: %s <%s>', $name, $email ) );
-	$status    = wp_mail( $recipient, $subject, $body, $headers ) ? 'success' : 'mail-error';
+	aibridze_send_record_mail( $submission_id, 'notification', $recipient, $subject, $body, $headers );
+	aibridze_send_record_mail( $submission_id, 'reply', $email, 'We’ve received your enquiry — AiBridze', aibridze_enquiry_reply( $name ), array( 'Content-Type: text/plain; charset=UTF-8', 'Reply-To: sales@aibridze.com' ) );
 
-	wp_safe_redirect( 'success' === $status ? home_url( '/thank-you/' ) : add_query_arg( 'consultation', $status, $redirect ) );
+	wp_safe_redirect( home_url( '/thank-you/' ) );
 	exit;
 }
 add_action( 'admin_post_nopriv_aibridze_consultation', 'aibridze_handle_consultation' );
