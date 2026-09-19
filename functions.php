@@ -1459,7 +1459,6 @@ function aibridze_handle_consultation(): void {
 	$designation = sanitize_text_field( wp_unslash( $_POST['designation'] ?? '' ) );
 	$country_code = sanitize_text_field( wp_unslash( $_POST['country_code'] ?? '' ) );
 	$phone       = sanitize_text_field( wp_unslash( $_POST['phone'] ?? '' ) );
-	$phone       = trim( $country_code . ' ' . $phone );
 	$budget      = sanitize_text_field( wp_unslash( $_POST['budget'] ?? '' ) );
 	$message     = sanitize_textarea_field( wp_unslash( $_POST['message'] ?? '' ) );
 
@@ -1469,8 +1468,19 @@ function aibridze_handle_consultation(): void {
 	}
 
 	$recipient = (string) apply_filters( 'aibridze_consultation_recipient', 'sales@aibridze.com, dashsatyabrata1999@gmail.com' );
-	$subject   = sprintf( '[AIBridze] Consultation request from %s', $name );
-	$body      = "Name: {$name}\nEmail: {$email}\nPhone: {$phone}\nDesignation: {$designation}\nBudget: {$budget}\n\nProject details:\n{$message}";
+	$article   = array();
+	$source_id = absint( $_POST['blog_article_id'] ?? 0 );
+	$source    = $source_id ? get_post( $source_id ) : null;
+	if ( $source && 'post' === $source->post_type && 'publish' === $source->post_status ) {
+		$article = array(
+			'title' => wp_strip_all_tags( get_the_title( $source ) ),
+			'url'   => get_permalink( $source ),
+		);
+	}
+	require_once get_theme_file_path( '/inc/enquiry-email.php' );
+	$notification = aibridze_enquiry_email( compact( 'name', 'email', 'phone', 'country_code', 'designation', 'budget', 'message' ), $article );
+	$subject      = $notification['subject'];
+	$body         = $notification['body'];
 	$headers   = array( 'Content-Type: text/plain; charset=UTF-8', sprintf( 'Reply-To: %s <%s>', $name, $email ) );
 	$status    = wp_mail( $recipient, $subject, $body, $headers ) ? 'success' : 'mail-error';
 

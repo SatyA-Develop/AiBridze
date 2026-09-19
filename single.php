@@ -57,6 +57,7 @@ while ( have_posts() ) :
 						<h2 id="technology-experts-title"><?php esc_html_e( 'Connect with Our Technology Experts', 'aibridze' ); ?></h2>
 						<p><?php esc_html_e( 'Get expert guidance for your digital journey.', 'aibridze' ); ?></p>
 						<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
+							<input type="hidden" name="blog_article_id" value="<?php echo esc_attr( (string) get_the_ID() ); ?>">
 							<input type="hidden" name="action" value="aibridze_consultation"><?php wp_nonce_field( 'aibridze_consultation', 'aibridze_consultation_nonce' ); ?><label class="consultation-form__honeypot" aria-hidden="true">Company website<input name="company_website" tabindex="-1" autocomplete="off"></label>
 							<input name="full_name" type="text" placeholder="<?php esc_attr_e( 'Enter Name', 'aibridze' ); ?>" autocomplete="name" required>
 							<input name="email" type="email" pattern="[^\s@]+@[^\s@]+\.[^\s@]+" placeholder="<?php esc_attr_e( 'Email Id', 'aibridze' ); ?>" autocomplete="email" required>
