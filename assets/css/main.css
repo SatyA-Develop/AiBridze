@@ -15308,3 +15308,24 @@ html body .mega-menu__footer .mega-menu-cta {
   .process-card > p { width: auto; min-height: 0; margin: 0 0 20px; font-size: 16px; line-height: 1.5; }
   .process-card__media { width: 100%; height: auto; aspect-ratio: 280 / 219; margin-top: auto; }
 }
+/* Confirmation page: shared About sections retain their existing responsive layout. */
+.thank-you-hero { background: linear-gradient(#0005, #0005), #000 url('../images/thank-you/hero-background.webp') center / cover no-repeat; color: #fff; padding: clamp(56px, 6vw, 100px) 0 clamp(64px, 7vw, 112px); text-align: center; }
+.thank-you-hero__inner { display: flex; flex-direction: column; align-items: center; }
+.thank-you-hero__check { width: clamp(110px, 11vw, 150px); height: auto; margin-bottom: 40px; }
+.thank-you-hero h1 { width: 100%; max-width: 969px; margin: 0; font-family: 'Neue Power', sans-serif; font-size: clamp(36px, 4.1vw, 58px); font-weight: 800; line-height: 70px; letter-spacing: -.25px; color: #fff; text-shadow: 0 2px 10px #0000001a; }
+.thank-you-hero h1 span { display: block; font-size: .76em; line-height: 1.3; margin-top: 12px; }
+.thank-you-hero__description { max-width: 969px; margin: 36px 0 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 500; line-height: 30px; }
+.thank-you-hero__follow { margin: 48px 0 20px; color: #78a7ff; font-size: 16px; }
+.thank-you-hero__socials { display: flex; gap: 20px; justify-content: center; }
+.thank-you-hero__socials a { width: 44px; height: 44px; border: 1px solid #ffffff66; border-radius: 50%; display: grid; place-items: center; }
+.thank-you-hero__socials a:hover, .thank-you-hero__socials a:focus-visible { background: #3477f2; border-color: #72f3fb; }
+.thank-you-hero__socials img { width: 18px; height: 18px; object-fit: contain; }
+.career-application__status.is-success { display: flex; gap: 8px; padding: 10px 12px; border-radius: 4px; background: #f3f8f3; color: #287b2c; font-size: 14px; line-height: 1.6; text-align: left; }
+.career-application__status.is-success::before { content: '✓✓'; flex: 0 0 auto; letter-spacing: -5px; padding-right: 5px; }
+@media (max-width: 700px) {
+ .thank-you-hero h1 { line-height: 1.2; }
+ .thank-you-hero h1 span { margin-top: 16px; }
+ .thank-you-hero__check { margin-bottom: 28px; }
+ .thank-you-hero__description { margin-top: 24px; }
+ .thank-you-hero__follow { margin-top: 32px; }
+}

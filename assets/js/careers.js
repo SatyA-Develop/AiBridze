@@ -177,11 +177,15 @@ document.querySelectorAll('[data-career-openings]').forEach((section) => {
     applicationStatus.classList.remove('is-error', 'is-success');
     applicationStatus.textContent = 'Submitting your application…';
     try {
-      const response = await fetch(applicationForm.action, { method: 'POST', body: new FormData(applicationForm), credentials: 'same-origin' });
+      const response = await fetch(applicationForm.getAttribute('action'), { method: 'POST', body: new FormData(applicationForm), credentials: 'same-origin' });
+      if (!response.headers.get('content-type')?.includes('application/json')) {
+        throw new Error('Unable to submit right now. Please try again or email career@aibridze.com.');
+      }
       const payload = await response.json();
       if (!payload.success) throw new Error(payload.data?.message || 'Unable to submit the application.');
       applicationStatus.textContent = payload.data.message;
       applicationStatus.classList.add('is-success');
+      applicationStatus.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       applicationForm.reset();
       opportunityInput.value = positionSelect.value;
     } catch (error) {

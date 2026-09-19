@@ -59,7 +59,7 @@ $status      = isset( $_GET['consultation'] ) ? sanitize_key( wp_unslash( $_GET[
 				<?php if ( 'success' === $status ) : ?>
 					<p class="consultation-modal__notice is-success" role="status"><?php esc_html_e( 'Thank you. Your consultation request has been sent.', 'aibridze' ); ?></p>
 				<?php elseif ( $status ) : ?>
-					<p class="consultation-modal__notice is-error" role="alert"><?php esc_html_e( 'Please check the form and try again. SMTP credentials may still need configuring.', 'aibridze' ); ?></p>
+					<p class="consultation-modal__notice is-error" role="alert"><?php esc_html_e( 'We couldn’t send your request. Please try again, or email sales@aibridze.com.', 'aibridze' ); ?></p>
 				<?php endif; ?>
 				<form class="consultation-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
 					<input type="hidden" name="action" value="aibridze_consultation">

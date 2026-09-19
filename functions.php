@@ -700,8 +700,11 @@ function aibridze_submit_job_application(): void {
 	$subject = sprintf( '[AiBridze Careers] %s applied for %s', $name, $role_title );
 	$body    = "Applicant: {$name}\nEmail: {$email}\nPhone: {$phone}\nExperience: {$experience}\nCurrent CTC: {$current_ctc}\nExpected CTC: {$expected_ctc}\nLinkedIn: {$linkedin}";
 	$recipient = (string) apply_filters( 'aibridze_career_recipient', 'career@aibridze.com, dashsatyabrata1999@gmail.com' );
-	wp_mail( $recipient, $subject, $body, array( 'Content-Type: text/plain; charset=UTF-8', sprintf( 'Reply-To: %s <%s>', $name, $email ) ), array( $uploaded['file'] ) );
-	wp_send_json_success( array( 'message' => __( 'Thank you. Your application has been submitted successfully.', 'aibridze' ) ) );
+	$mail_sent = wp_mail( $recipient, $subject, $body, array( 'Content-Type: text/plain; charset=UTF-8', sprintf( 'Reply-To: %s <%s>', $name, $email ) ), array( $uploaded['file'] ) );
+	update_post_meta( $application_id, '_aibridze_application_notification_status', $mail_sent ? 'accepted' : 'failed' );
+	wp_send_json_success( array( 'message' => $mail_sent
+		? __( 'Resume submitted successfully! Thank you for your interest in joining our team. We’ll review your profile and get back to you if your experience matches an opportunity.', 'aibridze' )
+		: __( 'Your application has been saved for our team to review. Please do not submit it again.', 'aibridze' ) ) );
 }
 add_action( 'wp_ajax_nopriv_aibridze_submit_job_application', 'aibridze_submit_job_application' );
 add_action( 'wp_ajax_aibridze_submit_job_application', 'aibridze_submit_job_application' );
@@ -1471,7 +1474,7 @@ function aibridze_handle_consultation(): void {
 	$headers   = array( 'Content-Type: text/plain; charset=UTF-8', sprintf( 'Reply-To: %s <%s>', $name, $email ) );
 	$status    = wp_mail( $recipient, $subject, $body, $headers ) ? 'success' : 'mail-error';
 
-	wp_safe_redirect( add_query_arg( 'consultation', $status, $redirect ) );
+	wp_safe_redirect( 'success' === $status ? home_url( '/thank-you/' ) : add_query_arg( 'consultation', $status, $redirect ) );
 	exit;
 }
 add_action( 'admin_post_nopriv_aibridze_consultation', 'aibridze_handle_consultation' );
@@ -1485,6 +1488,11 @@ function aibridze_configure_smtp( $phpmailer ): void {
 		return;
 	}
 	$phpmailer->isSMTP();
+	// Use WordPress's maintained CA bundle where the PHP runtime lacks a trust store.
+	$ca_bundle = ABSPATH . WPINC . '/certificates/ca-bundle.crt';
+	if ( is_readable( $ca_bundle ) ) {
+		$phpmailer->SMTPOptions['ssl'] = array( 'cafile' => $ca_bundle, 'verify_peer' => true, 'verify_peer_name' => true );
+	}
 	$phpmailer->Host       = AIBRIDZE_SMTP_HOST;
 	$phpmailer->Port       = defined( 'AIBRIDZE_SMTP_PORT' ) ? (int) AIBRIDZE_SMTP_PORT : 587;
 	$phpmailer->SMTPAuth   = defined( 'AIBRIDZE_SMTP_USERNAME' ) && '' !== AIBRIDZE_SMTP_USERNAME;
@@ -1582,3 +1590,15 @@ function aibridze_social_links(): array {
 		'x'         => (string) get_theme_mod( 'aibridze_social_x', '' ),
 	);
 }
+
+/** Provision the confirmation page once without reseeding existing site content. */
+function aibridze_register_thank_you_page(): void {
+ if ( get_option( 'aibridze_thank_you_page_v1' ) ) return;
+ $page = get_page_by_path( 'thank-you' );
+ $page_id = $page ? $page->ID : wp_insert_post( array(
+  'post_title' => 'Thank You', 'post_name' => 'thank-you',
+  'post_status' => 'publish', 'post_type' => 'page',
+ ), true );
+ if ( ! is_wp_error( $page_id ) && $page_id ) update_option( 'aibridze_thank_you_page_v1', 1, false );
+}
+add_action( 'init', 'aibridze_register_thank_you_page' );

@@ -162,8 +162,8 @@ $career_reasons = array(
 					</div>
 					<label class="career-application__consent"><input name="consent" type="checkbox" value="1" required><span><?php esc_html_e( 'By submitting, you consent to receive communication from our team via email or phone.', 'aibridze' ); ?></span></label>
 					<p class="career-application__help"><?php esc_html_e( 'If you are unable to submit your details, then please share your recently updated resume at', 'aibridze' ); ?> <a href="mailto:career@aibridze.com">career@aibridze.com</a></p>
-					<p class="career-application__status" data-application-status aria-live="polite"></p>
 					<button class="career-application__submit" type="submit"><?php esc_html_e( 'Submit Application', 'aibridze' ); ?></button>
+					<p class="career-application__status" data-application-status aria-live="polite"></p>
 				</form>
 			</div>
 		</section>
