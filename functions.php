@@ -712,10 +712,10 @@ function aibridze_submit_job_application(): void {
 	$subject = sprintf( '[AiBridze Careers] %s applied for %s', $name, $role_title );
 	$templates = aibridze_career_emails( $fields );
 	$body = $templates['admin'];
-	$recipient = (string) apply_filters( 'aibridze_career_recipient', 'career@aibridze.com, dashsatyabrata1999@gmail.com' );
-	$mail_sent = aibridze_send_record_mail( $application_id, 'notification', $recipient, $subject, $body, array( 'Content-Type: text/plain; charset=UTF-8', sprintf( 'Reply-To: %s <%s>', $name, $email ) ), array( $uploaded['file'] ) );
+	$recipient = (string) apply_filters( 'aibridze_career_recipient', 'career@aibridze.com' );
+	$mail_sent = aibridze_send_record_mail( $application_id, 'notification', $recipient, $subject, $body, array( 'Content-Type: text/plain; charset=UTF-8', 'From: AIBridze Careers <career@aibridze.com>', sprintf( 'Reply-To: %s <%s>', $name, $email ) ), array( $uploaded['file'] ) );
 	update_post_meta( $application_id, '_aibridze_application_notification_status', $mail_sent ? 'accepted' : 'failed' );
-	aibridze_send_record_mail( $application_id, 'reply', $email, 'Your application to AiBridze has been received', $templates['reply'], array( 'Content-Type: text/plain; charset=UTF-8', 'Reply-To: career@aibridze.com' ) );
+	aibridze_send_record_mail( $application_id, 'reply', $email, 'Your application to AiBridze has been received', $templates['reply'], array( 'Content-Type: text/plain; charset=UTF-8', 'From: AIBridze Careers <career@aibridze.com>', 'Reply-To: career@aibridze.com' ) );
 	wp_send_json_success( array( 'message' => $mail_sent
 		? __( 'Resume submitted successfully! Thank you for your interest in joining our team. We’ll review your profile and get back to you if your experience matches an opportunity.', 'aibridze' )
 		: __( 'Your application has been saved for our team to review. Please do not submit it again.', 'aibridze' ) ) );
@@ -1481,7 +1481,7 @@ function aibridze_handle_consultation(): void {
 		exit;
 	}
 
-	$recipient = (string) apply_filters( 'aibridze_consultation_recipient', 'sales@aibridze.com, dashsatyabrata1999@gmail.com' );
+	$recipient = (string) apply_filters( 'aibridze_consultation_recipient', 'sales@aibridze.com' );
 	$article   = array();
 	$source_id = absint( $_POST['blog_article_id'] ?? 0 );
 	$source    = $source_id ? get_post( $source_id ) : null;
@@ -1508,9 +1508,9 @@ function aibridze_handle_consultation(): void {
 	$notification = aibridze_enquiry_email( $fields, $article );
 	$subject      = $notification['subject'];
 	$body         = $notification['body'];
-	$headers   = array( 'Content-Type: text/plain; charset=UTF-8', sprintf( 'Reply-To: %s <%s>', $name, $email ) );
+	$headers   = array( 'Content-Type: text/plain; charset=UTF-8', 'From: AIBridze <sales@aibridze.com>', sprintf( 'Reply-To: %s <%s>', $name, $email ) );
 	aibridze_send_record_mail( $submission_id, 'notification', $recipient, $subject, $body, $headers );
-	aibridze_send_record_mail( $submission_id, 'reply', $email, 'We’ve received your enquiry — AiBridze', aibridze_enquiry_reply( $name ), array( 'Content-Type: text/plain; charset=UTF-8', 'Reply-To: sales@aibridze.com' ) );
+	aibridze_send_record_mail( $submission_id, 'reply', $email, 'We’ve received your enquiry — AiBridze', aibridze_enquiry_reply( $name ), array( 'Content-Type: text/plain; charset=UTF-8', 'From: AIBridze <sales@aibridze.com>', 'Reply-To: sales@aibridze.com' ) );
 
 	wp_safe_redirect( home_url( '/thank-you/' ) );
 	exit;
@@ -1537,8 +1537,11 @@ function aibridze_configure_smtp( $phpmailer ): void {
 	$phpmailer->Username   = defined( 'AIBRIDZE_SMTP_USERNAME' ) ? AIBRIDZE_SMTP_USERNAME : '';
 	$phpmailer->Password   = defined( 'AIBRIDZE_SMTP_PASSWORD' ) ? AIBRIDZE_SMTP_PASSWORD : '';
 	$phpmailer->SMTPSecure = defined( 'AIBRIDZE_SMTP_ENCRYPTION' ) ? AIBRIDZE_SMTP_ENCRYPTION : 'tls';
-	$from_email            = defined( 'AIBRIDZE_SMTP_FROM_EMAIL' ) ? AIBRIDZE_SMTP_FROM_EMAIL : get_option( 'admin_email' );
-	$phpmailer->setFrom( $from_email, 'AIBridze', false );
+	// Keep the form-specific sender for career and sales messages.
+	if ( ! in_array( strtolower( $phpmailer->From ), array( 'career@aibridze.com', 'sales@aibridze.com' ), true ) ) {
+		$from_email = defined( 'AIBRIDZE_SMTP_FROM_EMAIL' ) ? AIBRIDZE_SMTP_FROM_EMAIL : get_option( 'admin_email' );
+		$phpmailer->setFrom( $from_email, 'AIBridze', false );
+	}
 }
 add_action( 'phpmailer_init', 'aibridze_configure_smtp' );
 
