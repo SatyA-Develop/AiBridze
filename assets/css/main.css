@@ -1665,6 +1665,7 @@ body.has-consultation-modal {
     height: auto;
     min-height: 0;
     padding: 55px 16px;
+    padding-top: 0 !important;
   }
 
   .careers-reasons__inner {
@@ -3408,10 +3409,9 @@ body.has-consultation-modal {
   align-items: flex-start;
   padding: 42px 79px;
   gap: 10px;
-  border: 0.25px solid rgba(255, 255, 255, 0.20);
   border-radius: 20px;
   color: #fff;
-  background: linear-gradient(130.63deg, #000 14.1%, #8956ff 55.44%, #ca9cff 70.2%, #001a4a 98.99%);
+  background: url('../images/about/build-technology-background.png') center / cover no-repeat;
 }
 
 .about-technologies__panel::after {
@@ -10304,23 +10304,14 @@ a:hover > .white-cta-arrow, a:focus-visible > .white-cta-arrow { transform: tran
   padding: 15px 20px;
   color: #f5f5f7;
   background: rgba(30, 30, 35, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 0;
   border-radius: 14px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
-  opacity: var(--challenge-opacity);
+  background: transparent url("../images/about/build-technology-background.png") center / cover no-repeat;
   transform: translateY(var(--challenge-lift)) scale(var(--challenge-scale));
   font-size: clamp(14px, 1.35vw, 19px);
   font-weight: 500;
-  line-height: 1.2;
-  white-space: nowrap;
-  will-change: opacity, transform;
-}
-
-.manual-cost__challenge > span {
-  width: 8px;
-  height: 8px;
-  flex: 0 0 auto;
-  background: #56565e;
+  display: none;
   border-radius: 2px;
 }
 
@@ -14500,7 +14491,8 @@ body :is(.section-callout, [class*="__eyebrow"], .category-kicker, .service-kick
 .consultation-modal__security { position: relative; flex: 0 0 30px; }
 
 /* Keep browser autofill readable on both white and gradient form panels. */
-form { --autofill-text: #070707; }
+form { --autofill-text: #fff; }
+.contact-project form{ --autofill-text: #070707; }
 .faq-contact__form, .single-blog__quote-form { --autofill-text: #fff; }
 form input:is(:autofill, :-webkit-autofill) {
   -webkit-background-clip: text !important;
@@ -14508,6 +14500,7 @@ form input:is(:autofill, :-webkit-autofill) {
   -webkit-text-fill-color: var(--autofill-text) !important;
   caret-color: var(--autofill-text);
 }
+input:-internal-autofill-selected { color: #fff !important; }
 
 /* Standard desktop containers stay capped; fluid expansion starts above 1920px. */
 @media (min-width: 1440px) {
@@ -15146,6 +15139,10 @@ html body .industries-showcase .white-cta.industries-showcase__button { margin-t
 html body .industries-showcase__viewport {
   width: min(var(--container-width), calc(100% - (2 * var(--page-gutter))));
   margin-inline: auto;
+}
+@media (max-width: 700px) {
+  html body .industries-showcase__header { margin-bottom: 25px; }
+  html body .industries-showcase .white-cta.industries-showcase__button { margin-top: 25px; }
 }
 @media (min-width: 701px) {
   html body .industries-showcase__header { width: min(645px, calc(100% - 40px)); }
