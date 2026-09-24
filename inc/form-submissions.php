@@ -30,8 +30,21 @@ function aibridze_save_enquiry( array $fields ) {
 function aibridze_send_record_mail( int $id, string $channel, $to, string $subject, string $body, array $headers, array $attachments = array() ): bool {
  $key = 'reply' === $channel ? '_aibridze_reply_status' : '_aibridze_mail_status';
  update_post_meta( $id, $key, 'pending' );
+ $failure = '';
+ $capture_failure = static function( $error ) use ( &$failure ) {
+  global $phpmailer;
+  $failure = $error->get_error_message();
+  if ( $phpmailer && $phpmailer->isSMTP() ) {
+   $smtp_error = $phpmailer->getSMTPInstance()->getError();
+   $failure .= ' ' . trim( (string) ( $smtp_error['smtp_code'] ?? '' ) . ' ' . (string) ( $smtp_error['detail'] ?? '' ) );
+  }
+ };
+ add_action( 'wp_mail_failed', $capture_failure );
  try { $sent = wp_mail( $to, $subject, $body, $headers, $attachments ); }
- catch ( Throwable $error ) { $sent = false; }
+ catch ( Throwable $error ) { $sent = false; $failure = $error->getMessage(); }
+ finally { remove_action( 'wp_mail_failed', $capture_failure ); }
+ if ( $sent ) delete_post_meta( $id, $key . '_error' );
+ else update_post_meta( $id, $key . '_error', sanitize_text_field( $failure ?: 'Mail transport returned false.' ) );
  update_post_meta( $id, $key, $sent ? 'accepted' : 'failed' );
  return (bool) $sent;
 }
@@ -84,6 +97,10 @@ add_action( 'add_meta_boxes', function() {
  foreach ( array( 'form_submission', 'job_application' ) as $type ) {
   add_meta_box( 'aibridze-record', 'Submitted data and email status', function( $post ) {
    echo '<p><strong>Team email:</strong> ' . esc_html( aibridze_record_status( $post->ID, 'notification' ) ) . ' &nbsp; <strong>Sender reply:</strong> ' . esc_html( aibridze_record_status( $post->ID, 'reply' ) ) . '</p><p>Accepted means the mail server accepted the email, not confirmed inbox delivery.</p>';
+   foreach ( array( '_aibridze_mail_status_error' => 'Team email error', '_aibridze_reply_status_error' => 'Reply email error' ) as $error_key => $label ) {
+    $error = get_post_meta( $post->ID, $error_key, true );
+    if ( $error ) echo '<p><strong>' . esc_html( $label ) . ':</strong> ' . esc_html( $error ) . '</p>';
+   }
    $data = json_decode( $post->post_content, true );
    if ( ! is_array( $data ) ) return;
    echo '<table class="widefat striped"><tbody>';

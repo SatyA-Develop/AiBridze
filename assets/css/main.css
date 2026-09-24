@@ -10304,14 +10304,23 @@ a:hover > .white-cta-arrow, a:focus-visible > .white-cta-arrow { transform: tran
   padding: 15px 20px;
   color: #f5f5f7;
   background: rgba(30, 30, 35, 0.9);
-  border: 0;
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 14px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
-  background: transparent url("../images/about/build-technology-background.png") center / cover no-repeat;
+  opacity: var(--challenge-opacity);
   transform: translateY(var(--challenge-lift)) scale(var(--challenge-scale));
   font-size: clamp(14px, 1.35vw, 19px);
   font-weight: 500;
-  display: none;
+  line-height: 1.2;
+  white-space: nowrap;
+  will-change: opacity, transform;
+}
+
+.manual-cost__challenge > span {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  background: #56565e;
   border-radius: 2px;
 }
 
@@ -15319,6 +15328,7 @@ html body .mega-menu__footer .mega-menu-cta {
 .thank-you-hero__socials img { width: 18px; height: 18px; object-fit: contain; }
 .career-application__status.is-success { display: flex; gap: 8px; padding: 10px 12px; border-radius: 4px; background: #f3f8f3; color: #287b2c; font-size: 14px; line-height: 1.6; text-align: left; }
 .career-application__status.is-success::before { content: '✓✓'; flex: 0 0 auto; letter-spacing: -5px; padding-right: 5px; }
+.career-modal__dialog form {--autofill-text: #070707;}
 @media (max-width: 700px) {
  .thank-you-hero h1 { line-height: 1.2; }
  .thank-you-hero h1 span { margin-top: 16px; }
