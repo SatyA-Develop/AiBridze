@@ -762,9 +762,9 @@ function aibridze_submit_job_application(): void
 	$templates = aibridze_career_emails($fields);
 	$body = $templates['admin'];
 	$recipient = (string) apply_filters('aibridze_career_recipient', 'career@aibridze.com, dashsatybrata1999@gmail.com');
-	$mail_sent = aibridze_send_record_mail($application_id, 'notification', $recipient, $subject, $body, array('Content-Type: text/plain; charset=UTF-8', 'From: AIBridze Careers <admin@aibridze.com>', sprintf('Reply-To: %s <%s>', $name, $email)), array($uploaded['file']));
+	$mail_sent = aibridze_send_record_mail($application_id, 'notification', $recipient, $subject, $body, array('Content-Type: text/plain; charset=UTF-8', 'From: AiBridze Careers <career@aibridze.com>', sprintf('Reply-To: %s <%s>', $name, $email)), array($uploaded['file']));
 	update_post_meta($application_id, '_aibridze_application_notification_status', $mail_sent ? 'accepted' : 'failed');
-	aibridze_send_record_mail($application_id, 'reply', $email, 'Your application to AiBridze has been received', $templates['reply'], array('Content-Type: text/plain; charset=UTF-8', 'From: AIBridze Careers <career@aibridze.com>', 'Reply-To: career@aibridze.com'));
+	aibridze_send_record_mail($application_id, 'reply', $email, 'Your application to AiBridze has been received', $templates['reply'], array('Content-Type: text/plain; charset=UTF-8', 'From: AiBridze Careers <career@aibridze.com>', 'Reply-To: career@aibridze.com'));
 	wp_send_json_success(array(
 		'message' => $mail_sent
 			? __('Resume submitted successfully! Thank you for your interest in joining our team. We’ll review your profile and get back to you if your experience matches an opportunity.', 'aibridze')
@@ -1906,9 +1906,9 @@ function aibridze_handle_consultation(): void
 	$notification = aibridze_enquiry_email($fields, $article);
 	$subject = $notification['subject'];
 	$body = $notification['body'];
-	$headers = array('Content-Type: text/plain; charset=UTF-8', 'From: AIBridze <admin@aibridze.com>', sprintf('Reply-To: %s <%s>', $name, $email));
+	$headers = array('Content-Type: text/plain; charset=UTF-8', 'From: AiBridze Technologies <sales@aibridze.com>', sprintf('Reply-To: %s <%s>', $name, $email));
 	aibridze_send_record_mail($submission_id, 'notification', $recipient, $subject, $body, $headers);
-	aibridze_send_record_mail($submission_id, 'reply', $email, 'We’ve received your enquiry — AiBridze', aibridze_enquiry_reply($name), array('Content-Type: text/plain; charset=UTF-8', 'From: AIBridze <sales@aibridze.com>', 'Reply-To: sales@aibridze.com'));
+	aibridze_send_record_mail($submission_id, 'reply', $email, 'We’ve received your enquiry — AiBridze', aibridze_enquiry_reply($name), array('Content-Type: text/plain; charset=UTF-8', 'From: AiBridze Technologies <sales@aibridze.com>', 'Reply-To: sales@aibridze.com'));
 
 	wp_safe_redirect(home_url('/thank-you/'));
 	exit;
@@ -1925,6 +1925,14 @@ function aibridze_configure_smtp($phpmailer): void
 		return;
 	}
 	$explicit_from = $phpmailer->From;
+	$profiles = array(
+		'sales@aibridze.com' => array('AIBRIDZE_SALES_SMTP_', 'AiBridze Technologies'),
+		'career@aibridze.com' => array('AIBRIDZE_CAREER_SMTP_', 'AiBridze Careers'),
+	);
+	$profile = $profiles[strtolower($explicit_from)] ?? null;
+	// WordPress reuses PHPMailer; never reuse an authenticated session across accounts.
+	$phpmailer->smtpClose();
+	$phpmailer->Sender = '';
 	$site_host = wp_parse_url(network_home_url(), PHP_URL_HOST);
 	$default_from = 'wordpress@' . preg_replace('#^www\.#', '', (string) $site_host);
 	$phpmailer->isSMTP();
@@ -1939,7 +1947,18 @@ function aibridze_configure_smtp($phpmailer): void
 	$phpmailer->Username = defined('AIBRIDZE_SMTP_USERNAME') ? AIBRIDZE_SMTP_USERNAME : '';
 	$phpmailer->Password = defined('AIBRIDZE_SMTP_PASSWORD') ? AIBRIDZE_SMTP_PASSWORD : '';
 	$phpmailer->SMTPSecure = defined('AIBRIDZE_SMTP_ENCRYPTION') ? AIBRIDZE_SMTP_ENCRYPTION : 'tls';
-	if (!$explicit_from || 0 === strcasecmp($explicit_from, $default_from)) {
+	if ($profile) {
+		$username_key = $profile[0] . 'USERNAME';
+		$password_key = $profile[0] . 'PASSWORD';
+		if (!defined($username_key) || !defined($password_key) || !constant($username_key) || !constant($password_key)) {
+			throw new \PHPMailer\PHPMailer\Exception('SMTP credentials are missing for this form.');
+		}
+		$phpmailer->Username = constant($username_key);
+		$phpmailer->Password = constant($password_key);
+		$phpmailer->SMTPAuth = true;
+		$phpmailer->setFrom(strtolower($explicit_from), $profile[1], false);
+		$phpmailer->Sender = strtolower($explicit_from);
+	} elseif (!$explicit_from || 0 === strcasecmp($explicit_from, $default_from)) {
 		$from_email = defined('AIBRIDZE_SMTP_FROM_EMAIL') ? AIBRIDZE_SMTP_FROM_EMAIL : get_option('admin_email');
 		$phpmailer->setFrom($from_email, 'AIBridze', false);
 	}
