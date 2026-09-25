@@ -762,7 +762,7 @@ function aibridze_submit_job_application(): void
 	$templates = aibridze_career_emails($fields);
 	$body = $templates['admin'];
 	$recipient = (string) apply_filters('aibridze_career_recipient', 'career@aibridze.com, dashsatybrata1999@gmail.com');
-	$mail_sent = aibridze_send_record_mail($application_id, 'notification', $recipient, $subject, $body, array('Content-Type: text/plain; charset=UTF-8', 'From: AIBridze Careers <career@aibridze.com>', sprintf('Reply-To: %s <%s>', $name, $email)), array($uploaded['file']));
+	$mail_sent = aibridze_send_record_mail($application_id, 'notification', $recipient, $subject, $body, array('Content-Type: text/plain; charset=UTF-8', 'From: AIBridze Careers <admin@aibridze.com>', sprintf('Reply-To: %s <%s>', $name, $email)), array($uploaded['file']));
 	update_post_meta($application_id, '_aibridze_application_notification_status', $mail_sent ? 'accepted' : 'failed');
 	aibridze_send_record_mail($application_id, 'reply', $email, 'Your application to AiBridze has been received', $templates['reply'], array('Content-Type: text/plain; charset=UTF-8', 'From: AIBridze Careers <career@aibridze.com>', 'Reply-To: career@aibridze.com'));
 	wp_send_json_success(array(
@@ -1906,7 +1906,7 @@ function aibridze_handle_consultation(): void
 	$notification = aibridze_enquiry_email($fields, $article);
 	$subject = $notification['subject'];
 	$body = $notification['body'];
-	$headers = array('Content-Type: text/plain; charset=UTF-8', 'From: AIBridze <sales@aibridze.com>', sprintf('Reply-To: %s <%s>', $name, $email));
+	$headers = array('Content-Type: text/plain; charset=UTF-8', 'From: AIBridze <admin@aibridze.com>', sprintf('Reply-To: %s <%s>', $name, $email));
 	aibridze_send_record_mail($submission_id, 'notification', $recipient, $subject, $body, $headers);
 	aibridze_send_record_mail($submission_id, 'reply', $email, 'We’ve received your enquiry — AiBridze', aibridze_enquiry_reply($name), array('Content-Type: text/plain; charset=UTF-8', 'From: AIBridze <sales@aibridze.com>', 'Reply-To: sales@aibridze.com'));
 
