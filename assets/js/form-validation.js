@@ -1,4 +1,41 @@
 (() => {
+  const pending = new Map();
+  const setSubmitting = (form, busy) => {
+    if (!busy) {
+      const state = pending.get(form);
+      if (!state) return;
+      state.buttons.forEach(({ button, nodes, disabled, minWidth }) => {
+        button.replaceChildren(...nodes);
+        button.disabled = disabled;
+        button.style.minWidth = minWidth;
+        button.classList.remove('is-submitting');
+      });
+      if (state.ariaBusy === null) form.removeAttribute('aria-busy');
+      else form.setAttribute('aria-busy', state.ariaBusy);
+      pending.delete(form);
+      return;
+    }
+    if (pending.has(form)) return;
+    const buttons = [...form.querySelectorAll('button[type="submit"]')].map(button => {
+      const state = { button, nodes: [...button.childNodes], disabled: button.disabled, minWidth: button.style.minWidth };
+      button.style.minWidth = `${button.getBoundingClientRect().width}px`;
+      const spinner = document.createElement('span');
+      spinner.className = 'form-submit-spinner';
+      spinner.setAttribute('aria-hidden', 'true');
+      const label = document.createElement('span');
+      label.className = 'form-submit-label';
+      label.textContent = 'Submitting…';
+      label.setAttribute('role', 'status');
+      button.replaceChildren(spinner, label);
+      button.disabled = true;
+      button.classList.add('is-submitting');
+      return state;
+    });
+    pending.set(form, { buttons, ariaBusy: form.getAttribute('aria-busy') });
+    form.setAttribute('aria-busy', 'true');
+  };
+  window.aibridzeFormState = { setSubmitting, isSubmitting: form => pending.has(form) };
+  window.addEventListener('pageshow', () => [...pending.keys()].forEach(form => setSubmitting(form, false)));
   const selector = 'input[type="email"]';
   const pattern = '[^\\s@]+@[^\\s@]+\\.[^\\s@]+';
   const validate = (input) => {
@@ -68,6 +105,11 @@
     }, true);
   });
   document.addEventListener('submit', event => {
+    if (pending.has(event.target)) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return;
+    }
     if (inlineForms.has(event.target)) {
       const fields = [...event.target.elements].filter(field => field.willValidate && field.matches('input, textarea, select'));
       const invalidFields = fields.filter(field => !showError(field));
@@ -79,6 +121,10 @@
       return;
     }
   }, true);
+  // Native POST forms navigate away; AJAX forms manage completion themselves.
+  document.addEventListener('submit', event => {
+    if (inlineForms.has(event.target) && !event.defaultPrevented) setSubmitting(event.target, true);
+  });
   document.addEventListener('reset', event => {
     event.target.querySelectorAll(selector).forEach(input => input.setCustomValidity(''));
   }, true);

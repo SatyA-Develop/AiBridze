@@ -179,7 +179,7 @@ function aibridze_assets(): void
 	if (is_singular('post')) {
 		wp_enqueue_script('aibridze-blog-quote', get_theme_file_uri('/assets/js/blog-quote.js'), array(), (string) filemtime(get_theme_file_path('/assets/js/blog-quote.js')), true);
 	}
-	wp_enqueue_script('aibridze-careers', get_theme_file_uri('/assets/js/careers.js'), array(), (string) filemtime($careers_script_path), true);
+	wp_enqueue_script('aibridze-careers', get_theme_file_uri('/assets/js/careers.js'), array('aibridze-form-validation'), (string) filemtime($careers_script_path), true);
 	wp_enqueue_style('aibridze-plyr', get_theme_file_uri('/assets/vendor/plyr/plyr.css'), array(), '3.7.8');
 	wp_enqueue_script('aibridze-plyr', get_theme_file_uri('/assets/vendor/plyr/plyr.js'), array(), '3.7.8', true);
 	wp_enqueue_script('aibridze-contact-videos', get_theme_file_uri('/assets/js/contact-video-testimonials.js'), array('aibridze-plyr'), (string) filemtime($contact_videos_script_path), true);

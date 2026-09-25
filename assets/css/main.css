@@ -15336,3 +15336,31 @@ html body .mega-menu__footer .mega-menu-cta {
  .thank-you-hero__description { margin-top: 24px; }
  .thank-you-hero__follow { margin-top: 32px; }
 }
+
+/* Shared pending state for enquiry and career submissions. */
+form button[type="submit"].is-submitting {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: wait;
+  opacity: 1;
+}
+form button[type="submit"].is-submitting::before,
+form button[type="submit"].is-submitting::after { display: none; }
+form button[type="submit"].is-submitting .form-submit-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  padding: 0;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  background: none;
+  animation: form-submit-spin 0.75s linear infinite;
+}
+@keyframes form-submit-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  form button[type="submit"].is-submitting .form-submit-spinner { animation: none; }
+}

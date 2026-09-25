@@ -166,14 +166,14 @@ document.querySelectorAll('[data-career-openings]').forEach((section) => {
 
   applicationForm.addEventListener('submit', async (event) => {
     event.preventDefault();
-    const submit = applicationForm.querySelector('[type="submit"]');
+    if (window.aibridzeFormState.isSubmitting(applicationForm)) return;
     const resume = applicationForm.querySelector('[name="resume"]');
     if (resume.files[0] && resume.files[0].size > 2 * 1024 * 1024) {
       applicationStatus.textContent = 'The resume must be no larger than 2 MB.';
       applicationStatus.classList.add('is-error');
       return;
     }
-    submit.disabled = true;
+    window.aibridzeFormState.setSubmitting(applicationForm, true);
     applicationStatus.classList.remove('is-error', 'is-success');
     applicationStatus.textContent = 'Submitting your application…';
     try {
@@ -192,7 +192,7 @@ document.querySelectorAll('[data-career-openings]').forEach((section) => {
       applicationStatus.textContent = error.message;
       applicationStatus.classList.add('is-error');
     } finally {
-      submit.disabled = false;
+      window.aibridzeFormState.setSubmitting(applicationForm, false);
     }
   });
 
