@@ -761,7 +761,7 @@ function aibridze_submit_job_application(): void
 	$subject = sprintf('[AiBridze Careers] %s applied for %s', $name, $role_title);
 	$templates = aibridze_career_emails($fields);
 	$body = $templates['admin'];
-	$recipient = (string) apply_filters('aibridze_career_recipient', 'career@aibridze.com, dashsatybrata1999@gmail.com');
+	$recipient = (string) apply_filters('aibridze_career_recipient', 'career@aibridze.com');
 	$mail_sent = aibridze_send_record_mail($application_id, 'notification', $recipient, $subject, $body, array('Content-Type: text/plain; charset=UTF-8', 'From: AiBridze Careers <career@aibridze.com>', sprintf('Reply-To: %s <%s>', $name, $email)), array($uploaded['file']));
 	update_post_meta($application_id, '_aibridze_application_notification_status', $mail_sent ? 'accepted' : 'failed');
 	aibridze_send_record_mail($application_id, 'reply', $email, 'Your application to AiBridze has been received', $templates['reply'], array('Content-Type: text/plain; charset=UTF-8', 'From: AiBridze Careers <career@aibridze.com>', 'Reply-To: career@aibridze.com'));
