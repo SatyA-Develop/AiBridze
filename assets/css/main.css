@@ -4110,6 +4110,11 @@ body.has-consultation-modal {
   line-height: 1.4;
 }
 
+@media (min-width: 801px) and (max-width: 1300px) {
+  .compliance-card__certifications { padding-inline: 36px; }
+  .compliance-card__standards { padding-inline: 44px; }
+}
+
 @media (max-width: 800px) {
   .compliance-section {
     padding: 40px 28px 30px;
@@ -4121,7 +4126,7 @@ body.has-consultation-modal {
   }
   .compliance-card__certifications {
     min-height: 229px;
-    padding: 15px 13px 14px;
+    padding: 15px 19px 14px;
   }
   .compliance-card h2 {
     font-size: 18px;
@@ -4137,7 +4142,7 @@ body.has-consultation-modal {
     width: 155px;
   }
   .compliance-card__standards {
-    padding: 18px 13px 16px;
+    padding: 18px 19px 16px;
   }
   .compliance-card__standards h2 {
     max-width: 270px;
@@ -15150,8 +15155,8 @@ html body .industries-showcase__viewport {
   margin-inline: auto;
 }
 @media (max-width: 700px) {
-  html body .industries-showcase__header { margin-bottom: 25px; }
-  html body .industries-showcase .white-cta.industries-showcase__button { margin-top: 25px; }
+  html body .industries-showcase__header { margin-bottom: 40px; }
+  html body .industries-showcase .white-cta.industries-showcase__button { margin-top: 40px; }
 }
 @media (min-width: 701px) {
   html body .industries-showcase__header { width: min(645px, calc(100% - 40px)); }
@@ -15363,4 +15368,41 @@ form button[type="submit"].is-submitting .form-submit-spinner {
 @keyframes form-submit-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) {
   form button[type="submit"].is-submitting .form-submit-spinner { animation: none; }
+}
+
+/* Scale the growth banner with the expanded container on large monitors. */
+@media (min-width: 1921px) {
+  .success-cta__card { min-height: clamp(362px, 20vw, 640px); }
+  .success-cta__content {
+    justify-content: center;
+    padding: clamp(32px, 2.2vw, 72px);
+    gap: clamp(24px, 1.25vw, 40px);
+  }
+  .success-cta__title {
+    max-width: 24ch;
+    font-size: clamp(34px, 1.8vw, 58px);
+  }
+  .success-cta__description {
+    max-width: 60ch;
+    font-size: clamp(16px, 0.85vw, 26px);
+  }
+  .success-cta__stats {
+    width: min(100%, 860px);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(20px, 1.25vw, 40px);
+  }
+  .success-cta__stat {
+    flex-wrap: nowrap;
+    gap: clamp(10px, 0.6vw, 20px);
+  }
+  .success-cta__stat strong { font-size: clamp(36px, 1.9vw, 60px); }
+  .success-cta__stat span {
+    font-size: clamp(18px, 0.95vw, 28px);
+    overflow-wrap: normal;
+  }
+  html body .success-cta__button {
+    font-size: clamp(14px, 0.7vw, 22px);
+    min-height: clamp(48px, 2.5vw, 72px);
+    padding: 14px clamp(20px, 1.25vw, 40px);
+  }
 }
