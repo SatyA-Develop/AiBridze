@@ -2239,3 +2239,17 @@ function aibridze_seo_schema(): void
 	echo '<script type="application/ld+json">' . wp_json_encode(array('@context' => 'https://schema.org', '@graph' => $graph), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>' . "\n";
 }
 add_action('wp_head', 'aibridze_seo_schema', 3);
+
+/** Let AIOSEO own SEO output when active; retain the theme fallback otherwise. */
+function aibridze_use_aioseo(): void
+{
+	if (!function_exists('aioseo')) {
+		return;
+	}
+	remove_action('add_meta_boxes', 'aibridze_seo_add_meta_box');
+	remove_filter('document_title_parts', 'aibridze_seo_document_title');
+	remove_action('wp_head', 'aibridze_seo_head', 2);
+	remove_filter('wp_robots', 'aibridze_seo_robots');
+	remove_action('wp_head', 'aibridze_seo_schema', 3);
+}
+add_action('after_setup_theme', 'aibridze_use_aioseo', 20);
